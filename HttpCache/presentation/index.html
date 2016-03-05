@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<title>Everything You Always Wanted to Know About Http Cache (but were afraid to ask)</title>
+		<meta name="description" content="Everything You Always Wanted to Know About Http Cache (but were afraid to ask)">
+		<meta name="author" content="Szymon Kulec">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/moon.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+		
+		<link rel="stylesheet" href="css/presentation.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+
+		<style media="screen" type="text/css">
+
+			.reveal table {
+			  margin: auto;
+			  border-collapse: collapse;
+			  border-spacing: 0;
+			}
+
+			.reveal table th {
+			  font-weight: bold;
+			}
+
+			.reveal table th,
+			.reveal table td {
+			  text-align: left;
+			  padding: 0.2em 0.5em 0.2em 0.5em;
+			  border-bottom: 1px solid;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h2><span class="fragment">Almost </span>Everything You Always Wanted to Know About Http Cache</h2>
+					<h3>(but were afraid to ask)</h3>
+					<p>Szymon Kulec </p>
+					<p><a href="https://twitter.com/Scooletz">@Scooletz</a></p>
+					<p><a href="http://blog.scooletz.com/">http://blog.scooletz.com</a></p>
+				</section>
+				<section>
+					<h2>Outline</h2>
+					<ul>
+						<li><a href="#/theory">RFC 2616 and beyond</a></li>
+						<li><a href="#/who">Who &amp; why?</a></li>
+						<li><a href="#/demo">Demo</a></li>
+						<li><a href="#/security">Security</a></li>
+						<li><a href="#/summary">Summary</a></li>
+						<li><a href="#/qa">Q&amp;A</a></li>						
+					</ul>
+				</section>
+				<section id="theory">
+					<section>
+						<h2>RFC 2616 and beyond</h2>
+					</section>
+					<section>
+						<h2>All the verbs</h2>
+						<h3>in http</h3>
+						<ul>
+							<li>GET</li>
+							<li>PUT</li>
+							<li>POST</li>
+							<li>DELETE</li>
+							<li>...</li>
+						</ul>
+					</section>
+					<section>
+						<h2>All the verbs</h2>
+						<h3>using cache</h3>
+						<ul>
+							<li>GET</li>
+							<li><del>PUT</del></li>
+							<li><del>POST</del></li>
+							<li><del>DELETE</del></li>
+							<li>...</li>
+						</ul>
+					</section>
+					<section>
+						<h2>GET headers example</h2>
+						<pre><code>HTTP/1.1 200 OK
+Date: Fri, 30 Oct 1998 14:19:41 GMT
+Server: Apache/1.3.3 (Unix)
+Cache-Control: max-age=3600, no-cache, public
+Expires: Fri, 30 Oct 1998 14:19:41 GMT
+Last-Modified: Mon, 29 Jun 1998 02:10:12 GMT
+ETag: "3e85-410-3596fbbc"
+Content-Length: 1000
+Content-Type: text/html</code></pre>
+					</section>
+					<section>
+						<h2>Cache models</h2>
+						<ul>
+							<li>Expiration</li>
+							<li>Validation</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Expiration (cache control)</h2>
+						<table>
+							<thead>
+								<th>header</th>
+								<th>meaning</th>
+							</thead>
+							<tr>
+								<td>max-age=[seconds]</td>
+								<td>maximum time when cache is considered fresh</td>
+							</tr>
+							<tr>
+								<td>public</td>
+								<td>response is cacheable</td>
+							</tr>
+							<tr>
+								<td>private</td>
+								<td>response is cacheable but only for the end client</td>
+							</tr>
+							<tr>
+								<td>no-cache</td>
+								<td>must revalidate every time</td>
+							</tr>
+							<tr>
+								<td>no-store</td>
+								<td>don't store it!</td>
+							</tr>
+						</table>
+					</section>
+					<section>
+						<h2>Expiration examples</h2>
+						<table>
+							<thead>
+								<th>headers</th>
+								<th>meaning</th>
+							</thead>
+							<tr>
+								<td>max-age=3600, private</td>
+								<td><span class="fragment">keep up to 1h but only on the client (no proxy)</span></td>
+							</tr>
+							<tr>
+								<td>max-age=3600, no-cache, public</td>
+								<td><span class="fragment">keep up to 1h but validate every time the resource is needed</span></td>
+							</tr>
+						</table>
+					</section>
+					<section>
+						<h2>Validation</h2>
+						<table>
+							<thead>
+								<th>header</th>
+								<th>sender</th>
+								<th>meaning</th>
+							</thead>
+							<tr class="fragment fade-out" data-fragment-index="1">
+								<td>Last-Modified</td>
+								<td>server</td>
+								<td>date of last mofification</td>
+							</tr>
+							<tr class="fragment fade-out" data-fragment-index="1">
+								<td>If-Modified-Since</td>
+								<td>client</td>
+								<td>date from the cached version</td>
+							</tr>
+							<tr>
+								<td>ETag</td>
+								<td>server</td>
+								<td>logical version of the resource</td>
+							</tr>
+							<tr>
+								<td>If-None-Match</td>
+								<td>client</td>
+								<td>logical version from the cached version</td>
+							</tr>
+						</table>
+					</section>
+				</section>
+				<section>
+					<h2>Validation (examples)</h2>
+					<table>
+						<thead>
+							<th>#</th>
+							<th>sender</th>
+							<th>data</th>
+						</thead>
+						<tr>
+							<td>1</td>
+							<td>client</td>
+							<td>GET</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>server</td>
+							<td>body + ETag: 12312</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>client</td>
+							<td>GET + If-None-Match: 12312</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>server</td>
+							<td>304: Not Modified</td>
+						</tr>
+					</table>
+				</section>
+				<section>
+						<h2>GET headers example (again!)</h2>
+						<pre><code>HTTP/1.1 200 OK
+Date: Fri, 30 Oct 1998 14:19:41 GMT
+Server: Apache/1.3.3 (Unix)
+Cache-Control: max-age=3600, no-cache, public
+Expires: Fri, 30 Oct 1998 14:19:41 GMT
+Last-Modified: Mon, 29 Jun 1998 02:10:12 GMT
+ETag: "3e85-410-3596fbbc"
+Content-Length: 1000
+Content-Type: text/html</code></pre>
+					</section>
+					</section>
+				<section id="who">
+					<section>
+						<h2>Who &amp; why uses http cache for data?</h2>
+					</section>
+					<section>
+						<h2>Why</h2>
+						<ul>
+							<li>http is a standard</li>
+							<li>plenty of tools: proxies, caching servers</li>
+							<li>leave resolving peformance/scaling problems for the others</li>
+						</ul>
+					</section>
+					<section>
+						<h2>EventStore</h2>
+						<ul>
+							<li>a db for event sourced apps</li>
+							<li>events are only appended</li>
+							<li>immutable events -> cache forever</li>
+							<li>streams of events -> mutable but can be versioned</li>
+						</ul>
+					</section>
+					<section>
+						<h2>EventStore</h2>
+						<pre><code>		
+						GET http://127.0.0.1:2113/streams/mystream
+
+						Cache-Control: max-age=0, no-cache, must-revalidate
+						ETag: "1;248368668"
+						{
+						  "entries": [
+						    {
+						      "title": "1@mystream",
+						      "id": "http://127.0.0.1:2113/streams/mystream/1"
+						    },
+						    {
+						      "title": "0@mystream",
+						      "id": "http://127.0.0.1:2113/streams/mystream/0"
+						    }
+						  ]
+						}</code></pre>
+					</section>
+					<section>
+						<h2>RavenDB</h2>
+						<ul>
+							<li>a document database</li>
+							<li>uses http for communication</li>
+							<li>ETags for client side caching (and more)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>RavenDB</h2>
+						<pre><code>		
+							// one can easily obtain etag of the given document
+							var eTag = (Guid)session.Advanced.GetEtagFor(objectToSave);
+
+							// optimistic concurrency with retrieved tag value
+							session.Store(objectToSave, eTag);
+						</code></pre>
+					</section>
+				</section>
+				<section id="demo">
+					<section>
+						<h2>Demo</h2>
+					</section>
+				</section>
+				<section id="security">
+					<section>
+						<h2>Security</h2>
+					</section>
+					<section>
+						<h2>JSON Hijacking</h2>
+						<ul>
+							<li>browser issues requests to the domain with this domain cookies</li>
+							<li>the malicious site has a request embedded</li>
+							<li>it will be executed with an error but just before it setter will be called</li>
+						</ul>
+					</section>
+					<section>
+						<h2>JSON Hijacking</h2>
+						<pre><code>&lt;html&gt; 
+						...
+						&lt;body&gt; 
+						    &lt;script type=&quot;text/javascript&quot;&gt; 
+						        Object.prototype.__defineSetter__(&#39;Id&#39;, function(obj){alert(obj);});
+						    &lt;/script&gt; 
+						    &lt;script src=&quot;http://yourbank.com/using/get/forJSON&quot;&gt;&lt;/script&gt; 
+						&lt;/body&gt; 
+						&lt;/html&gt;
+						</code></pre>
+					</section>
+					<section>
+						<h2>GET url &amp; business ids</h2>
+						<ul>
+							<li>What if GET url contains some business critical data like a credit card number?</li>
+							<li>It may leave a trace in the browser history even if it is not cached</li>
+							<li>POSTing queries for fragile is the way to go (visit your bank and check)</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Think about security</h2>
+					</section>
+				</section>	
+				<section id="summary">
+					<section>
+						<h2>Summary</h2>
+						<p>If you're into web apps &amp; services development, you should know about http cache and probably use it.</p>
+					</section>
+					<section>
+						<h2>Summary</h2>
+						<blockquote cite="http://martinfowler.com/bliki/TwoHardThings.html">
+						    There are only two hard things in Computer Science: cache invalidation and naming things.
+						</blockquote>
+						<p>Phil Karlton</p>
+					</section>
+					<section>
+						<h2>Better summary</h2>
+						<blockquote>
+						    There is only one hard things in Computer Science: naming things.
+						</blockquote>
+						<p>me</p>
+					</section>
+				</section>
+				<section id="qa">
+					<h1>Questions?</h1>
+					<p>Szymon Kulec <a href="https://twitter.com/Scooletz">@Scooletz</a> <a href="http://blog.scooletz.com/">http://blog.scooletz.com</a> </p>
+				</section>
+			</div>
+		</div>
+		
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+		<script>
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				transition: 'slide',
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+	</body>
+</html>

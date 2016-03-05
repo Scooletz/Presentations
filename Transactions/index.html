@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Transactions - yesterday &amp; today</title>
+		<meta name="description" content="Transactions - yesterday &amp; today">
+		<meta name="author" content="Szymon Kulec">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+		<style media="screen" type="text/css">
+
+			.reveal table {
+			  margin: auto;
+			  border-collapse: collapse;
+			  border-spacing: 0;
+			}
+
+			.reveal table th {
+			  font-weight: bold;
+			}
+
+			.reveal table th,
+			.reveal table td {
+			  text-align: left;
+			  padding: 0.2em 0.5em 0.2em 0.5em;
+			  border-bottom: 1px solid;
+			}
+
+			div.withComments {
+			  background-color: rgb(20, 98, 135); 
+			  width: 100%; 
+			  height: 400%; 
+			  position: absolute; 
+			  top: -100%; 
+			  left: -65%; 
+			  z-index: -1;
+			}
+
+			div.contentComment{
+				width: 30%; 
+				display: inline-block; 
+				margin-right: 5%; 
+				vertical-align: top;"
+			}
+
+			div.commentedContent{
+				width: 60%; 
+				display: inline-block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h2>Transactions</h2>
+					<h3>yesterday &amp; today</h3>
+					<p>Szymon Kulec </p>
+					<p><a href="https://twitter.com/Scooletz">@Scooletz</a></p>
+					<p><a href="http://blog.scooletz.com/">http://blog.scooletz.com</a></p>
+				</section>
+				<section>
+					<h2>Transactions</h2>
+					<ul>
+						<li><a href="#/example">Example</a></li>
+						<li><a href="#/distributed">Distributed</a></li>
+						<li><a href="#/local">Going local</a></li>
+						<li><a href="#/delivery">Delivery</a></li>
+						<li><a href="#/new">New databases</a></li>
+						<li><a href="#/summary">Summary</a></li>
+						<li><a href="#/todo">TO DO</a></li>
+						<li><a href="#/qa">Q&amp;A</a></li>						
+					</ul>
+				</section>
+				<section>
+					<h1>?</h1>
+				</section>
+				<section id="example">
+					<section>
+						<h2>Example</h2>
+						<h3>extracted from <a href="https://msdn.microsoft.com/en-us/magazine/dn857357.aspx">MSDN magazine</a></h3>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						        Publish example
+						    </div>
+						    <div class="commentedContent">
+	public void Publish(object o) 
+	{
+	  var factory = new ConnectionFactory();
+	  var conn = factory.CreateConnection();
+	  using ( var channel = conn.CreateModel()) 
+	  {
+	    // code to define the RabbitMQ channel
+	    var json = SerializeToJSON(o);
+	    var messageBodyBytes = Encoding.UTF8.GetBytes(json);
+	    channel.BasicPublish("CustomerUpdate", "", 
+	    	props, messageBodyBytes);
+	  }
+	}					    </div>
+						</div>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						        Save example
+						    </div>
+						    <div class="commentedContent" style="width: 60%; display: inline-block;">
+	public bool Save(Customer c) 
+	{
+	  using ( var ctx = new MyDbCtx()) 
+	  {
+	    ctx.Customers.Add(c);
+	    int response = ctx.SaveChanges();
+	    if (response > 0) {
+	      Publish(c);
+	      return true;
+	    }
+	    return false;
+	  }
+	}					    </div>
+						</div>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						        Is this Save better?
+						    </div>
+						    <div class="commentedContent">
+	public bool Save(Customer c) 
+	{
+	  using (var ctx = new MyDbCtx()) 
+	  {
+	    ctx.Customers.Add(c);
+	    Publish(c);
+	    return ctx.SaveChanges() > 0;
+	  }
+	}					    </div>
+						</div>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						        Simplified
+						    </div>
+						    <div class="commentedContent">
+	public bool Save(Customer c) 
+	{
+	  DoDatabase(c);
+	  DoQueue(c);
+	}					    </div>
+						</div>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						        Simplified with some tweaks
+						    </div>
+						    <div class="commentedContent">
+	public bool Save(Customer c) 
+	{
+	  PreDoDatabase(c);
+	  PreDoQueue(c);
+	  PostDoDatabase(c);
+	}					    </div>
+						</div>
+					</section>
+					<section>
+						<h3>Example outcome</h3>
+						<ul>
+							<li>The example shows not only queue-db integration but service-db &amp; others as well</li>
+							<li>Even with different ordering, we cannot ensure the transaction between queue &amp; database</li>
+							<li>It's possible to get into an inconsistent state because of exceptions, processes being killed, etc.</li>
+						</ul>
+					</section>
+				</section>
+				<section id="distributed">
+					<section>
+						<h2>Distributed transactions</h2>
+					</section>
+					<section>
+						<h3>Distributed transactions</h3>
+						<ul>
+							<li>A transaction across more than one system, database, queue, resource</li>
+							<li>Simulates good old-fashioned ACID transaction</li>
+							<li>Requires a transaction manager</li>
+							<li>May be used across the network</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Distributed transactions - 2PC</h3>
+						<ul>
+							<li>2PC - two phase commit</li>
+							<li>1st prepares all the transactions across systems being used in the transaction</li>
+							<li>2nd goes through the systems and ACKing the transaction</li>
+						</ul>
+					</section>
+					<section>
+						<h3>TransactionScope</h3>
+						<ul>
+							<li>.NET high-level abstraction over transaction</li>
+							<li>When used only with a single resource, it's just a wrap around transaction</li>
+							<li>Can propagate to a distributed transaction when another transactional resource used</li>
+							<li>The process of registering a transaction in a scope is called <em>enlistement</em></li>
+						</ul>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						        TransactionScope applied
+						    </div>
+						    <div class="commentedContent">
+	public bool Save(Customer c) 
+	{
+	  using( var ts = new TransactionScope())
+	  {
+	    PreDoDatabase(c);
+	    PreDoQueue(c);
+	    PostDoDatabase(c);
+
+	    ts.Complete();
+	  }
+	}					    </div>
+						</div>
+					</section>
+					<section>
+						<h3>Distributed transactions are the solution !</h3>
+						<h1 class="fragment"> NOT! </h1>
+					</section>
+					<section>
+						<h3>Disadvantages of distributed transactions</h3>
+						<ul>
+							<li>Not always supported (try RabbitMQ or REST services or Cassandra)</li>
+							<li>Latency - you need additional network hops</li>
+							<li>Longer calls - longer locks - worse throughput</li>
+							<li>Orphans - state is unknown (no, they won't become 007)</li>
+						</ul>
+					</section>
+					<section>
+						<h3>If not distributed</h3>
+						<h4>then what? :(</h4>
+					</section>
+				</section>
+				<section id="local">
+					<section>
+						<h2>Going local</h2>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						        Simplified example once again
+
+
+
+
+						        but with a ctx passed to Publish...
+						    </div>
+						    <div class="commentedContent">
+	public bool Save(Customer c) 
+	{
+	  using (var ctx = new MyDbCtx()) 
+	  {
+	    ctx.Customers.Add(c);
+	    Publish(c, ctx);
+	    return ctx.SaveChanges() > 0;
+	  }
+	}					    </div>
+						</div>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						      With the Publish defined now as...
+						    </div>
+						    <div class="commentedContent">
+	public void Publish(Customer c, MyDbCtx ctx) 
+	{
+	  var publishIntent = PublishIntent.CreateFrom (c);
+	  ctx.PublishIntents.Add (publishIntent);
+	}					    </div>
+						</div>
+					</section>
+					<section>
+						<h3>Going local</h3>
+						<ul>
+							<li>Transaction is local</li>
+							<li>A different modelling saved us from going distributed</li>
+							<li>A different modelling saved us from dropping system in a unknown state</li>
+							<li>... but left with unpublished intents</li>
+							<li>Now all we should do is just published intents via queue and delete them in a tx</li>
+							<li>... but this requires distributed transaction again :/</li>
+							<li>Is happiness really possible???</li>
+						</ul>
+					</section>
+				</section>
+				<section id="delivery">
+					<section><h2>Delivery guarantees</h2></section>
+					<section>
+						<h3>Delivery guarantees</h3>
+						<ul>
+							<li>at-most-once</li>
+							<li><span style="text-decoration:line-through;">exactly-once</span></li>
+							<li>at-least-once</li>
+						</ul>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						      This method provides at-most-once delivery without getting into distributed problems
+						    </div>
+						    <div class="commentedContent">
+	public void RealPublish(MyDbCtx ctx, RabbitMqSender sender) 
+	{
+	  var intent = ctx.PublishIntents.FirstOrDefault();
+	  ctx.PublishIntents.Remove(intent);
+	  ctx.SaveChanges();
+	  sender.Send(intent);
+	}					    </div>
+						</div>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						      This method provides at-least-once delivery without getting into distributed problems
+						    </div>
+						    <div class="commentedContent">
+	public void RealPublish(MyDbCtx ctx, RabbitMqSender sender) 
+	{
+	  var intent = ctx.PublishIntents.FirstOrDefault();
+	  sender.Send(intent);
+	  ctx.PublishIntents.Remove(intent);
+	  ctx.SaveChanges();
+	}					    </div>
+						</div>
+					</section>
+					<section>
+						<h3>Delivery guarantees</h3>
+						<ul>
+							<li>It's easy to <em>at-least/at-most once</em> deliver the message</li>
+							<li>Can we make it <em>exactly-once</em> then? </li>
+							<li class="fragment">YES!</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Exactly-once delivery</h3>
+						<ul>
+							<li>We need to be ensured that receiver gets the message</li>
+							<li>... hence <em>at-least-once</em> is required.</li>
+							<li>Under some conditions duplicates can appear on the receiver side</li>
+							<li>What can be done?</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Exactly-once delivery with idempotent receiver</h3>
+						<ul>
+							<li>Mark every message with a unique id</li>
+							<li>On the receiver side use local transaction to process the message and store some state</li>
+							<li>Additonally, in the very same transaction store the message id</li>
+							<li>Process only messages previously not marked as processed</li>
+						</ul>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						      This method handles the message being sent and assumes that the message has Id property with a unique message id
+						    </div>
+						    <div class="commentedContent">
+	public void ReceiveAtLeastOnce(OtherDbCtx ctx, Message msg) 
+	{
+	  using(var tx = ctx.Database.BeginTransaction())
+	  {
+	    var done = ctx.ProcessedIds.Find(msg.Id);
+	    if (done != null)
+	      return;
+
+	    ProcessAndSaveState(ctx);
+	    ctx.ProcessedIds.Add (new ProcessedId {Id = msg.Id});
+
+	    tx.Commit();
+	  }
+	}					    </div>
+						</div>
+					</section>
+					<section>
+					  <h3>Delivery guarantees summary</h3>
+					  <p>
+					  	exactly-once = at-least-once + idempotent-receiver
+					  </p>
+					</section>
+				</section>
+				<section id="new">
+					<section>
+						<h2>Transactions in <em>new</em> databases</h2>
+					</section>
+					<section>
+						<h3>Transactions in new databases</h3>
+						<ul>
+							<li>So many trends, approaches - this will not cover everything</li>
+							<li>Many of them does not imply any transactions</li>
+							<li>It's common to have transactions only for the given key</li>
+							<li>There's no notion of a transaction locking rows for reads</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Transactions in new databases - examples</h3>
+						<table>
+							<tr>
+								<th>Name</th>
+								<th>Features</th>
+							</tr>
+							<tr>
+								<td>Azure Table Storage</td>
+								<td>partition key + row key, tx only across partition</td>
+							</tr>
+							<tr>
+								<td>RavenDB</td>
+								<td>transactions spans across documents, but indeces are not transactional!</td>
+							</tr>
+							<tr>
+								<td>Riak</td>
+								<td>key-value, values are replace atomically but can use multi-write as well</td>
+							</tr>
+							<tr>
+								<td>EventStore</td>
+								<td>transaction only for a given stream, idempotent receiver in the db</td>
+							</tr>
+						</table>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+						   	The error that drained many bitcoin wallets (improper use of MongoDb)
+						    </div>
+						    <div class="commentedContent">
+	mybalance = database.read("account-number")
+	newbalance = mybalance - amount
+	database.write("account-number", newbalance)
+	dispense_cash(amount)   // or send bitcoins to customer					    </div>
+					</section>
+					<section>
+						<h3>Modelling question - money transfer</h3>
+						<ul>
+							<li>The database can hold transaction only on one key</li>
+							<li>We are allowed to have a debit on an account</li>
+							<li>How would you model a transfer across accounts?</li>
+							<li>We can use EventStore for example</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Modelling question - money transfer</h3>
+						<ul>
+							<li>There is no account but only its number</li>
+							<li>The atomic operation of a transfer is the thing that we save</li>
+							<li>An account is a sum of all transfers from-to</li>
+						</ul>
+					</section>
+				</section>
+				<section id="summary">
+					<section>
+						<h3>Summary</h3>
+						<ul>
+							<li>Be aware of the possible failures</li>
+							<li>Try to model towards local transactions</li>
+							<li>exactly-once = at-least-once + idempotent-receiver</li>
+							<li>Model is only a model: choose wisely its first class citizens</li>
+							<li>Use <em>error-injection</em> if you cannot see the whole picture yet. This will drive you.</li>
+							<li>Don't drop the ball. There's a big chance that you're dealing with money :P</li>
+						</ul>
+					</section>
+				</section>
+				<section id="todo">
+					<section>
+						<h3>TO DO</h3>
+						<ul>
+							<li><a href="http://adrianmarriott.net/logosroot/papers/LifeBeyondTxns.pdf">Pat Helland - Life beyond Distributed Transactions </a> </li>
+							<li><a href="http://www.cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf">Pat Helland - Immutability Changes Everything</a> </li>
+							<li><a href="https://github.com/cockroachdb/cockroach">CockroachDB</a> </li>
+							<li><a href="http://www.bailis.org/papers/ramp-sigmod2014.pdf">Peter Bailis - RAMP transactions</a></li>
+							<li>Eventual Consistency</li>
+							<li>Google for NoSQL</li>
+							<li>Learn, use, share :)</li>
+						</ul>
+					</section>
+				</section>
+				<section id="qa">
+					<h1>Questions?</h1>
+					<p>Szymon Kulec </p>
+					<p><a href="https://twitter.com/Scooletz">@Scooletz</a></p>
+					<p><a href="http://blog.scooletz.com/">http://blog.scooletz.com</a> </p>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="lib/js/jquery-2.1.4.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+		$(function() {
+			$('div.commentedContent').each(function(i, div){
+				var lines = $(div).text().split('\n');
+		    	var text = '';
+			    $.each(lines, function(i, line) {
+			        if (line) {
+		            	text += '<p style="text-align: left; white-space: pre; margin: 0; padding: 0;">' + i + ".  " + line + '</p>';
+		        	}
+		    	});
+		    	$(div).html(text);
+
+		    	// apply keywords
+		    	$(div).children().each(function(i,p){
+		    		var par = $(p);
+					var words = par.text().split(" ");
+					par.empty();
+					$.each(words, function(i, w) {
+						if($.inArray(w, ["public", "void", "new", "var", "bool", "object", "using"]) > -1){
+							par.append($('<span style="color: rgb(204, 153, 204);"/>').text(w + " "));
+						}
+						else{
+							par.append(w + " ");
+						}
+					});
+		    	});
+			})
+
+			$('div.contentComment').each(function(i, div){
+				var lines = $(div).text().split('\n');
+		    	var text = '';
+			    $.each(lines, function(i, line) {
+			        if (line) {
+		            	text += '<p style="text-align: right; margin: 0; padding: 0;">' + line + '</p>';
+		        	}
+		    	});
+		    	$(div).html(text);
+			})
+		});
+
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

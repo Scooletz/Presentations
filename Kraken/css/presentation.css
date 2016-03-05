@@ -1,0 +1,13 @@
+pre {
+	box-shadow: none !important;	
+}
+
+.reveal pre code {
+	background: #002b36 !important;
+	background-color: #002b36 !important;
+    font-size: 1.2em;            
+    max-height: 600px !important;
+}
+.yellow {
+    color: yellow !important;
+}

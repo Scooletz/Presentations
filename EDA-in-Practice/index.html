@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title> Event Driven Architecture in practice</title>
+		<meta name="description" content="Event Driven Architecture in practice: a case study of one project">
+		<meta name="author" content="Szymon Kulec, Tomasz Frydrychewicz">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/moon.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+		
+		<link rel="stylesheet" href="css/presentation.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+
+		<style media="screen" type="text/css">
+
+			.reveal table {
+			  margin: auto;
+			  border-collapse: collapse;
+			  border-spacing: 0;
+			}
+
+			.reveal table th {
+			  font-weight: bold;
+			}
+
+			.reveal table th,
+			.reveal table td {
+			  text-align: left;
+			  padding: 0.2em 0.5em 0.2em 0.5em;
+			  border-bottom: 1px solid;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div class="reveal">
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h2>Event Driven Architecture in practice:</h2>
+					<h3>a case study of one project</h3>
+					<p>Szymon Kulec <a href="https://twitter.com/Scooletz">@Scooletz</a> <a href="http://blog.scooletz.com/">http://blog.scooletz.com</a> </p>
+					<p>Tomasz Frydrychewicz <a href="https://twitter.com/frydrychewicz">@frydrychewicz</a></p>
+				</section>
+
+				<section>
+					<h2>Outline</h2>
+					<ul>
+						<li><a href="#/intro">Intro</a></li>
+						<li><a href="#/client">Client</a></li>
+						<li><a href="#/server">Server</a></li>
+						<li><a href="#/cherry">Cherry on top</a></li>
+						<li><a href="#/summary">Summary</a></li>
+						<li><a href="#/questions">Questions</a></li>						
+					</ul>
+				</section>
+				<section id="intro">
+					<section>
+						<h2>Intro</h2>
+					</section>
+					<section>
+						<h3>Project background</h3>
+						<ul>
+							<li>There was a given framework (hammer), but we didn't want to be another nail.</li>
+							<li>The given idea for integration - shared database.</li>
+							<li>Some well separated contexts/domains visible up front.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Thinking</h3>
+						<ul>
+							<li>Build a good client using some kind of API (WebAPI probably).</li>
+							<li>Don't use framework, build the client first, decide on the server services later.</li>
+							<li>If no db for integration then what?</li>
+							<li>Microservices a'la CORBA it's not the way you should design systems.</li>
+							<li>Is there a common denominator for the client and the server?</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Event Driven Architecture</h3>
+						<p>is an an architectural pattern for building loosely coupled systems and services in a reactive way</p>
+						<p class="fragment"><br/>and that's the way we've done it.</p>
+					</section>
+				</section>
+				<section id="client">
+					<section>
+						<h2>Client</h2>
+					</section>
+					<section>
+					    <h3>Make Love Not .Net</h3>
+					    <h4>A.K.A why did we choose to have just JavaScript</h4>
+					    <p class="fragment">JavaScript</p>
+					    <p class="fragment">AngularJS</p>
+					    <p class="fragment">NodeJS</p>
+					    <p class="fragment">Bower</p>
+					    <p class="fragment">Gulp</p>
+					    <p class="fragment">Karma</p>
+					    <p class="fragment">ASP.NET MVC &nbsp; :-)</p>
+					    <p class="fragment">...</p>
+					</section>
+					<section>
+					    <h3>Events</h3>
+					    <h4>Because web is asynchronous</h4>
+					</section>
+					<section>
+					    <h3>Evolution</h3>
+					    <p class="fragment"><strong>From</strong> callback-driven asynchrony</p>
+					    <p class="fragment"><strong>To</strong> events-driven asynchrony</p>
+					</section>
+					<section>
+					    <h3>Flux</h3>
+					    <p class="fragment">The Dispatcher</p>
+					</section>
+					<section>
+					    <h3>Black Box</h3>	
+					    <p class="fragment">Controller</p>
+					    <p class="fragment">View</p>
+					    <p class="fragment">Router</p>
+					    <p class="fragment">Action</p>
+					    <p class="fragment">Store</p>
+					    <p class="fragment">...</p>
+					</section>
+					<section>
+					    <img src="BlackBox.png">    
+					</section>
+					<section>
+					    <table>
+					        <tr>
+					            <td class="fragment" data-fragment-index="1">Actions</td>					                                         <td></td>
+					            <td class="fragment" data-fragment-index="2">Events</td>
+					        </tr>
+					        <tr>
+					            <td class="fragment" data-fragment-index="3">Reactions</td>
+					            <td></td>
+					            <td class="fragment" data-fragment-index="4">Events</td>
+					        </tr>					        
+					        <tr>
+					            <td class="fragment" data-fragment-index="5">Queries</td>
+					            <td class="fragment" data-fragment-index="7"><strong>NOT</strong></td>
+					            <td class="fragment" data-fragment-index="6">Events</td>
+					        </tr>					        
+					    </table>
+					</section>
+					<section>
+					    <h3>The Code</h3>
+					</section>
+					<section>
+                    Actions
+					    <pre><code class="javascript" style="max-height: 600px" data-trim>
+angular.module("app.someModule")
+       .factory('someModuleActions', someModuleActions);
+    
+function someModuleActions(bcDispatcher) {
+    var service = {};
+
+    service.action1 = action1;
+    service.action2 = action2;  
+
+    return service;
+    ///////////////
+
+    function action1(a, b) {
+        bcDispatcher.dispatch('someModule:action1', {
+            param1: a,
+            param2: b
+        });
+    }
+
+    function action2() {
+        bcDispatcher.dispatch('someModule:action2');
+    }        
+}
+					    </code></pre>
+					</section>
+					<section>
+					    Store
+					    <pre><code class="javascript" style="max-height: 600px;">
+angular.module("app.someModule")
+       .factory("$$someModuleService", $$someModuleService)
+       .factory("someModuleStore", someModuleStore)
+       .run(registersomeModuleStore);
+                    
+function someModuleStore($$someModuleService) {
+    var service = {
+        dispatcherToken: null
+    };
+    
+    service.getSomeData = $$someModuleService.getSomeData;
+    
+    return service;				                      					        					        
+}              	
+                    
+function $$someModuleService(bcDispatcher) {
+    var service = {
+        someData: []
+    };              				        					        				        					        
+
+    service.getSomeData = getSomeData;
+    service.setSomeData = setSomeData;
+
+    return service;
+    ////////////////
+
+    function getSomeData() {
+        return service.someData;     
+    }
+
+    function setSomeData(a, b) { 
+        someData.push(a + b);
+        bcDispatcher.dispatch('someModule:someDataSet', { value: a + b });
+    }	             
+} 
+
+function registersomeModuleStore(
+   bcDispatcher, 
+   someModuleStore, 
+   $$someModuleService) {
+   
+    someModuleStore.dispatcherToken = 
+        bcDispatcher.register(function(action, attrs) {
+            switch(action) {
+                case "someModule:action1":
+                    $$someModuleService.setSomeData(attrs.a, attrs.b);
+                    break;
+            }
+        });
+}             				        					        				        					        
+					    </code></pre>
+					</section>
+					<section>
+					    Controller
+					    <pre><code class="javascript" style="max-height: 600px;">
+angular.module("app.someModule")
+       .factory("someController", SomeController);
+
+function SomeController(someModuleActions, someModuleStore, bcDispatcher, $scope) {
+    var vm = this;
+
+    vm.action1 = someModuleActions.action1;
+    vm.getSomeData = someModuleStore.getSomeData;
+
+    var dispatchToken = bcDispatcher.register(function (action, attrs) {
+        switch (action) {
+            case "someModule:someDataSet":
+                alert("New value: " + attrs.value);
+                break;
+        }
+    });
+
+    $scope.$on('$destroy', function () {
+        bcDispatcher.unregister(dispatchToken);
+    });
+}
+					    </code></pre>
+					</section>
+					<section>
+					    <h3>CQRS</h3>
+					</section>
+				</section>
+				<section id="server">
+					<section>
+						<h2>Server</h2>
+					</section>
+					<section>
+						<h3>DDD recap - Aggregate</h3>
+						<ul>
+							<li>Aggregate is a transaction boundary.</li>
+							<li>Big enough to cover transactions.</li>
+							<li>Small enough to keep contention low.</li>
+							<li>All parts of the aggregate (entities) are accessed by the <b>aggregate root</b>.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Event Sourcing recap</h3>
+						<ul>
+							<li>Don't store an aggregate's state.</li>
+							<li>Store the business events containing all the needed values.</li>
+							<li>Apply the events on initial state to get the current.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Event Sourcing example</h3>
+						<table class="reveal">
+							<thead>
+								<tr><th>Version</th>
+									<th>Event</th>
+									<th>The state</th></tr>
+							</thead>
+							<tr><td>1</td><td>RegistrationCompleted</td><td>{"CandidateName":"Tomasz", "OtherImportantValue":"Value"}</td></tr>
+							<tr><td>2</td><td>Paid</td><td>{"Paid":"true", CandidateName":"Tomasz", "OtherImportantValue":"Value"}</td></tr>
+						</table>
+					</section>
+					<section>
+						<h3>Event Sourcing log</h3>
+						<p>What if we add a sequence to all the events in the system... we could use it as a append only log.</p>
+						<table class="fragment">
+							<thead>
+								<tr>
+									<th>Sequence</th>
+									<th>Aggregate id</th>
+									<th>Version</th>
+									<th>Event</th>
+									<th>The state</th></tr>
+							</thead>
+							<tr><td>1</td><td>A1</td><td>1</td><td>RegCompleted</td><td>{"CandidateName":"Tomasz", ...}</td></tr>
+							<tr><td>2</td><td>A1</td><td>2</td><td>Paid</td><td>{"Paid":"true", CandidateName":"Tomasz", ...}</td></tr>
+							<tr><td>3</td><td>A2</td><td>1</td><td>RegCompleted</td><td>{"CandidateName":"Szymon", ...}</td></tr>
+						</table>
+					</section>
+					<section>
+						<h3>Event Sourcing advantages</h3>
+						<ul>
+							<li>Append only model, data immutable.</li>
+							<li>The state for a given can be cached forever, it doesn't change.</li>
+							<li>Audit out of the box.</li>
+							<li>One can easily read the log and publish it to some ESB or other fancy enterprise solution.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Implementation details</h3>
+						<ul>
+							<li>SQL server<ul>
+								<li>Log, Events, EventsMetadata</li>
+								<li>Using GUIDs v1  (clustered index performance!)</li>
+							</ul></li>
+							<li>protobuf-net</li>
+							<li>custom library based somehow on <a href="http://lokad.github.io/lokad-cqrs/">Lokad CQRS</a>
+								<ul>
+									<li>batching SqlCommands (300 lines of ADO. Less than number of your EF attributes:P)</li>
+									<li>reusing memory chunks for serialization (no MemoryStream, no allocs)</li>
+									<li>state cache (off heap)</li>
+								</ul>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Implementation details</h3>
+						<ul>
+							<li>WebAPI<ul>
+								<li>~/api/events/describe</li>
+								<li>~/api/events/describe/E38784FA-96E5-4392-AC73-76DA532E63D4 - proto</li>
+								<li>~/api/events/... - for querying the log</li>
+							</ul></li>
+							<li>BDD tests for aggregates
+<pre><code data-trim>
+Given
+	-- no events--
+When
+	On ( Register {
+			"Address": "http://test.yourwork.com/",
+			"Name": "test" } )
+Then
+	ModuleRegistered {
+			"Address": "test.yourwork.com",
+			"Name": "test" }
+</code></pre>
+							</li>
+
+						</ul>
+					</section>
+					<section>
+						<h3>I want to react!</h3>
+						<ul>
+							<li>Events are useless if none can react to them.</li>
+							<li>Process managers to the rescue </li>
+							<li>Small TPL-based runner provided.</li>	
+							<li>Can consume event from other services.</li>
+						</ul>
+<pre><code data-trim class="cs">
+public class MarkAsPaid : 
+	IProcessEvent&lt;PaymentGateway.PaymentReceived&gt;
+{
+    public void On(PaymentReceived e, DispatchEnvelope env)
+    {
+    	// get registration aggregate
+    	// registration.MarkAsPaid();
+    }
+}
+</code></pre>
+					</section>
+					<section>
+						<h3>I want to query!</h3>
+						<ul>
+							<li>Sometimes you need the view.</li>
+							<li>The very same PMs are used for building views with EF.</li>
+							<li>For simple, small features sometimes it's a bit redundant.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>I want to integrate!</h3>
+						<h4>A.K.A. Partying partying yeah!</h4>
+						<ul>
+							<li>Description provided by proto schemas of all events.</li>
+							<li>Mono.Cecil to retrieve info from the compiled code.</li>
+							<li>Simple WebAPI and polling. It works for now!</li>
+							<li>Catalogue - The Chosen One. (Yes, we're aware of DISCO).</li>
+						</ul>
+					</section>
+				</section>
+				<section id="cherry">
+					<section>
+						<h2>Cherry</h2>
+						<img style="width: 300px" src="cherry-on-the-cake.jpg" alt="">
+					</section>
+					<section>
+                        <img src="Cherry1.png" alt="">		    
+					</section>
+					<section>
+					    <img src="Cherry2.png" alt="">
+					</section>
+					<section>
+					    <img src="Cherry3.png" alt="">
+					</section>
+					<section>
+					    <h3>Signal<span style="color: #268bd2">R</span></h3>
+					</section>
+					<section>
+					    <h3>
+					        Flux + Signal<span style="color: #268bd2">R</span>
+					    </h3>
+					</section>
+					<section>
+					    The Hub
+					    <pre><code class="cs" data-trim style="max-height: 600px;">
+namespace MyNamespace.Hubs
+{
+    using Microsoft.AspNet.SignalR;
+
+    public class SomeHub : Hub
+    {
+        public void Login(string userName)
+        {
+            Groups.Add(Context.ConnectionId, userName);            
+        }
+
+        public void SendTo(string userName, string @event, object attr)
+        {
+            Clients.Group(userName).Raise(@event, attr);            
+        }
+
+        public void SendToAll(string @event, object attr)
+        {
+            Clients.All.Raise(@event, attr);
+        }
+    }
+};					        
+					    </code></pre>
+					</section>
+					<section>
+					    SignalR Router Process Manager
+					    <pre><code style="max-height: 600px;" class="cs">
+namespace MyNamespace.SomeModule
+{
+    using EventSourcing;
+
+    using Events = MyNamespaced.SomeModule.Events;
+
+    public class SignalREventsRouter : SignalREventsRouterBase,
+        IWantEventsWithMetadata,
+        IProcessEvent&lt;Events.SomethingHappened&gt;,
+        IProcessEvent&lt;Events.SomethingElseHappened&gt;,       
+    {
+        public SignalREventsRouter(ISignalRMessenger messenger)
+            : base(messenger)
+        {
+            Messenger.UseHubFrom(SystemName.B2B);
+        }
+
+        public void On(Events.SomethingHappened e, DispatchEnvelope env)
+        {
+            Messenger.SendToAll(
+                "someModule:somethingHappened", 
+                new { env.LogInfo.AggregateId });
+        }
+
+        public void On(Events.SomethingElseHappened e, DispatchEnvelope env)
+        {
+            Messenger.Send(
+                env.GetMetadata(this).Audit.UserName, 
+                "someModule:somethingElseHappened",
+                new { env.LogInfo.AggregateId });
+        }       
+    }
+}					    
+					    </code></pre>
+					</section>
+					<section>
+					    Flux.SignalR
+					    <pre><code class="javascript" style="max-height: 600px;">
+angular.module("app.core")
+       .config(configure);
+
+function configure(fluxSignalRRegistryProvider) {
+
+    // SignalR Hubs configuration
+    fluxSignalRRegistryProvider.register('someHub');
+
+}					    
+					     </code></pre>
+					</section>					
+				</section>			
+				<section id="summary">
+				    <section>
+				        <h1>Summary</h1>
+				    </section>
+				</section>	
+				<section id="questions">
+					<h1>Questions?</h1>
+					<p>Szymon Kulec <a href="https://twitter.com/Scooletz">@Scooletz</a> <a href="http://blog.scooletz.com/">http://blog.scooletz.com</a> </p>
+					<p>Tomasz Frydrychewicz <a href="https://twitter.com/frydrychewicz">@frydrychewicz</a></p>
+				</section>
+			</div>
+		</div>
+		
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+		<script>
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				transition: 'slide',
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+	</body>
+</html>

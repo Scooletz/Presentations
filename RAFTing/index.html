@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Distributed systems: consensus and RAFT algorithm</title>
+		<meta name="description" content="Distributed systems: consensus and RAFT algorithm">
+		<meta name="author" content="Szymon Kulec 'Scooletz'">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/solarized.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+		<div class="reveal">
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Distributed systems: consensus and RAFT algorithm</h1>
+					<p>Szymon Kulec</p>
+					<p>
+						<a href="https://twitter.com/Scooletz">@Scooletz</a>
+					</p>
+					<p>
+						<a href="http://blog.scooletz.com/">http://blog.scooletz.com</a>
+					</p>
+				</section>
+
+				<section>
+					<h2>Outline</h2>
+					<ul>
+						<li><a href="#/intro">warm up: what is a distributed system?</a></li>
+						<li><a href="#/cap">CAP theorem</a></li>
+						<li><a href="#/statemachine">logs and state machines</a></li>
+						<li><a href="#/paxos">Paxos by Leslie Lamport</a></li>
+						<li><a href="#/raft">RAFT: I want to understand</a></li>
+					</ul>
+				</section>
+				<section id="intro">
+					<section>
+						<h2>what a is </h2>
+						<h2>&#8212;&#8212;&#8212;distributed </h2>
+						<h2>&#8212;&#8212;&#8212;&#8212;system </h2>
+					</section>
+					<section>
+						<h2>what is it?</h2>
+						<blockquote cite="http://en.wikipedia.org/wiki/Distributed_computing"> 	
+						 A distributed system is a software system in which components located on networked computers communicate and coordinate their actions by passing messages.
+						</blockquote>
+						<em>Wikipedia</em>
+					</section>
+					<section>
+						<h2>message passing you say?</h2>
+						<p>Here be dragons!</p>
+						<ol>
+							<li>out of order messages</li>
+							<li>duplicated messages</li>
+							<li>lost messages</li>
+						</ol>
+					</section>	
+					<section>
+						<h2>a <em>nice</em> distributed system</h2>
+						<ol>
+							<li>scales up/out</li>
+							<li>has homogenic nodes</li>
+							<li>supports change number of nodes</li>
+							<li>for databases: don't brake under <a href="http://aphyr.com/tags/jepsen">Jepsen test</a> &copy; Aphyr</li>
+						</ol>
+					</section>
+					<section>
+						<h2>a few examples</h2>
+						<ol>
+							<li>Databases: Cassandra, Riak, EventStore, FoundationDB</li>
+							<li>Queues: RabbitMQ (:D), Azure Queues</li>
+							<li>Data processing: Storm</li>
+							<li>Configuration: Zookeeper, Consul, etcd</li>
+						</ol>
+					</section>
+				</section>
+				<section id="cap">
+					<section data-background="img/cap.png" data-background-size="50%"></section>
+					<section>
+						<h2>CAP theorem</h2>
+						<p>Eric Brewer asks you to choose two of them. You cannot satisfy them all.</p>
+						<ol>
+							<li>Consistency - linearizability (allows perceving a history of operations as a <em>sequence</em>)</li>
+							<li>Availability - every request receives a response ok/error</li>
+							<li>Partition tolerance - can operate despite loosing messages, message copies etc.</li>
+						</ol>
+					</section>
+					<section><h2>CP, AP, AC?</h2>
+						<blockquote cite="http://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed">
+							Only when nodes communicate is it possible to preserve both consistency and availability, thereby forfeiting P. The general belief is that for wide-area systems, designers <b>cannot forfeit P</b> and therefore have a difficult choice between C and A.
+						</blockquote>
+						<em>Eric Brewer</em>
+					</section>
+					<section>
+						<h2>CP, AP, AC? 2</h2>
+						<ol>
+							<li>CP: EventStore, Cassasnda (lightweight transactions), FoundationDB</li>
+							<li>AP: Riak (allow_mult), Cassandra, Dynamo (Amazon)</li>
+							<li>AC: lies, lies, lies...</li>
+						</ol>
+					</section>
+					<section>
+						<h2>Consensus, where are you?</h2>
+						<p>It's needed for CP systems.</p>
+					</section>
+				</section>
+				<section id="statemachine"/>
+					<section data-background="img/statemachine.png" data-background-size="50%"></section>
+					<section>
+						<h2>State machine</h2>
+						<ol>
+							<li>F(state, input) -> newState</li>
+							<li>F(F(F(s0, i0), i1), i2) -> s3</li>
+							<li>a sequence of <em>s0, i1, i2, i3, i4, ... </em> will give the same result for the same F
+						</ol>
+					</section>
+					<section>
+						<h2>State machine replication</h2>
+						<p> If there was a way to replicate a sequence of entries across multiple machines,
+							having the same function applied to the sequence, would result in having the same state on all machines. That would bring consensus to all machines/processes...
+						</p>
+					</section>
+				</section>
+				<section id="paxos"/>
+					<section data-background="img/paxos.png" data-background-size="50%"></section>
+					<section>
+						<h2>Paxos</h2>
+						<ol>
+							<li>rooted in Leslie Lamport <em>state machine</em> approach</li>
+							<li>published in 1989</li>
+							<li>the algorithm family consists of many algorithms with different trade-offs</li>
+						</ol>
+					</section>
+					<section>
+						<h2>Paxos - a dictionary</h2>
+						<ol>
+							<li>processor - a node in a given cluster</li>
+							<li>quorum - a strong majority of processors (for 2N+1 nodes its N+1)</li>
+							<li>hard to understand like Paxos - a common phrase for implementors of distributed systems</li>
+						</ol>
+					</section>
+					<section>
+						<h2>Paxos - processor roles</h2>
+						<ol>
+							<li>Client</li>
+							<li>Acceptor (voter)</li>
+							<li>Proposer</li>
+							<li>Learner</li>
+							<li>Leader</li>
+							<li>Shouldn't we switch to RAFT?</li>
+						</ol>
+					</section>
+				</section>
+				<section id="raft"/>
+					<section data-background="img/understand.png" data-background-size="25%"></section>
+					<section>
+						<h2>RAFT - basic info</h2>
+						<ol>
+							<li>authors: Diego Ongaro; John Ousterhout</li>
+							<li>written to be easy to understand</li>
+							<li>it is easy to understand</li>
+							<li>splits algorithm into: 
+								<ol>
+									<li>leader election</li>
+									<li>replication</li>
+								</ol>
+							</li>
+						</ol>
+					</section>
+					<section>
+						<h2>RAFT - logical clock</h2>
+						<ol>
+							<li>synchronizing clocks is hard (Google Spanner: GPS + atomic clocks)</li>
+							<li>use logical, natural, incrementing numbers</li>
+							<li>term - a logical epoch of the system</li>
+							<li>clock can only go forward - never accepts messages sent in earlier terms</li>
+						</ol>
+					</section>
+					<section>
+						<h2>RAFT - roles</h2>
+						<ol>
+							<li>follower - simply follow the leader and vote if no leader. The initial state</li>
+							<li>candidate - votes for itself, steps down if leader elected, or becomes the leaders</li>
+							<li>leader - a strong leader, replicating its logs to other nodes</li>
+						</ol>
+					</section>
+					<section>
+						<h2>RAFT - election</h2>
+						<ol>
+							<li>when no msgs from leader, after given timeout, inc the term become a candidate</li>
+							<li>candidate votes for itself <b>in the given term</b> and asks others for votes</li>
+							<li>follower, votes for the first candidate in the given term</li>
+							<li>all votes are persisted, when a crush occur it's disallowed to vote second time in the same term</li>
+							<li>if no leader emerged, inc the term, reelection occurs</li>
+						</ol>
+					</section>
+					<section>
+						<h2>RAFT - election example</h2>
+						<ol>
+							<li>N1, N2, N3 - nodes</li>
+							<li>N1 and N2 times out and becomes candidates</li>
+							<li>each votes for itself and sends vote request to N3</li>
+							<li>N3 votes for N1</li>
+							<li>N1 becomes a leader</li>
+						</ol>
+					</section>
+					<section>
+						<h2>RAFT - election questions</h2>
+						<ol>
+							<li>is it possible to get two leaders in one term?</li>
+							<li>is it possible to get two leaders in different terms?</li>
+						</ol>
+					</section>
+					<section>
+						<h2>RAFT - replication</h2>
+						<ol>
+							<li>leader sends AppendEntries messages</li>
+							<li>when a follower has a corrupted entries, leaders steps back in its history finiding the matching one and resends</li>
+							<li>leader commits entries via AppendEntries messages</li>
+							<li>leader commits ONLY iff it successfully appended at least one entry</li>
+						</ol>
+					</section>
+					<section>
+						<h2>I want to know moreaarar!</h2>
+						<ol>
+							<li><a href="https://twitter.com/kellabyte">@Kellabyte</a></li>
+							<li><a href="https://twitter.com/pbailis">@Peter Bailis</a></li>
+							<li><a href="http://aphyr.com/">Aphyr</a></li>
+						</ol>
+					</section>
+				</section>
+				<section>
+					<p>Thank you and let's RAFT!</p>
+					<p>Szymon Kulec</p>
+					<p>
+						<a href="https://twitter.com/Scooletz">@Scooletz</a>
+					</p>
+					<p>
+						<a href="http://blog.scooletz.com/">http://blog.scooletz.com</a>
+					</p>
+				</section>
+			</div>
+		</div>
+		
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+		<script>
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				transition: 'slide',
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+	</body>
+</html>

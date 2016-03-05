@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>From zero to Kraken</title>
+		<meta name="description" content="From zero to Kraken, introducing Continuous Delivery with Octopus Deploy.">
+		<meta name="author" content="Szymon Kulec 'Scooletz'">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/moon.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+
+		<style media="screen" type="text/css">
+
+			.reveal table {
+			  margin: auto;
+			  border-collapse: collapse;
+			  border-spacing: 0;
+			}
+
+			.reveal table th {
+			  font-weight: bold;
+			}
+
+			.reveal table th,
+			.reveal table td {
+			  text-align: left;
+			  padding: 0.2em 0.5em 0.2em 0.5em;
+			  border-bottom: 1px solid;
+			}
+
+			.reveal section img{
+				border: none;
+				background: none;
+				width: 200px; /* you can use % */
+    			height: auto
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div class="reveal">
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h2>From zero to Kraken: </h2>
+					<h3>introducing Continuous Delivery with Octopus Deploy</h3>
+					<p>Szymon Kulec <a href="https://twitter.com/Scooletz">@Scooletz</a> <a href="http://blog.scooletz.com/">http://blog.scooletz.com</a> </p>
+				</section>
+
+				<section>
+					<h2>Outline</h2>
+					<ul>
+						<li><a href="#/theory">Theory</a></li>
+						<li><a href="#/practice">Practice</a></li>
+						<li><a href="#/questions">Questions</a></li>
+					</ul>
+				</section>
+				<section id="theory">
+					<section>
+						<h2>Theory</h2>
+					</section>
+					<section>
+						<h3>What is Continuous Delivery?</h3>
+						<h4>A.K.A don't hurt me no more.</h4>
+						<ul>
+							<li>Automate software delivery to set developers free.</li>
+							<li>Automatic = repeatable.</li>
+							<li>It's not all or nothing. There is a middle ground.</li>
+							<li>Going live with a new version can be (and should be) a business decision.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>How to  Deliver Continuously?</h3>
+						<table>
+							<thead>
+								<tr>
+									<th class="fragment" data-fragment-index="1">Commits</th>
+									<th class="fragment" data-fragment-index="2">Build + tests</th>
+									<th class="fragment" data-fragment-index="3">Deploy: dev</th>
+									<th class="fragment" data-fragment-index="4">Deploy: QA</th>
+									<th class="fragment" data-fragment-index="5">Deploy: LIVE</th>
+								</tr>
+							</thead>
+							<tr>
+								<td class="fragment" data-fragment-index="1">eeef47d</td>
+								<td class="fragment" data-fragment-index="2"> OK </td>
+								<td class="fragment" data-fragment-index="3"> OK </td>
+								<td class="fragment" data-fragment-index="4"> OK </td>
+								<td class="fragment" data-fragment-index="5"> OK </td>
+							</tr>
+							<tr>
+								<td class="fragment" data-fragment-index="1">c9c747d</td>
+								<td class="fragment" data-fragment-index="2"> OK </td>
+								<td class="fragment" data-fragment-index="3"> OK </td>
+								<td class="fragment" data-fragment-index="4"> OK </td>
+								<td class="fragment" data-fragment-index="5"> - </td>
+							</tr>
+							<tr>
+								<td class="fragment" data-fragment-index="1">ffe523d</td>
+								<td class="fragment" data-fragment-index="2"> - </td>
+								<td class="fragment" data-fragment-index="3"> - </td>
+								<td class="fragment" data-fragment-index="4"> - </td>
+								<td class="fragment" data-fragment-index="5"> - </td>
+							</tr>
+							<tr>
+								<td class="fragment" data-fragment-index="1">aa7db7c</td>
+								<td class="fragment" data-fragment-index="2">OK</td>
+								<td class="fragment" data-fragment-index="3"> OK </td>
+								<td class="fragment" data-fragment-index="4"> - </td>
+								<td class="fragment" data-fragment-index="5"> - </td>
+							</tr>
+							<tr>
+								<td class="fragment" data-fragment-index="1">db7aa7c</td>
+								<td class="fragment" data-fragment-index="2"> - </td>
+								<td class="fragment" data-fragment-index="3"> - </td>
+								<td class="fragment" data-fragment-index="4"> - </td>
+								<td class="fragment" data-fragment-index="5"> - </td>
+							</tr>
+						</table>
+					</section>
+					<section>
+						<h3>My favourite tools:</h3>
+						<ul>
+							<li>PSake - build script versioned in the same repo as the rest of the project. Keeps the build server config simple.</li>
+							<li>TeamCity - the best build server ever! Keep configuration minimal - PSake enables it.</li>
+							<li>*get - NuGet Gallery, MyGet, ProGet, your get...</li>
+							<li>OctopusDeploy - the deploy part.</li>
+							<li>Hipchat/SnapChat - I'm not there, but I will in 3 months.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Octopus Deploy</h3>
+						<ul>
+							<li><a href="https://twitter.com/paulstovell">@paulstovell</a></li>
+							<li>Licence: from Community (free) to Enterprise (5000$).</li>
+							<li>Parts:<ul>
+								<li>Tentacles - installed on each machine.</li>
+								<li>Server - the one to rule them all.</li>
+							</ul></li>
+							<li>Powerful web API: create releases, deploy them.</li>
+							<li>Can we move forward, please?</li>
+						</ul>
+					</section>
+				</section>
+				<section id="practice">
+					<section>
+						<h2>Practice</h2>
+					</section>
+				</section>
+				<section id="questions">
+					<h1>Questions?</h1>
+					<p>Szymon Kulec <a href="https://twitter.com/Scooletz">@Scooletz</a> <a href="http://blog.scooletz.com/">http://blog.scooletz.com</a> </p>
+				</section>
+			</div>
+		</div>
+		
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+		<script>
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				transition: 'slide',
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+	</body>
+</html>
