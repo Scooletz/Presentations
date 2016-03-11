@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>My Journey to the Land of Extreme Concurrent Performance in .NET</title>
+		<meta name="description" content="My Journey to the Land of Extreme Concurrent Performance in .NET">
+		<meta name="author" content="Szymon Kulec">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- ascii table-->
+		<link rel="stylesheet" href="css/ascii-table.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+		<style media="screen" type="text/css">
+
+			.reveal table {
+			  margin: auto;
+			  border-collapse: collapse;
+			  border-spacing: 0;
+			}
+
+			.reveal table th {
+			  font-weight: bold;
+			}
+
+			.reveal table th,
+			.reveal table td {
+			  text-align: left;
+			  padding: 0.2em 0.5em 0.2em 0.5em;
+			  border-bottom: 1px solid;
+			}
+
+			table.buffer  th,
+			table.buffer  td {
+				border: 2px dashed;
+				border-bottom: 2px dashed !important;
+				width: 100px
+			}
+
+			div.withComments {
+			  background-color: rgb(20, 98, 135); 
+			  width: 100%; 
+			  height: 400%; 
+			  position: absolute; 
+			  top: -100%; 
+			  left: -65%; 
+			  z-index: -1;
+			}
+
+			div.contentComment{
+				width: 30%; 
+				display: inline-block; 
+				margin-right: 5%; 
+				vertical-align: top;"
+			}
+
+			div.commentedContent{
+				width: 60%; 
+				display: inline-block;
+			}
+
+			.reveal code{
+				font-size: 25px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h3>My Journey to the Land of Extreme Concurrent Performance in .NET</h3>
+					<p>Szymon Kulec </p>
+					<p><a href="https://twitter.com/Scooletz">@Scooletz</a></p>
+					<p><a href="http://blog.scooletz.com/">http://blog.scooletz.com</a></p>
+				</section>
+				<section>
+					<h2>Agenda</h2>
+					<ul>
+						<li><a href="#/cpu">CPU</a></li>
+						<li><a href="#/models">Memory models</a></li>
+						<li><a href="#/alloc">Allocations</a></li>
+						<li><a href="#/latency">Latency and throughput</a></li>
+						<li><a href="#/actors">Actors &amp; SEDA</a></li>
+						<li><a href="#/plan">Plan of attack</a></li>
+						<li><a href="#/impl">Implementation</a></li>
+						<li><a href="#/summary">Summary</a></li>
+						<li><a href="#/qa">Q&amp;A</a></li>						
+					</ul>
+				</section>
+				<section>
+					<h3>Info</h3>
+					<p>The whole presentation is based on my library called <a href="https://github.com/Scooletz/RampUp">RampUp</a>. Currently, on a computer with a Skylake CPU, it can process 10 millions messages per second. I know it can do more. It's a journey project. <a href="https://twitter.com/search?q=%23RampUpNet">#RampUpNet</a></p>
+				</section>
+				<section id="goals">
+					<section>
+						<h2>Goals</h2>
+					</section>
+					<section>
+						<h3>Goals</h3>
+						<ul>
+							<li>Refresh the knowledge about how modern hardware works</li>
+							<li>Learn extremely performant .NET concurrent APIs</li>
+							<li>Know how to build efficient concurrent structures</li>
+							<li>See &amp; provide proper performant abstractions</li>
+							<li>Raise questions during <b>checkpoints</b> if you don't understand sth</li>
+						</ul>
+					</section>
+				</section>
+				<section id="cpu">
+					<section>
+						<h2>CPU</h2>
+					</section>
+					<section>
+						<h3>CPU - true || false</h3>
+						<ul>
+							<li class="fragment">CPU executes operation in the same order they were written <b class="fragment">FALSE</b></li>
+							<li class="fragment">Accessing a memory in a predictable manner can improve a performance <b class="fragment">TRUE</b></li>
+							<li class="fragment">CPU tries to predict the outcome of the conditional expressions <b class="fragment">TRUE</b></li>
+							<li class="fragment">Accessing the same CPU cache line on the modern CPU from multiple threads affects performance <b class="fragment">TRUE</b></li>
+						</ul>
+					</section>
+					<section>
+						<h3>CPU - some architecture</h3>
+						<ul>
+							<li>registries, caches (L1, L2, L3) - to decrease memory access time</li>
+							<li>prefetcher - to pre fetch a region of memory before it's needed</li>
+							<li>predictor - to guess what will be next</li>
+							<li>pipeline - to run a few CPU operations in different stages on one clock tick</li>
+							<li>write buffer - writes are pricey, they're buffered to amortize the cost</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Checkpoint - CPU friendly code</h3>
+						<ul>
+							<li>Boringly (<em>yawn here</em>) predictable</li>
+							<li>Linear access patterns</li>
+							<li>No locks, let the CPU buffer & reorder some writes</li>
+						</ul>
+
+						<p class="fragment">The good thing is that writing a boringly predicable code isn't boring at all :D</p>
+					</section>
+				</section>
+				<section id="models">
+					<section>
+						<h2>Memory models</h2>
+					</section>
+					<section>
+						<h3>Memory models</h3>
+						<ul>
+							<li>A definition how threads interacts with memory</li>
+							<li>The more strict model - the less number of performance optimizations can be applied</li>
+							<li>The most important optimizations from this presentation point of view are reorderings.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Memory models</h3>
+						<ul>
+							<li>Consider two virtual operations: LOAD &amp; STORE</li>
+							<li>Four possible combinations:
+									<ul>
+										<li>LOAD-LOAD</li>
+										<li>LOAD-STORE</li>
+										<li>STORE-STORE</li>
+										<li>STORE-LOAD</li>
+									</ul>
+							</li>
+							<li>Depending on the processor architecture some of these pair may be reordered.</li>
+							<li>For .NET languages, it's the compiler first, then JITter, so there is even more stages to consider.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Memory models - barriers</h3>
+						<ul>
+							<li>Inserted between two LOAD/STORE operations.</li>
+							<li>A memory barrier is a simple mechanism that disables some reorderings</li>
+							<li>A full memory barrier prohibits ANY reorderings</li>
+							<li>A full memory barrier is emitted by:<ul>
+								<li><em>lock (obj)</em></li>
+								<li><em>Interlocked.Add/Exchange</em></li>
+								<li>when using high level constructs like <em>WaitHandle</em></li>
+							</ul>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Memory models - barriers</h3>
+						<ul>
+							<li>Aquire fence
+							<ul>
+								<li><em>Volatile.Read</em></li>
+								<li>Prohibits LOAD-LOAD</li>
+								<li>Prohibits LOAD-STORE</li>
+							</ul>
+							</li>
+							<li>Release fence
+							<ul>
+								<li><em>Volatile.Write</em></li>
+								<li>Prohibits STORE-LOAD</li>
+								<li>Prohibits STORE-STORE</li>
+							</ul>
+						</ul>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+		    					Writer uses Volatile.Write to ensure that status will be visible ONLY when Value was stored before
+		    				</div>
+						    <div class="commentedContent" style="width: 60%; display: inline-block;">
+	//  writer
+	o.Value = 1;
+	Volatile.Write(ref o.Status, 1);
+ 
+	// this is equal to
+	STORE Value 1
+	RELEASE FENCE
+	STORE Status 1
+
+						    </div>
+						</div>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+		    					Reader uses Volatile.Read to ensure that when it reads status, if it's changed, the value was stored before
+		    				</div>
+						    <div class="commentedContent" style="width: 60%; display: inline-block;">
+	//  reader
+	if (Volatile.Read(ref o.Status) == 1)
+	{
+		var value = o.Value;
+	}
+ 
+	// this is equal to
+	LOAD Status
+	AQUIRE FENCE
+	LOAD Value
+
+						    </div>
+						</div>
+					</section>
+					<section>
+						<h3>Memory models - allowed reorderings</h3>
+						<table>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>LOAD-LOAD</th>
+									<th>L-S</th>
+									<th>S-S</th>
+									<th>S-L</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Full barrier (<em>lock</em>)</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>Aquire fence</td>
+									<td></td>
+									<td></td>
+									<td>&#x2714;</td>
+									<td>&#x2714;</td>
+								</tr>
+								<tr>
+									<td>Release fence</td>
+									<td>&#x2714;</td>
+									<td>&#x2714;</td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>No fence</td>
+									<td>&#x2714;</td>
+									<td>&#x2714;</td>
+									<td>&#x2714;</td>
+									<td>&#x2714;</td>
+								</tr>
+							</tbody>
+						</table>
+				  	</section>
+				  	<section>
+						<h3>Checkpoint - memory models</h3>
+						<ul>
+							<li>Even in a high level language like C&#x23; we can ensure nice performance properties</li>
+							<li>To achieve an extreme performance you need to leave some space for CPU optimizations</li>
+							<li>Aquire &amp; Release lease is a pair memory barriers that should be used together as in the reader/writer example</li>
+							<li>The reader/writer example can be treated as a producer/consumer pair a well</li>
+						</ul>
+				  	</section>
+				</section>
+				<section id="alloc">
+					<section>
+						<h2>Allocations</h2>
+					</section>
+					<section>
+						<h3>Allocations</h3>
+						<ul>
+							<li>Allocations are not fun at all</li>
+							<li>The objects are allocated on the heap and require GC</li>
+							<li>The memory cannot be read in a linear way</li>
+							<li>But hey, structs are stack allocated so it's cheap to create them (no friction, no garbace collection)</li>
+							<li>Another approach would be to run <em>in situ</em>...</li>
+						</ul>
+					</section>
+				</section>
+				<section id="latency">
+					<section>
+						<h2>Latency &amp; throughput</h2>
+					</section>
+					<section>
+						<h3>Latency &amp; throughput</h3>
+						<ul>
+							<li>response time = latency + service time</li>
+							<li>They say "throughput = 1/latency"</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Latency &amp; throughput</h3>
+						<ul>
+							<li>Consider disk IO and batching writes. It reduces response time as well amortizing the costly system calls adding just a bit of overhead for the batch</li>
+							<li>Consider accessing a concurrent queue. Is it cheaper to access it once for 100 messages lowering the friction, or 100 times in a row?</li>
+							<li class="fragment">Using batches is the way to go</li>
+						</ul>
+					</section>
+				</section>
+				<section id="actors">
+					<section>
+						<h2>Actors &amp; SEDA</h2>
+					</section>
+					<section>
+						<h3>Actors</h3>
+						<p><em>The actor model a model of concurrent computation that treats "actors" as the universal primitives: in response to a message that it receives, an actor can make local decisions, create more actors, send more messages, and determine how to respond to the next message received.</em> (Wikipedia)</p>
+					</section>
+					<section>
+						<h3>Actors</h3>
+						<ul>
+							<li>Inbox - a queue of incoming messages</li>
+							<li>Ability to send/publish a message to other inboxes</li>
+							<li>Multiple actors - multiple possible producers for a queue</li>
+							<li>Can be described as a single threaded consumer of a queue</li>
+						</ul>
+					</section>
+					<section>
+						<h3>SEDA</h3>
+						<ul>
+							<li>Staged event-driven architecture</li>
+							<li>Queues + multiple workers</li>
+							<li>Can be thought of as mutiple actors for the same inbox</li>
+							<li>Consumers of the queue are using resources concurrently</li>
+							<li>No longer wanted in the previous shape (<a href="https://issues.apache.org/jira/browse/CASSANDRA-10989">Cassandra issue</a>)</li>
+							<li><a href="https://github.com/eventstore/eventstore/wiki/Architectural-Overview">EventStore</a> is described as SEDA but it has single threads for the important queues</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Checkpoint - Actors &amp; SEDA</h3>
+						<ul>
+							<li>Workers consuming messages sent to a queue</li>
+							<li>It's a multi producer/single consumer (MPSC), with other actors as publisher and a worker as a consumer</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Checpoints of checkpoints :)</h3>
+						<ul>
+							<li>CPU loves predictability, like linear access to the memory</li>
+							<li>C&#x23; enables to use low level primitives limiting the need of locking</li>
+							<li>A multi producer/single consumer approach used by actor models &amp; partially by SEDA is a special case of a reader/writer</li>
+						</ul>
+					</section>
+				</section>
+				<section id="plan">
+					<section>
+						<h2>A plan of attack to provide The Fastest .NET App Ever (TM)</h2>
+					</section>
+					<section>
+						<h3>A plan of attack to provide The Fastest .NET App Ever (TM)</h3>
+						<ul>
+							<li>Build a good multi producer/single consumer queue</li>
+							<li>Support obtaining a few messages in one query to allow "smart batching"</li>
+							<li>Don't alloc at all, having in mind that <em>structs</em> on the stack are ok</li>
+							<li>Use structs for message types as they're stack allocated</li>
+							<li>Pass messages by <em>ref</em>, otherwise structs are copied</li>
+						</ul>
+					</section>
+				</section>
+				<section id="impl">
+					<section>
+						<h2>Implementation</h2>
+					</section>
+					<section>
+						<h3>Implementation</h3>
+	    				<ul>
+	    					<li>An unmanaged buffer allocated with <em>VirtualAlloc</em>.</li>
+	    					<li>Big enough to handle peaks</li>
+	    					<li>Represents a circullar overlapping buffer</li>
+	    					<li>Uses its end for storying control variables</li>
+	    				</ul>
+	    				<p/>
+						<table class="buffer">
+	        				<tr>
+	            				<td>0</td><td>8</td><td>16</td><td>24</td><td>32</td><td>40</td><td>48</td><td>56</td><td>64</td><td>128</td>
+	        				</tr>		
+	        				<tr>
+	            				<td colspan="8">&nbsp;</td><td>head:0</td><td>tail:0</td>
+	        				</tr>
+	    				</table>
+					</section>
+					<section>
+						<h3>Implementation - writer</h3>
+						<ul>
+							<li class="fragment">A writer reservers next bytes by atomically increasing the tail (<em>Interlocked.Add</em>) by message length (8) + header (8)</li>
+						</ul>
+						<p/>
+						<table class="buffer">
+	        				<tr>
+	            				<td>0</td><td>8</td><td>16</td><td>24</td><td>32</td><td>40</td><td>48</td><td>56</td><td>64</td><td>128</td>
+	        				</tr>		
+	        				<tr>
+	            				<td colspan="8">&nbsp;</td><td>head:0</td><td><span class="fragment fade-out">tail:0</span><span class="fragment fade-in">tail:16</span></td>
+	        				</tr>
+	    				</table>
+					</section>
+					<section>
+						<h3>Implementation - writer</h3>
+						<ul>
+							<li class="fragment">Checks if it does not overlap with the head</li>
+							<li class="fragment">Writes it's (-length, message id) with <em>Volatile.Write</em></li>
+						</ul>
+						<p/>
+						<table class="buffer">
+	        				<tr>
+	            				<td>0</td><td>8</td><td>16</td><td>24</td><td>32</td><td>40</td><td>48</td><td>56</td><td>64</td><td>128</td>
+	        				</tr>		
+	        				<tr>
+	            				<td><span class="fragment fade-in">-8|5</span></td><td colspan="7">&nbsp;</td><td>head:0</td><td>tail:16</td>
+	        				</tr>
+	    				</table>
+					</section>
+					<section>
+						<h3>Implementation - writer</h3>
+						<ul>
+							<li class="fragment" data-fragment-index="1">Copies data.</li>
+							<li class="fragment"data-fragment-index="2">Overrites it's (-length) with (length) using <em>Volatile.Write</em></li>
+						</ul>
+						<p/>
+						<table class="buffer">
+	        				<tr>
+	            				<td>0</td><td>8</td><td>16</td><td>24</td><td>32</td><td>40</td><td>48</td><td>56</td><td>64</td><td>72</td>
+	        				</tr>		
+	        				<tr>
+	            				<td>
+	            					<span class="fragment fade-out" data-fragment-index="4">-8|5</span>
+	            					<span class="fragment fade-in" data-fragment-index="5">8|5</span>
+	            				</td>
+	            				<td><span class="fragment fade-in" data-fragment-index="3">..data..</span></td><td colspan="6">&nbsp;</td><td>head:0</td><td>tail:16</td>
+	        				</tr>
+	    				</table>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+		    					A pseudo code for the writer.
+		    				</div>
+						    <div class="commentedContent" style="width: 60%; display: inline-block;">
+
+	byte* buffer;
+	long* tail = (long*)(buffer+TAIL_OFFSET);
+	var position = Interlocked.Add(ref *tail, 16);
+	byte* writeTo = buffer+position;
+	var negativeHeader = -length | (messageId &lt;&lt; 32);
+	Volatile.Write(ref *(long*)(writeTo), negativeHeader)
+	CopyMessage(buffer, writeTo+8);
+	Volatile.Write(ref *(int*)(writeTo), length);
+ 
+	// this is equal to
+	AQUIRE FENCE
+	STORE -length|messageId
+	COPY_MESSAGE
+	AQUIRE FENCE
+	STORE length
+							    </div>
+						</div>
+					</section>
+					<section>
+						<h3>Implementation - writer</h3>
+						<ul>
+							<li>One <em>Interlocked.Add</em> only, will create some friction with other writers though</li>
+							<li>The rest of operations orderered with <em>Volatile.Write</em></li>
+							<li>An interesting way of writing the length twice, first a negated value, then ack by writing a positive value</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Implementation - reader</h2>
+					</section>
+					<section>
+						<h3>Implementation - reader</h3>
+						<ul>
+							<li>Loop reading the length located in the position marked by <em>head</em>.</li>
+							<li>Use <em>Volatile.Read</em></li>
+							<li>Once the length is positive read the message</li>
+							<li>Zero whole memory.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Checkpoint - reader &amp; writer</h3>
+						<table>
+							<thead>
+								<tr>
+									<th></th>
+									<th>Head</th>
+									<th>Tail</th>
+									<th>Length</th>
+								</tr>
+							</thead>
+							<tr>
+								<td>Writer</td>
+								<td>Volatile.Read</td>
+								<td>Interlocked.Add</td>
+								<td>Volatile.Write x2</td>
+							</tr>
+							<tr>
+								<td>Reader</td>
+								<td>Volatile.Write</td>
+								<td> - </td>
+								<td>Volatile.Read</td>
+							</tr>
+						</table>
+					</section>
+					<section>
+						<h3>Implementation - API</h2>
+						<pre><code>
+public interface IBus
+{
+    void Publish&lt;TMessage&gt;(ref TMessage msg) 
+        where TMessage : struct;
+
+    void Send&lt;TMessage&gt;(ref TMessage msg, 
+        ActorId receiver) 
+        where TMessage : struct;
+}
+						</code></pre>
+					</section>
+					<section>
+						<h3>Implementation - API</h3>
+						<ul>
+							<li>The API has generic methods based on message types</li>
+							<li>A message must be converted to a slice of bytes to be written by the writer</li>
+							<li>You could try to take a pointer to the parameter, but the C# compiler won't let you :(</li>
+							<li class="fragment">IL Emit it</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Implementation - API</h3>
+						<ul>
+							<li>If a struct is stack allocated (it's not an array element)</li>
+							<li>If a struct has no managed members</li>
+							<li>CLR can treat <em>ref msg</em> as <em>TMessage*</em></li>
+							<li>When you have one pointer you can cast it to (byte*)</li>
+							<li>This is a slice we need</li>
+						</ul>
+					</section>
+				</section>
+				<section id="summary">
+					<section>
+						<h2>Summary</h2>	
+					</section>
+					<section>
+						<h3>Summary</h3>
+						<ul>
+							<li>You can write ultra performant code in .NET</li>
+							<li>You can go low level with Volatile, Interlocked</li>
+							<li>Proper abstractions are enablers</li>
+							<li>Single threaded processing is simpler</li>
+							<li>Sometimes you need to emit IL</li>
+							<li>It's simple but not easy to write that peformant code</li>
+						</ul>	
+					</section>
+					<section>
+						<em>Simplicity is prerequisite for reliability.</em>
+						<p>Edsger W. Dijkstra</p>
+					</section>
+				</section>
+				<section id="qa">
+					<h1>Questions?</h1>
+					<p>Szymon Kulec </p>
+					<p><a href="https://twitter.com/Scooletz">@Scooletz</a></p>
+					<p><a href="http://blog.scooletz.com/">http://blog.scooletz.com</a> </p>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="lib/js/jquery-2.1.4.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+		$(function() {
+			$('div.commentedContent').each(function(i, div){
+				var lines = $(div).text().split('\n');
+		    	var text = '';
+			    $.each(lines, function(i, line) {
+			        if (line) {
+		            	text += '<p style="text-align: left; white-space: pre; margin: 0; padding: 0;">' + i + ".  " + line + '</p>';
+		        	}
+		    	});
+		    	$(div).html(text);
+
+		    	// apply keywords
+		    	$(div).children().each(function(i,p){
+		    		var par = $(p);
+					var words = par.text().split(" ");
+					par.empty();
+					$.each(words, function(i, w) {
+						if($.inArray(w, ["public", "void", "new", "var", "bool", "object", "using"]) > -1){
+							par.append($('<span style="color: rgb(204, 153, 204);"/>').text(w + " "));
+						}
+						else{
+							par.append(w + " ");
+						}
+					});
+		    	});
+			})
+
+			$('div.contentComment').each(function(i, div){
+				var lines = $(div).text().split('\n');
+		    	var text = '';
+			    $.each(lines, function(i, line) {
+			        if (line) {
+		            	text += '<p style="text-align: right; margin: 0; padding: 0;">' + line + '</p>';
+		        	}
+		    	});
+		    	$(div).html(text);
+			})
+		});
+
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
