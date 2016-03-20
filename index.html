@@ -1,130 +1,93 @@
-﻿<!DOCTYPE html>
+<!doctype html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Szymon Kulec 'Scooletz' presentations">
-    <title>Szymon Kulec 'Scooletz' presentations</title>
+    <meta name="description" content="Szymon Kulec 'Scooletz' personal page">
+    <title>Szymon Kulec 'Scooletz'</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
-    <link rel="stylesheet" href="layout/blog.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <link rel="stylesheet" href="http://scooletz.com/css/style.css">
+
+    <style type="text/css">
+    .content-subhead a{
+        color: hotpink;
+    }
+    </style>
 </head>
 <body>
-<div id="layout" class="pure-g">
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-        <div class="header">
-            <img alt="Szymon Kulec avatar" height="299" width="299" style="border-radius: 150px" src="img/me.jpg"/>
-            <h1 class="brand-title">Szymon Kulec 'Scooletz'</h1>
-            <h2 class="brand-tagline">Presentations</h2>
-        <!--     <div class="social">
-                <a class="twitter" href="http://twitter.com/scooletz" title="Twitter">Twitter</a>
-                <a class="github" href="https://github.com/scooletz" title="GitHub">GitHub</a>
-                <a class="blog" href="http://blog.scooletz.com" title="Blog">Blog</a>
-            </div>-->
+<div class="header">
+    <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
+      <!--  <a class="pure-menu-heading" href="">Szymon Kulec 'Scooletz'</a>-->
+
+        <ul class="pure-menu-list">
+            <li class="pure-menu-item"><a href="http://scooletz.com" class="pure-menu-link">Home</a></li>
+            <li class="pure-menu-item"><a href="http://blog.scooletz.com" class="pure-menu-link">Blog</a></li>
+            <li class="pure-menu-item pure-menu-selected"><a href="http://presentations.scooletz.com" class="pure-menu-link">Presentations</a></li>
+            <li class="pure-menu-item"><a href="http://scooletz.com/about.html" class="pure-menu-link">About</a></li>
+            <li class="pure-menu-item"><a href="http://scooletz.com/contact.html" class="pure-menu-link">Contact</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="splash-container">
+    <div class="splash">
+        <h1 class="splash-head">Szymon Kulec <br/>'Scooletz'</h1>
+    </div>
+</div>
+<div class="content-wrapper">
+    <div class="content">
+        <h2 class="content-head content-head-ribbon">My presentations</h2>
+
+        <div class="pure-g">
+            <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-2">
+
+                <h3 class="content-subhead">
+                    <a href="RampUp/index.html#/" style="color: hotpink;">My Journey to the Land of Extreme Concurrent Performance in .NET</a>
+                </h3>
+                <p>
+                    Considering a modern hardware, the concurrent programming isn't an option any longer. It's a must have. C# language and .NET platform aligns to this direction to help a developer create well performing applications with ease. Is it possible that we can do it (much) better using a different paradigm than Tasks and async/await? 
+                    During the presentation we'll aim high to get the best possible performance out of the moder hardware dropping many assuptions made before. This journey will guide you through from the very foundations of the mechanical sympathy to high level abstractions one can build upon it. It's a journey so fasten your seat belt tight. We'll visit places you've never considered before.
+                </p>
+            </div>
+            <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-2">
+                <h3 class="content-subhead">
+                    <a href="Transactions/index.html#/">Transactions - yesterday &amp; today</a>
+                </h3>
+                <p>
+                    The aim of the presentation is to build foundations needed for modelling complex systems built with SQL databases, NoSQL, NewSQL and messaging systems. In one hour we'll go through different models, starting with "standard" transactions in relational databases, going through distributed ones and end with new approaches.
+                    Additionally, a few patterns will be introduced, which provide a solid approach for designing systems based on services, queues and databases.
+                </p>
+            </div>
+            <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-2">
+                <h3 class="content-subhead">
+                    <a href="EDA-in-Practice/index.html#/" style="color: hotpink;">Event Driven Architecture in practice</a>
+                </h3>
+                <p>
+                    In the world of developers and aspiring architects, abbreviations like CQRS, DDD, ES, EDA, SOA are getting more and more popular. Unfortunately, their application is frequently limited to pet projects or just labeling applications with fancy words. We'd like to share with you a case study of a project showing a real usage of these approaches. The common denominator for both, the client side and the server side is the event driven approach.
+                </p>
+            </div>
+            <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-2">
+                <h3 class="content-subhead">
+                    <a href="HttpCache/presentation/index.html#/" style="color: hotpink;">Http Cache - Almost Everything You Always Wanted to Know About Http Cache</a>
+
+                </h3>
+                <p>
+                    Http cache is frequently an uknown aspect of the web programming. The mechanism is used to miminize the transfer of static resources of our applications. During the presentation, I'll show how to addtionally optimize applications' data flow using the http cache. The playground is based on the ASP.NET WebAPI 2 project, providing a foundation for applying these patterns in your application.
+                 </p>
+            </div>
+            <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-2">
+                <h3 class="content-subhead">
+                    <a href="IOCompletionPorts/index.html#/" style="color: hotpink;">IO Completion Ports</a>
+                </h3>
+                <p>
+                    Have you ever heard about the power of Windows IO Completion Ports? It's the foundation for extremely performant IO and is the basis for .NET async operations as well. After this talk you'll be familiar with the native API of this feature and will be able to wrap it properly if needed for .NET calls.
+                 </p>
+            </div>
         </div>
     </div>
-
-    <div class="content pure-u-1 pure-u-md-3-4">
-        <div>
-            <div class="posts">
-                <h1 class="content-subhead">Presentations</h1>
-                <section class="post">
-                    <header class="post-header">
-                        <h2 class="post-title">
-                            <a href="RampUp/index.html#/">My Journey to the Land of Extreme Concurrent Performance in .NET</a>
-                        </h2>
-                        <p class="post-meta">
-                        </p>
-                    </header>
-
-                    <div class="post-description">
-                        <p>
-                           Considering a modern hardware, the concurrent programming isn't an option any longer. It's a must have. C# language and .NET platform aligns to this direction to help a developer create well performing applications with ease. Is it possible that we can do it (much) better using a different paradigm than Tasks and async/await? 
-                           During the presentation we'll aim high to get the best possible performance out of the moder hardware dropping many assuptions made before. This journey will guide you through from the very foundations of the mechanical sympathy to high level abstractions one can build upon it. It's a journey so fasten your seat belt tight. We'll visit places you've never considered before.
-                        </p>
-                    </div>
-                </section>
-                <section class="post">
-                    <header class="post-header">
-                        <h2 class="post-title">
-                            <a href="Transactions/index.html#/">Transactions - yesterday &amp; today</a>
-                        </h2>
-                        <p class="post-meta">
-                        </p>
-                    </header>
-
-                    <div class="post-description">
-                        <p>
-                            The aim of the presentation is to build foundations needed for modelling complex systems built with SQL databases, NoSQL, NewSQL and messaging systems. In one hour we'll go through different models, starting with "standard" transactions in relational databases, going through distributed ones and end with new approaches.
-                            Additionally, a few patterns will be introduced, which provide a solid approach for designing systems based on services, queues and databases.
-                        </p>
-                    </div>
-                </section>
-
-                <section class="post">
-                    <header class="post-header">
-                        <h2 class="post-title">
-                            <a href="EDA-in-Practice/index.html#/">Event Driven Architecture in practice</a>
-                        </h2>
-                        <p class="post-meta">
-                        </p>
-                    </header>
-
-                    <div class="post-description">
-                        <p>
-                            In the world of developers and aspiring architects, abbreviations like CQRS, DDD, ES, EDA, SOA are getting more and more popular. Unfortunately, their application is frequently limited to pet projects or just labeling applications with fancy words. We'd like to share with you a case study of a project showing a real usage of these approaches. The common denominator for both, the client side and the server side is the event driven approach.
-                        </p>
-                    </div>
-                </section>
-
-                <section class="post">
-                    <header class="post-header">
-                        <h2 class="post-title">
-                            <a href="HttpCache/presentation/index.html#/">Http Cache - Almost Everything You Always Wanted to Know About Http Cache</a>
-                        </h2>
-                        <p class="post-meta">
-                        </p>
-                    </header>
-
-                    <div class="post-description">
-                        <p>
-                            Http cache is frequently an uknown aspect of the web programming. The mechanism is used to miminize the transfer of static resources of our applications. During the presentation, I'll show how to addtionally optimize applications' data flow using the http cache. The playground is based on the ASP.NET WebAPI 2 project, providing a foundation for applying these patterns in your application.
-                        </p>
-                    </div>
-                </section>
-
-                <section class="post">
-                    <header class="post-header">
-                        <h2 class="post-title">
-                            <a href="IOCompletionPorts/index.html#/">IO Completion Ports</a>
-                        </h2>
-                        <p class="post-meta">
-                        </p>
-                    </header>
-
-                    <div class="post-description">
-                        <p>
-                            Have you ever heard about the power of Windows IO Completion Ports? It's the foundation for extremely performant IO and is the basis for .NET async operations as well. After this talk you'll be familiar with the native API of this feature and will be able to wrap it properly if needed for .NET calls.
-                        </p>
-                    </div>
-                </section>
-            </div>
-
-            <div class="footer">
-                <div class="pure-menu pure-menu-horizontal">
-                    <ul>
-                        <li class="pure-menu-item">
-                            <a class="blog" href="http://blog.scooletz.com" title="Blog">Blog</a>
-                        </li>
-                        <li class="pure-menu-item">
-                            <a class="twitter" href="http://twitter.com/scooletz" title="Twitter">Twitter</a>
-                        </li>
-                        <li class="pure-menu-item">
-                            <a class="github" href="https://github.com/scooletz" title="GitHub">GitHub</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    <div class="footer l-box is-center">
     </div>
 </div>
 </body>
