@@ -504,10 +504,10 @@
 	Volatile.Write(ref *(int*)(writeTo), length);
  
 	// this is equal to
-	AQUIRE FENCE
+	RELEASE FENCE
 	STORE -length|messageId
 	COPY_MESSAGE
-	AQUIRE FENCE
+	RELEASE FENCE
 	STORE length
 							    </div>
 						</div>
