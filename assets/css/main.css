@@ -3875,9 +3875,8 @@
 		@media screen and (max-width: 736px) {
 
 			#sidebar {
-				display: none;
+				/*display: none;*/
 			}
-
 		}
 
 /* Intro */
