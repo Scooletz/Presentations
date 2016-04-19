@@ -114,7 +114,7 @@
 				</section>
 				<section>
 					<h3>Info</h3>
-					<p>The whole presentation is based on my library called <a href="https://github.com/Scooletz/RampUp">RampUp</a>. Currently, on a computer with a Skylake CPU, it can process 10 millions messages per second. I know it can do more. It's a journey project. <a href="https://twitter.com/search?q=%23RampUpNet">#RampUpNet</a></p>
+					<p>The whole presentation is based on my library called <a href="https://github.com/Scooletz/RampUp">RampUp</a>. Currently, on a laptop with a Skylake CPU, it can process 10+ millions messages per second. I know it can do more. It's a journey project. <a href="https://twitter.com/search?q=%23RampUpNet">#RampUpNet</a></p>
 				</section>
 				<section id="goals">
 					<section>
@@ -147,11 +147,12 @@
 					<section>
 						<h3>CPU - some architecture</h3>
 						<ul>
-							<li>registries, caches (L1, L2, L3) - to decrease memory access time</li>
-							<li>prefetcher - to pre fetch a region of memory before it's needed</li>
-							<li>predictor - to guess what will be next</li>
-							<li>pipeline - to run a few CPU operations in different stages on one clock tick</li>
-							<li>write buffer - writes are pricey, they're buffered to amortize the cost</li>
+							<li>registries</li>
+							<li>caches (L1, L2, L3)</li>
+							<li>prefetcher</li>
+							<li>predictor</li>
+							<li>pipeline</li>
+							<li>write buffer</li>
 						</ul>
 					</section>
 					<section>
@@ -504,8 +505,8 @@
 	Volatile.Write(ref *(int*)(writeTo), length);
  
 	// this is equal to
-	RELEASE FENCE
 	STORE -length|messageId
+	RELEASE FENCE
 	COPY_MESSAGE
 	RELEASE FENCE
 	STORE length
