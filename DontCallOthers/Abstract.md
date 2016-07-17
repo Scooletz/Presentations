@@ -1,0 +1,3 @@
+"Nie wołaj Innych" oraz pozostałe zasady zorientowania na usługi
+
+Podczas pracy nad serwisami, nasza uwaga zazwyczaj skupiona jest na wyborze technologii i stosowaniu czysto technicznych reguł. Napotykając na problemy, próbujemy znaleźć techniczne ich rozwiązanie. Podczas prawie godzinnego spotkania pokażę scenariusze, w których głębsze zrozumienie szerokopojętego biznesu i lepsze zamodelowanie danej usługi, pozwala nie tylko na rozwiązanie aktualnych problemów, ale także stworzenie serwisów znacznie trwalszych i łatwiejszych w utrzymianiu.

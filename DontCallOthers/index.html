@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Don't call the others and other service oriented rules</title>
+		<meta name="description" content="Don't call the others and other service oriented rules">
+		<meta name="author" content="Szymon Kulec">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+		<style media="screen" type="text/css">
+
+			.reveal table {
+			  margin: auto;
+			  border-collapse: collapse;
+			  border-spacing: 0;
+			}
+
+			.reveal table th {
+			  font-weight: bold;
+			}
+
+			.reveal table th,
+			.reveal table td {
+			  text-align: left;
+			  padding: 0.2em 0.5em 0.2em 0.5em;
+			  border-bottom: 1px solid;
+			}
+
+			table.buffer  th,
+			table.buffer  td {
+				border: 2px dashed;
+				border-bottom: 2px dashed !important;
+				width: 100px
+			}
+
+			.reveal code{
+				font-size: 25px;
+			}
+			
+			div.left {
+				text-align: left; 
+				float: left;
+			}
+
+			div.right {
+				text-align: center;
+				float: right;
+			}
+			img.icon {
+				height:  100px;
+				border: 0px !important;
+				box-shadow: 0px 0px 0px 0px !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h3>Don't call the others</h3>
+					<h4>and other service oriented rules</h4>
+					<p>Szymon Kulec </p>
+
+					<p><a href="https://twitter.com/Scooletz">@Scooletz</a></p>
+					<p><a href="http://scooletz.com/">http://scooletz.com</a></p>
+				</section>
+				<section id="story">
+					<h2>A story</h2>
+					<ul>
+						<li class="fragment"> Of people </li>
+  						<li class="fragment"> Of domain </li>
+  						<li class="fragment"> Of software</li>
+  					</ul>
+					<aside class="notes">
+  						<ul>
+  							<li> Accidential similarity </li>
+  							<li> Maybe you were in that kind of project</li>
+  						</ul>
+    				</aside>
+				</section>
+				<section id="parts">
+					<section>
+	  					<h2>People</h2>
+	  					<aside class="notes">
+  							<ul>
+	  							<li>DDD, CQRS, Microservices</li>
+	  							<li>Angular fan, Angular anti-fan</li>
+	  							<li>Microservice fan (is 100 lines small enough?)</li>
+	  							<li>Serverlesslessless</li>
+ 	  						</ul>
+	    				</aside>
+					</section>
+					<section>
+						<h2>Domain</h2>
+						<aside class="notes">
+Bounded Contexts/Domain bubble
+Selling tickets for trains
+Earning money by selling tickets, not driving
+						</aside>
+					</section>
+					<section>
+						<h2>Software</h2>
+						<aside class="notes">
+							<ul>
+								<li>Monolith</li>
+								<li>old</li>
+								<li>hard to change</li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+
+				<section id="dontcall">
+					<section>
+	  					<h2>Don't call The Others</h2>
+	  					<aside class="notes">
+  							<ul>
+	  							<li>Team separates two services</li>
+ 	  						</ul>
+	    				</aside>
+					</section>
+					<section>
+						<h2>Scheduling </h2>
+						<ul>
+  							<li class="fragment">A loooong business process</li>
+							<li class="fragment">Half a year before the date</li>
+	  						<li class="fragment">Done upfront</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Selling tickets</h2>
+						<ul>
+  							<li class="fragment">High volumes</li>
+							<li class="fragment">Based on the schedule</li>
+	  						<li class="fragment">High volumes</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Architecture</h2>
+						<p>Tickets => Scheduling</p>
+						<aside class="notes">
+							<ul>
+								<li>Scheduling is down for maintainance and bug fixes</li>
+								<li>Tickets doesn't work</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<h2>Don't call The Others</h2>
+						<ul>
+							<li class="fragment">A dependency on the external system</li>
+							<li class="fragment">The dependency is synchronous</li>
+							<li class="fragment">The data are changing infrequently.</li>
+						</ul>
+					</section>
+					<section>
+						<h2>How not to call The Others (1)</h2>
+						<ul>
+							<li class="fragment">Make a local copy of data.</li>
+							<li class="fragment">Use local copy.</li>
+							<li class="fragment">It's not a cache - it's an explicit copy.</li>
+							<li class="fragment">Publish schedules' changes.</li>
+						</ul>
+					</section>
+					<section>
+						<h2>How not to call The Others (2)</h2>
+						<ul>
+							<li class="fragment">Provide an API for polling.</li>
+							<li class="fragment">Publish using messaging.</li>
+							<li class="fragment">Provide an ATOM feed with events.</li>
+						</ul>
+					</section>
+					<section>
+						<h2>How not to call The Others - summary</h2>
+						<ul>
+							<li class="fragment">Don't call the others :)</li>
+							<li class="fragment">Reason on your data, not the others.</li>
+							<li class="fragment">Make implicit (cache) explicit (copy).</li>
+						</ul>
+					</section>
+				</section>
+
+				<section id="idempotent">
+					<section>
+	  					<h2>Haven't I seen it before?</h2>
+	  					<aside class="notes">
+  							<ul>
+  								<li>Hedgehog day</li>
+	  							<li>Notifications will be sent.</li>
+	  							<li>You can make it in reactive way (events) or active (commands)</li>
+	  							<li>Commands can issued asynchronously by a service</li>
+ 	  						</ul>
+	    				</aside>
+					</section>
+					<section>
+	  					<h2>Notifications</h2>
+	  					<ul>
+	  						<li class="fragment">Many possible channels (email, sms).</li>
+	  						<li class="fragment">Commands send after an event to the notification service.</li>
+	  						<li class="fragment">Commands sent asynchronously.</li>
+	  					</ul>
+					</section>
+	  				<section>
+						<h2>Architecture</h2>
+						<pre>
+							<code>
+_.On(TicketBought e => Send(GetBody(e)))
+							</code>
+						</pre>
+						<aside class="notes">
+							<ul>
+								<li>Infrastructure error</li>
+								<li>Some HTTP OK are consumed</li>
+								<li>On error retries the command</li>
+							</ul>
+						</aside>
+					</section>		
+					<section>
+	  					<h2>Haven't I seen it before?</h2>
+	  					<ul>
+							<li class="fragment">Commands are issued multiple times.</li>
+							<li class="fragment">There's no exactly-one delivery.</li>
+							<li class="fragment">No transactions between services.</li>
+						</ul>
+					</section>
+					<section>
+						<h2>How to see it exactly once</h2>
+	  					<ul>
+							<li class="fragment">Make receiver idempotent.</li>
+							<li class="fragment">Include unique identifier in a command.</li>
+							<li class="fragment">Check if it was dispatched.</li>
+						</ul>
+					</section>
+				</section>
+
+				<section id="identity">
+					<section>
+						<h2>Is it me?</h2>
+						<aside class="notes">
+						<ul>
+							<li>Sad questions about yourself.</li>
+							<li>System is distilled to many services.</li>
+							<li>Employees and users.</li>
+							<li>Who is what, who derives from what?</li>
+		  				</ul>
+	    				</aside>
+					</section>
+					<section>
+						<h2>Employees</h2>
+						<ul>
+							<li class="fragment">A registry for employees</li>
+							<li class="fragment">Every employee has an identifier</li>
+							<li class="fragment">Not everyone is a user</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Users</h2>
+						<ul>
+							<li class="fragment">Identity management</li>
+							<li class="fragment">Every user has an identifier</li>
+							<li class="fragment">Not everyone is an employee</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Architecture</h2>
+						<pre>
+							<code>
+employee.UserId = null;
+user.EmployeeId = null;
+							</code>
+						</pre>
+						<aside class="notes">
+							<ul>
+								<li>Coupling between services</li>
+								<li>n^2 possibilities</li>
+								<li>It's leaky.</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<h2>How to be me? (1)</h2>
+						<ul>
+							<li class="fragment">Same id value - different meanings.</li>
+							<li class="fragment">What if we used Guid?</li>
+							<li class="fragment">What if used the same id if needed in other services?</li>
+						</ul>
+					</section>
+					<section>
+						<h2>How to be me? (2)</h2>
+							<pre>
+							<code>
+employee.Id == user.Id; // same entity in two services
+							</code>
+						</pre>
+					</section>
+					<section>
+						<h2>Ids in composite UIs</h2>
+						<ul>
+							<li class="fragment">Combining services on the client side.</li>
+							<li class="fragment">Same id - multiple services.</li>
+							<li class="fragment">You may generate ids on the client side.</li>
+						</ul>
+					</section>
+				</section>
+
+				<section id="API">
+					<section>
+						<h2>APIs</h2>
+						<ul>
+							<li class="fragment">What is your API?</li>
+							<li class="fragment">Microservices with Rapids, Rivers, and Ponds</li>
+							<li class="fragment">EventSourcing</li>
+						</ul>
+					</section>
+				</section>
+
+				<section id="summary">
+					<h2>Summary</h2>
+					<ul>
+						<li class="fragment">Don't call The Others</li>
+						<li class="fragment">Haven't I seen it before?</li>
+						<li class="fragment">Is it me?</li>
+						<li class="fragment">APIs</li>
+					</ul>
+				</section>
+
+				<section id="qa">
+					<h1>Questions?</h1>
+					<p>Szymon Kulec </p>
+					<p><a href="https://twitter.com/Scooletz">@Scooletz</a></p>
+					<p><a href="http://blog.scooletz.com/">http://blog.scooletz.com</a> </p>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="lib/js/jquery-2.1.4.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
