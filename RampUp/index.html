@@ -113,22 +113,27 @@
 					</ul>
 				</section>
 				<section>
-					<h3>Info</h3>
-					<p>The whole presentation is based on my library called <a href="https://github.com/Scooletz/RampUp">RampUp</a>. Currently, on a laptop with a Skylake CPU, it can process 10+ millions messages per second. I know it can do more. It's a journey project. <a href="https://twitter.com/search?q=%23RampUpNet">#RampUpNet</a></p>
+					<h3><a href="https://github.com/Scooletz/RampUp">RampUp</a></h3>
+					<aside class="notes">
+        				<ul>
+        					<li>My library</li>
+        					<li>10 mln/s</li>
+        					<li>Aeron.NET (Adaptive Consulting)</li>
+        				</ul>
+    				</aside>
 				</section>
 				<section id="goals">
 					<section>
 						<h2>Goals</h2>
-					</section>
-					<section>
-						<h3>Goals</h3>
-						<ul>
-							<li>Refresh the knowledge about how modern hardware works</li>
-							<li>Learn extremely performant .NET concurrent APIs</li>
-							<li>Know how to build efficient concurrent structures</li>
-							<li>See &amp; provide proper performant abstractions</li>
-							<li>Raise questions during <b>checkpoints</b> if you don't understand sth</li>
-						</ul>
+						<aside class="notes">
+							<ul>
+								<li>How modern hardware works</li>
+								<li>Extremely performant .NET concurrent APIs</li>
+								<li>Efficient concurrent structures</li>
+								<li>See &amp; provide proper performant abstractions</li>
+								<li>Raise questions during <b>checkpoints</b> if you don't understand sth</li>
+							</ul>
+						</aside>
 					</section>
 				</section>
 				<section id="cpu">
@@ -163,20 +168,21 @@
 							<li>No locks, let the CPU buffer & reorder some writes</li>
 						</ul>
 
-						<p class="fragment">The good thing is that writing a boringly predicable code isn't boring at all :D</p>
+						<aside class="notes">
+							The good thing is that writing a boringly predicable code isn't boring at all :D
+						</aside>
 					</section>
 				</section>
 				<section id="models">
 					<section>
 						<h2>Memory models</h2>
-					</section>
-					<section>
-						<h3>Memory models</h3>
-						<ul>
-							<li>A definition how threads interacts with memory</li>
-							<li>The more strict model - the less number of performance optimizations can be applied</li>
-							<li>The most important optimizations from this presentation point of view are reorderings.</li>
-						</ul>
+						<aside class="notes">
+							<ul>
+								<li>A definition how threads interacts with memory</li>
+								<li>The more strict model - the less number of performance optimizations can be applied</li>
+								<li>The most important optimizations from this presentation point of view are reorderings.</li>
+							</ul>
+						</aside>
 					</section>
 					<section>
 						<h3>Memory models</h3>
@@ -190,9 +196,14 @@
 										<li>STORE-LOAD</li>
 									</ul>
 							</li>
+
+						</ul>
+						<aside class="notes">
+						<ul>
 							<li>Depending on the processor architecture some of these pair may be reordered.</li>
 							<li>For .NET languages, it's the compiler first, then JITter, so there is even more stages to consider.</li>
 						</ul>
+						</aside>
 					</section>
 					<section>
 						<h3>Memory models - barriers</h3>
@@ -361,7 +372,9 @@
 					</section>
 					<section>
 						<h3>Actors</h3>
-						<p><em>The actor model a model of concurrent computation that treats "actors" as the universal primitives: in response to a message that it receives, an actor can make local decisions, create more actors, send more messages, and determine how to respond to the next message received.</em> (Wikipedia)</p>
+						<aside class="notes">
+							<p>The actor model a model of concurrent computation that treats "actors" as the universal primitives: in response to a message that it receives, an actor can make local decisions, create more actors, send more messages, and determine how to respond to the next message received.</p>
+						</aside>
 					</section>
 					<section>
 						<h3>Actors</h3>
