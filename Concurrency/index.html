@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Understand Concurrency in .NET</title>
+		<meta name="description" content="My Journey to the Land of Extreme Concurrent Performance in .NET">
+		<meta name="author" content="Szymon Kulec">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- ascii table-->
+		<link rel="stylesheet" href="css/ascii-table.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+		<style media="screen" type="text/css">
+
+			.reveal table {
+			  margin: auto;
+			  border-collapse: collapse;
+			  border-spacing: 0;
+			}
+
+			.reveal table th {
+			  font-weight: bold;
+			}
+
+			.reveal table th,
+			.reveal table td {
+			  text-align: left;
+			  padding: 0.2em 0.5em 0.2em 0.5em;
+			  border-bottom: 1px solid;
+			}
+
+			table.buffer  th,
+			table.buffer  td {
+				border: 2px dashed;
+				border-bottom: 2px dashed !important;
+				width: 100px
+			}
+
+			div.withComments {
+			  background-color: rgb(20, 98, 135); 
+			  width: 100%; 
+			  height: 400%; 
+			  position: absolute; 
+			  top: -100%; 
+			  left: -65%; 
+			  z-index: -1;
+			}
+
+			div.contentComment{
+				width: 30%; 
+				display: inline-block; 
+				margin-right: 5%; 
+				vertical-align: top;"
+			}
+
+			div.commentedContent{
+				width: 60%; 
+				display: inline-block;
+			}
+
+			.reveal code{
+				font-size: 25px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h3>Understand Concurrency in .NET</h3>
+					<p>Szymon Kulec </p>
+					<p><a href="https://twitter.com/Scooletz">@Scooletz</a></p>
+					<p><a href="http://scooletz.com/">http://scooletz.com</a></p>
+				</section>
+				<section>
+					<h2>Agenda</h2>
+					<ul>
+						<li><a href="#/cpu">Modern CPU</a></li>
+						<li><a href="#/atomicity">Atomicity</a></li>
+						<li><a href="#/models">Memory models</a></li>
+						<li><a href="#/structures">Structures &amp; implementation</a></li>
+						<li><a href="#/summary">Summary</a></li>
+						<li><a href="#/qa">Q&amp;A</a></li>						
+					</ul>
+				</section>
+				<section id="goals">
+					<section>
+						<h2>Goals</h2>
+						<aside class="notes">
+							<ul>
+								<li>Modern CPUs</li>
+								<li>Extremely performant .NET concurrent APIs</li>
+								<li>Efficient concurrent structures</li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+				<section id="cpu">
+					<section>
+						<h2>Modern CPU</h2>
+					</section>
+					<section>
+						<h3>Modern CPUs</h3>
+						<ul>
+							<li>Not only x64. ARMs are coming!</li>
+							<li>More cores, same speed, sad Moore :(</li>
+							<li>Optimizations</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Modern CPUs</h3>
+						<ul>
+							<li>registries</li>
+							<li>caches (L1, L2, L3)</li>
+							<li>prefetcher</li>
+							<li>predictor</li>
+							<li>pipeline</li>
+							<li>write buffer</li>
+						</ul>
+					</section>
+				</section>
+				<section id="atomicity">
+					<section>
+						<h2>Atomicity</h2>
+					</section>
+					<section>
+						<h3>Atomicity</h3>
+						<ul>
+							<li>Do it in one step</li>
+							<li>Lock'n'roll</li>
+							<li>Claim and work.</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Atomicity - Interlocked</h3>
+						<ul>
+							<li>Atomic operations on CPU level</li>
+							<li>They are frequently translated to one ASM instruction</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Atomicity - Interlocked adding</h3>
+						<ul>
+							<li>Interlocked.Add(ref counter, value)</li>
+							<li>Interlocked.Increment(ref counter)</li>
+							<li>Interlocked.Decrement(ref counter)</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Atomicity - Interlocked swapping</h3>
+						<ul>
+							<li>Interlocked.Exchange(ref location, newValue)</li>
+							<li>Swaps value in the location with the newValue</li>
+							<li>Returns old value</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Atomicity - Interlocked conditional swapping</h3>
+						<ul>
+							<li>Interlocked.CompareExchange(ref location, newValue, valueToCompare)</li>
+							<li>Swaps value in the location with the newValue conditionally</li>
+							<li>Returns old value</li>
+						</ul>
+					</section>
+				</section>
+				<section id="models">
+					<section>
+						<h2>Memory models</h2>
+						<aside class="notes">
+							<ul>
+								<li>A definition how threads interacts with memory</li>
+								<li>The more strict model - the less number of performance optimizations can be applied</li>
+								<li>The most important optimizations from this presentation point of view are reorderings.</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<h3>Memory models</h3>
+						<ul>
+							<li>Consider two virtual operations: LOAD &amp; STORE</li>
+							<li>Four possible combinations:
+									<ul>
+										<li>LOAD-LOAD</li>
+										<li>LOAD-STORE</li>
+										<li>STORE-STORE</li>
+										<li>STORE-LOAD</li>
+									</ul>
+							</li>
+
+						</ul>
+						<aside class="notes">
+						<ul>
+							<li>Depending on the processor architecture some of these pair may be reordered.</li>
+							<li>For .NET languages, it's the compiler first, then JITter, so there is even more stages to consider.</li>
+						</ul>
+						</aside>
+					</section>
+					<section>
+						<h3>Memory models - barriers</h3>
+						<ul>
+							<li>Inserted between two LOAD/STORE operations.</li>
+							<li>A memory barrier is a simple mechanism that disables some reorderings</li>
+							<li>A full memory barrier prohibits ANY reorderings</li>
+							<li>A full memory barrier is emitted by:<ul>
+								<li><em>lock (obj)</em></li>
+								<li><em>Interlocked.Add/Exchange</em></li>
+								<li>when using high level constructs like <em>WaitHandle</em></li>
+							</ul>
+							</li>
+						</ul>
+					</section>
+					<section>
+						<h3>Memory models - barriers</h3>
+						<ul>
+							<li>Aquire fence
+							<ul>
+								<li><em>Volatile.Read</em></li>
+								<li>Prohibits LOAD-LOAD</li>
+								<li>Prohibits LOAD-STORE</li>
+							</ul>
+							</li>
+							<li>Release fence
+							<ul>
+								<li><em>Volatile.Write</em></li>
+								<li>Prohibits STORE-LOAD</li>
+								<li>Prohibits STORE-STORE</li>
+							</ul>
+						</ul>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+		    					Writer uses Volatile.Write to ensure that status will be visible ONLY when Value was stored before
+		    				</div>
+						    <div class="commentedContent" style="width: 60%; display: inline-block;">
+	//  writer
+	o.Value = 1;
+	Volatile.Write(ref o.Status, 1);
+ 
+	// this is equal to
+	STORE Value 1
+	RELEASE FENCE
+	STORE Status 1
+
+						    </div>
+						</div>
+					</section>
+					<section>
+						<div class="withComments"></div>
+						<div>
+		    				<div class="contentComment">
+		    					Reader uses Volatile.Read to ensure that when it reads status, if it's changed, the value was stored before
+		    				</div>
+						    <div class="commentedContent" style="width: 60%; display: inline-block;">
+	//  reader
+	if (Volatile.Read(ref o.Status) == 1)
+	{
+		var value = o.Value;
+	}
+ 
+	// this is equal to
+	LOAD Status
+	AQUIRE FENCE
+	LOAD Value
+
+						    </div>
+						</div>
+					</section>
+					<section>
+						<h3>Memory models - allowed reorderings</h3>
+						<table>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>LOAD-LOAD</th>
+									<th>L-S</th>
+									<th>S-S</th>
+									<th>S-L</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Full barrier (<em>lock</em>)</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>Aquire fence</td>
+									<td></td>
+									<td></td>
+									<td>&#x2714;</td>
+									<td>&#x2714;</td>
+								</tr>
+								<tr>
+									<td>Release fence</td>
+									<td>&#x2714;</td>
+									<td>&#x2714;</td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>No fence</td>
+									<td>&#x2714;</td>
+									<td>&#x2714;</td>
+									<td>&#x2714;</td>
+									<td>&#x2714;</td>
+								</tr>
+							</tbody>
+						</table>
+				  	</section>
+				</section>
+
+				<section id="structures">
+					<h2>Structures &amp; implementation</h2>
+			  	</section>
+				
+				<section id="summary">
+					<section>
+						<h2>Summary</h2>	
+					</section>
+					<section>
+						<h3>Summary</h3>
+						<ul>
+							<li>You can write ultra performant code in .NET</li>
+							<li>You can go low level with Volatile, Interlocked</li>
+							<li>It's all there waiting for YOUR app to be performant!</li>
+						</ul>	
+					</section>
+				</section>
+				<section id="qa">
+					<h1>Questions?</h1>
+					<p>Szymon Kulec </p>
+					<p><a href="http://bit.ly/ramp-up-me">http://bit.ly/ramp-up-me</a></p>
+					<p><a href="https://twitter.com/Scooletz">@Scooletz</a></p>
+					<p><a href="http://blog.scooletz.com/">http://blog.scooletz.com</a> </p>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="lib/js/jquery-2.1.4.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+		$(function() {
+			$('div.commentedContent').each(function(i, div){
+				var lines = $(div).text().split('\n');
+		    	var text = '';
+			    $.each(lines, function(i, line) {
+			        if (line) {
+		            	text += '<p style="text-align: left; white-space: pre; margin: 0; padding: 0;">' + i + ".  " + line + '</p>';
+		        	}
+		    	});
+		    	$(div).html(text);
+
+		    	// apply keywords
+		    	$(div).children().each(function(i,p){
+		    		var par = $(p);
+					var words = par.text().split(" ");
+					par.empty();
+					$.each(words, function(i, w) {
+						if($.inArray(w, ["public", "void", "new", "var", "bool", "object", "using"]) > -1){
+							par.append($('<span style="color: rgb(204, 153, 204);"/>').text(w + " "));
+						}
+						else{
+							par.append(w + " ");
+						}
+					});
+		    	});
+			})
+
+			$('div.contentComment').each(function(i, div){
+				var lines = $(div).text().split('\n');
+		    	var text = '';
+			    $.each(lines, function(i, line) {
+			        if (line) {
+		            	text += '<p style="text-align: right; margin: 0; padding: 0;">' + line + '</p>';
+		        	}
+		    	});
+		    	$(div).html(text);
+			})
+		});
+
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
