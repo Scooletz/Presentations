@@ -128,9 +128,9 @@
 						<aside class="notes">
 							<ul>
 								<li>How modern hardware works</li>
-								<li>Extremely performant .NET concurrent APIs</li>
+								<li>Extremely fast .NET concurrent APIs</li>
 								<li>Efficient concurrent structures</li>
-								<li>See &amp; provide proper performant abstractions</li>
+								<li>See &amp; provide proper fast abstractions</li>
 								<li>Raise questions during <b>checkpoints</b> if you don't understand sth</li>
 							</ul>
 						</aside>
@@ -341,7 +341,7 @@
 							<li>Allocations are not fun at all</li>
 							<li>The objects are allocated on the heap and require GC</li>
 							<li>The memory cannot be read in a linear way</li>
-							<li>But hey, structs are stack allocated so it's cheap to create them (no friction, no garbace collection)</li>
+							<li>But hey, structs are stack allocated so it's cheap to create them (no friction, no garbage collection)</li>
 							<li>Another approach would be to run <em>in situ</em>...</li>
 						</ul>
 					</section>
@@ -390,7 +390,7 @@
 						<ul>
 							<li>Staged event-driven architecture</li>
 							<li>Queues + multiple workers</li>
-							<li>Can be thought of as mutiple actors for the same inbox</li>
+							<li>Can be thought of as multiple actors for the same inbox</li>
 							<li>Consumers of the queue are using resources concurrently</li>
 							<li>No longer wanted in the previous shape (<a href="https://issues.apache.org/jira/browse/CASSANDRA-10989">Cassandra issue</a>)</li>
 							<li><a href="https://github.com/eventstore/eventstore/wiki/Architectural-Overview">EventStore</a> is described as SEDA but it has single threads for the important queues</li>
@@ -436,7 +436,7 @@
 	    				<ul>
 	    					<li>An unmanaged buffer allocated with <em>VirtualAlloc</em>.</li>
 	    					<li>Big enough to handle peaks</li>
-	    					<li>Represents a circullar overlapping buffer</li>
+	    					<li>Represents a circular overlapping buffer</li>
 	    					<li>Uses its end for storying control variables</li>
 	    				</ul>
 	    				<p/>
@@ -452,7 +452,7 @@
 					<section>
 						<h3>Implementation - writer</h3>
 						<ul>
-							<li class="fragment">A writer reservers next bytes by atomically increasing the tail (<em>Interlocked.Add</em>) by message length (8) + header (8)</li>
+							<li class="fragment">A writer reserves next bytes by atomically increasing the tail (<em>Interlocked.Add</em>) by message length (8) + header (8)</li>
 						</ul>
 						<p/>
 						<table class="buffer">
@@ -530,7 +530,7 @@
 						<h3>Implementation - writer</h3>
 						<ul>
 							<li>One <em>Interlocked.Add</em> only, will create some friction with other writers though</li>
-							<li>The rest of operations orderered with <em>Volatile.Write</em></li>
+							<li>The rest of operations ordered with <em>Volatile.Write</em></li>
 							<li>An interesting way of writing the length twice, first a negated value, then ack by writing a positive value</li>
 						</ul>
 					</section>
@@ -612,12 +612,12 @@ public interface IBus
 					<section>
 						<h3>Summary</h3>
 						<ul>
-							<li>You can write ultra performant code in .NET</li>
+							<li>You can write ultra fast code in .NET</li>
 							<li>You can go low level with Volatile, Interlocked</li>
 							<li>Proper abstractions are enablers</li>
 							<li>Single threaded processing is simpler</li>
 							<li>Sometimes you need to emit IL</li>
-							<li>It's simple but not easy to write that peformant code</li>
+							<li>It's simple but not easy to write that fast code</li>
 						</ul>	
 					</section>
 					<section>
