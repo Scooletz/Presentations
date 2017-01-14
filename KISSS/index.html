@@ -82,85 +82,6 @@
 			<div class="slides">
                 <!-- Use external markdown resource, separate slides by three newlines; vertical slides by two newlines -->
                 <section data-markdown="content.md" data-separator="^\n---\n$"" data-separator-vertical="^\n--\n$"></section>
-
-                <!-- Slides are separated by three dashes (quick 'n dirty regular expression) -->
-                <section data-markdown data-separator="---">
-                    <script type="text/template">
-                        ## Demo 1
-                        Slide 1
-                        ---
-                        ## Demo 1
-                        Slide 2
-                        ---
-                        ## Demo 1
-                        Slide 3
-                    </script>
-                </section>
-
-                <!-- Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes -->
-                <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$">
-                    <script type="text/template">
-                        ## Demo 2
-                        Slide 1.1
-
-                        --
-
-                        ## Demo 2
-                        Slide 1.2
-
-                        ---
-
-                        ## Demo 2
-                        Slide 2
-                    </script>
-                </section>
-
-                <!-- No "extra" slides, since there are no separators defined (so they'll become horizontal rulers) -->
-                <section data-markdown>
-                    <script type="text/template">
-                        A
-
-                        ---
-
-                        B
-
-                        ---
-
-                        C
-                    </script>
-                </section>
-
-                <!-- Slide attributes -->
-                <section data-markdown>
-                    <script type="text/template">
-                        <!-- .slide: data-background="#000000" -->
-                        ## Slide attributes
-                    </script>
-                </section>
-
-                <!-- Element attributes -->
-                <section data-markdown>
-                    <script type="text/template">
-                        ## Element attributes
-                        - Item 1 <!-- .element: class="fragment" data-fragment-index="2" -->
-                        - Item 2 <!-- .element: class="fragment" data-fragment-index="1" -->
-                    </script>
-                </section>
-
-                <!-- Code -->
-                <section data-markdown>
-                    <script type="text/template">
-                        ```php
-                        public function foo()
-                        {
-                            $foo = array(
-                                'bar' => 'bar'
-                            )
-                        }
-                        ```
-                    </script>
-                </section>
-
             </div>
 		</div>
 
@@ -168,6 +89,27 @@
 		<script src="js/reveal.js"></script>
 
 		<script>
+
+            var listItemCounter = 0; 
+            function markedLoaded(){
+                var r = new marked.Renderer();
+                var list = r.list;
+                var listitem = r.listitem;
+                r.list = function(body, ordered){
+                    listItemCounter = 1;
+                    return list(body, ordered);
+                }
+
+                r.listitem = function (text, level){
+                    text = text + '<!-- .element: class="fragment" data-fragment-index="' + listItemCounter + '" -->'
+                    listItemCounter = listItemCounter + 1;
+                                        
+                    return listitem (text,level);
+                }
+
+                marked.setOptions({
+                    renderer: r});
+            }
 
 			Reveal.initialize({
 				controls: true,
@@ -178,7 +120,7 @@
 				// Optional libraries used to extend on reveal.js
 				dependencies: [
 					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); }, callback: markedLoaded },
                     { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
                     { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
 					{ src: 'plugin/notes/notes.js' }

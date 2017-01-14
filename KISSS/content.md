@@ -1,30 +1,91 @@
 ## Keep Its Storage Simple Stupid
 
-Szymon Kulec
+### Szymon Kulec
 
 [@Scooletz](https://twitter.com/Scooletz)
 
 [https://blog.scooletz.com](https://blog.scooletz.com)
 
+Note: a new page about... (trainings)
+
 ---
 
-## External 1.1
+### Project C
+- SaaS
+- Scalable
+- Secure (high isolation)
+- A complex domain 
+- A lot of interacting components
+- Rich in processes
 
-Content 1.1
+Note: Based on pre-alpha of the project
 
-Note: This will only appear in the speaker notes window.
+---
+
+### Goals
+
+- how to NoSQL
+- how to nottransact
+- how to azurestore
+- how to eventsource
+
+---
+
+### Azure Storage
+
+- foundation of Azure
+- exists from the very beginning
+- cheap, scalable 
 
 --
 
-## External 1.2
+### Azure Storage structure
 
-Content 1.2
+- Azure subscription
+- an account
+- services
+
+Note: account=database, partition=table on a different disk
+
+--
+
+### Azure Storage services
+
+- Tables - NoSQL database
+- Blobs - page & block blobs
+- Queues - simple queues
+
+--
+
+### Tables
+
+- (PartitionKey, RowKey) -> data
+- Partition Key - partition
+- Partition supports batches/transactions
+- Single partition can handle up to 500 req/s
+- Optimistic concurrency
+
+--
+
+### Tables (2)
+
+This can be batched
 
 ```
-function(){ test }
+INSERT ('Partition1', 'Row1') {name: 'test'}
+INSERT ('Partition1', 'Row2') {name: 'test2'}
+```
+
+This can't
+
+```
+INSERT ('Partition1', 'Row1') {name: 'test'}
+INSERT ('Partition2', 'Row2') {name: 'test2'}
 ```
 
 --
+
+### Event Sourcing with Tables
 
 ## External 2
 
