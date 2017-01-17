@@ -13,7 +13,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
         <link rel="stylesheet" href="css/reveal.css">
-        <link rel="stylesheet" href="css/theme/night.css" id="theme">
+        <link rel="stylesheet" href="css/theme/beige.css" id="theme">
 
         <!-- Code syntax highlighting -->
         <link rel="stylesheet" href="lib/css/zenburn.css">
@@ -47,18 +47,16 @@
             .reveal table td {
               text-align: left;
               padding: 0.2em 0.5em 0.2em 0.5em;
-              border-bottom: 1px solid;
-            }
-
-            table.buffer  th,
-            table.buffer  td {
-                border: 2px dashed;
-                border-bottom: 2px dashed !important;
-                width: 100px
+              border: 2px solid;
+              border-bottom: 2px solid !important;
             }
 
             .reveal code{
                 font-size: 25px;
+            }
+
+            .reveal pre code{
+                max-height: 600px;
             }
             
             div.left {
@@ -90,7 +88,7 @@
 
 		<script>
 
-            var listItemCounter = 0; 
+            var listItemCounter = 1; 
             function markedLoaded(){
                 var r = new marked.Renderer();
                 var list = r.list;
