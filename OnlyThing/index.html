@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+
+	<meta charset="utf-8">
+
+        <title>The only thing that matters</title>
+        <meta name="description" content="The only thing that matters">
+        <meta name="author" content="Szymon Kulec">
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/beige.css" id="theme">
+
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+
+        <style media="screen" type="text/css">
+
+            .reveal table {
+              margin: auto;
+              border-collapse: collapse;
+              border-spacing: 0;
+            }
+
+            .reveal table th {
+              font-weight: bold;
+            }
+
+            .reveal table th,
+            .reveal table td {
+              text-align: left;
+              padding: 0.2em 0.5em 0.2em 0.5em;
+              border: 2px solid;
+              border-bottom: 2px solid !important;
+            }
+
+            .reveal code{
+                font-size: 25px;
+            }
+
+            .reveal pre code{
+                max-height: 600px;
+            }
+            
+            div.left {
+                text-align: left; 
+                float: left;
+            }
+
+            div.right {
+                text-align: center;
+                float: right;
+            }
+            img.icon {
+                height:  100px;
+                border: 0px !important;
+                box-shadow: 0px 0px 0px 0px !important;
+            }
+        </style>
+    </head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+                <!-- Use external markdown resource, separate slides by three newlines; vertical slides by two newlines -->
+                <section data-markdown="content.md" data-separator="^\n---\n$"" data-separator-vertical="^\n--\n$"></section>
+            </div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+            var listItemCounter = 1; 
+            function markedLoaded(){
+                var r = new marked.Renderer();
+                var list = r.list;
+                var listitem = r.listitem;
+                r.list = function(body, ordered){
+                    listItemCounter = 1;
+                    return list(body, ordered);
+                }
+
+                r.listitem = function (text, level){
+                    text = text + '<!-- .element: class="fragment" data-fragment-index="' + listItemCounter + '" -->'
+                    listItemCounter = listItemCounter + 1;
+                                        
+                    return listitem (text,level);
+                }
+
+                marked.setOptions({
+                    renderer: r});
+            }
+
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); }, callback: markedLoaded },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/notes/notes.js' }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
