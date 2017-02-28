@@ -60,7 +60,7 @@ NOTE: steak. Well-done: architectural, RAW: low-level presentation, THIS: cow
 
 ![sql](img/sql.png)
 
--- 
+--
 
 ### SQL Server
 
