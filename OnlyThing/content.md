@@ -8,21 +8,22 @@
 
 ---
 
+![steak](img/steak.jpg)
+
+NOTE: steak. Well-done: architectural, RAW: low-level presentation, THIS: cow
+
+--
+
+![cow](img/cow.jpg)
+
+--
+
 ### Goals
 
 - understand how databases and queues are built
 - learn how to build systems on top of these foundations
 - see how distributed systems use the same priciples
 - apply it in daily development
-
----
-
-### Agenda
-
-- hardware
-- design examples
-- going distributed
-- applying it
 
 ---
 
@@ -57,11 +58,15 @@
 
 --
 
+![sql](img/sql.png)
+
+-- 
+
 ### SQL Server
 
-- the best database ever ;-)
-- *.mdf
-- *.ldf
+- Microsoft database system
+- *.mdf = data
+- *.ldf = log
 - not documented fn_dblog
 
 --
@@ -94,9 +99,10 @@
 
 ### SQL Server
 
-- tables are just a cache
-- tables might be rebuild when failure occurs
-- checkpoints are stored to mark the last processed position
+- operation appended to the log
+- log is flushed to disk
+- tables not neccessarily (held in memory)
+- queries are not logged
 
 --
 
@@ -109,6 +115,10 @@
 - Change Data Capture works in this way
 
 ---
+
+![eventstore](img/eventstore.svg)
+
+--
 
 ### Event Store
 
@@ -140,7 +150,7 @@
 position| 0 | 13 | 56 | 120
 --- | --- | ---
 stream | 1 | 2 | 1 | 3 
-event | cardIssued | cardIssued | cardBlocked | cardIssued
+event | CardIssued | CardIssued | CardBlocked | CardIssued
 payload | 0x2423 | 0x2423 | 0x2423 | 0x2423
 
 --
@@ -165,7 +175,7 @@ log-position (8) | 0 | 13 | 56 | 120
 
 --
 
-### Event Store projections
+### Event Store projections 
 
 - handlers of selected events
 - can be partitioned (by user name, by date)
@@ -173,7 +183,22 @@ log-position (8) | 0 | 13 | 56 | 120
 
 --
 
-### Event Store projections 2
+### Event Store projections
+
+Counting all the active cards
+
+```
+fromAll().
+  when({
+    $init: function() { return {counter: 0}; },
+    CardIssued: function(s,e) { s.counter += 1; },
+    CardBlocked: function(s,e) { s.counter -= 1; },
+    });
+```
+
+--
+
+### Event Store projections
 
 - to read all events: Log
 - to read events from a stream: Index -> Log
@@ -190,6 +215,10 @@ log-position (8) | 0 | 13 | 56 | 120
 - only increasing position - universal marker
 
 ---
+
+![kafka](img/kafka.png)
+
+--
 
 ### Kafka
 
@@ -257,35 +286,34 @@ If we had a list of commands: c1, c2, c3, c4
 
 ---
 
-### Application
+### How can I use it?
 
-- total order
-- can be consumed by multiple readers
-- makes readers simple
+- use system providing log capabilities: Kafka, Event Store
+- build one ?! with an ATOM feed in your service
 
 --
 
-### Application - patterns
+### Why should I use it?
 
 - projecting
 - rewinding
 - batching
-- log shipping or master-slave replication
-- providing ATOM feed for events in your app
 
 --
 
-### Application - problems
+### Problems
 
-- total order costs a lot
+- building a log costs a lot
 - messaging isn't ordered - other tooling needed
+- it's not a design decision - it's architecture
+- exceptions when processing
 
 ---
 
 ### Summary
 
 - logs are everywhere: IO, databases, stream processing
-- ordering makes things simpler
+- there are tools providing log capabilities
 - ordering costs more
 - ordering makes things simpler
 
