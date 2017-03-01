@@ -52,6 +52,10 @@ NOTE: steak. Well-done: architectural, RAW: low-level presentation, THIS: cow
 - reuse a file when data not needed
 - WAIT! It's a database log file!
 
+--
+
+![paulo](img/paulo_flush.jpg)
+
 ---
 
 ### Design examples
@@ -113,6 +117,10 @@ NOTE: steak. Well-done: architectural, RAW: low-level presentation, THIS: cow
 - tables are "just" snapshots
 - you could "easily" read log file
 - Change Data Capture works in this way
+
+--
+
+![paulo](img/paulo_sql.jpg)
 
 ---
 
@@ -214,6 +222,10 @@ fromAll().
 - other indexes are just streams
 - only increasing position - universal marker
 
+--
+
+![paulo](img/paulo_position.jpg)
+
 ---
 
 ![kafka](img/kafka.png)
@@ -254,6 +266,10 @@ NOTE: page cache, zero-copy file sending
 - cluster -> topic -> partition
 - only increasing position per partition
 
+--
+
+![paulo](img/paulo_partition.jpg)
+
 ---
 
 ### Distributed systems
@@ -283,6 +299,10 @@ If we had a list of commands: c1, c2, c3, c4
 - replicated list is a log
 - distributed consensus = reliable log replication
 - simple, not easy
+
+--
+
+![paulo](img/paulo_consensus.jpg)
 
 ---
 
