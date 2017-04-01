@@ -344,6 +344,8 @@ NOTE: cost=consensus
 ## Questions and (possibly) answers
 ### Szymon Kulec
 
+![QR](img/QR_blog.png)
+
 [@Scooletz](https://twitter.com/Scooletz)
 
 [https://blog.scooletz.com](https://blog.scooletz.com)
