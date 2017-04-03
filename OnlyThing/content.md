@@ -16,15 +16,6 @@ NOTE: steak. Well-done: architectural, RAW: low-level presentation, THIS: cow
 
 ![cow](img/cow.jpg)
 
---
-
-### Goals
-
-- understand how databases and queues are built
-- learn how to build systems on top of these foundations
-- see how distributed systems use the same priciples
-- apply it in daily development
-
 ---
 
 ## Hardware
