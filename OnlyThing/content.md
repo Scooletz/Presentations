@@ -263,6 +263,42 @@ NOTE: page cache, zero-copy file sending
 
 ---
 
+![Service Fabric](img/service-fabric.svg)
+
+--
+
+### Service Fabric
+
+- universal service orchestrator
+- abstraction over hosting, balancing, HA
+- can host: guest services (Node, PHP), stateful, stateless, actors
+
+--
+
+### Stateful services
+
+- stateful services & actors - same base
+- reliable collections & actor state
+- service > partitions > replicas
+
+--
+
+### Replicas
+
+- replica = persistent log + snapshoting
+- replica: primary, active secondary, secondary
+- replication factor (min, expected) defined by you
+
+--
+
+### Service Fabric summary
+
+- .NET stateful services use log
+- log is replicated via replicator
+- snapshoting, storing data is done for you by SF
+
+---
+
 ### Distributed systems
 
 --
@@ -285,11 +321,9 @@ If we had a list of commands: c1, c2, c3, c4
 
 --
 
-### Distributed consensus - how to (2)
+### Distributed consensus summary
 
-- replicated list is a log
-- distributed consensus = reliable log replication
-- simple, not easy
+- even distributed consensus = logs
 
 --
 
@@ -297,38 +331,13 @@ If we had a list of commands: c1, c2, c3, c4
 
 ---
 
-### How can I use it?
-
-- use system providing log capabilities: Kafka, Event Store
-- build one ?! with an ATOM feed in your service
-
---
-
-### Why should I use it?
-
-- projecting
-- rewinding
-- batching
-
---
-
-### Problems
-
-- building a log costs a lot
-- messaging isn't ordered - other tooling needed
-- it's not a design decision - it's architecture
-- exceptions when processing
-
----
-
 ### Summary
 
 - logs are everywhere: IO, databases, stream processing
-- there are tools providing log capabilities
-- ordering costs more
-- ordering makes things simpler
-
-NOTE: cost=consensus
+- recovery is simple with logs
+- distrbuted consensus is all about logs
+- logs are simple but powerful
+- you are already using them!
 
 ---
 
