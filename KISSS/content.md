@@ -440,9 +440,9 @@ struct IndexEntry
 
 ---
 
-### Event Sourced training by Scooletz
-### Code: wgnet
+## Questions and (possibly) answers
+### Szymon Kulec
 
-![http://bit.ly/scooletz01](/img/scooletz-es-01.png)
+[@Scooletz](https://twitter.com/Scooletz)
 
-[http://bit.ly/scooletz01](http://bit.ly/scooletz01)
+[https://blog.scooletz.com](https://blog.scooletz.com)
