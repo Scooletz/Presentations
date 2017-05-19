@@ -436,7 +436,7 @@ struct IndexEntry
 - Azure Storage provides powerful, scalable, simple services
 - you need to know how to use them well
 - think of boundaries and guarantees you need to provide
-- remember: paritioning is the key
+- remember: partitioning is the key
 
 ---
 
