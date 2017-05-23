@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Azure Service Fabric - your new foundation for .NET apps and services</title>
+        <meta name="description" content="Azure Service Fabric - your new foundation for .NET apps and services">
+        <meta name="author" content="Szymon Kulec">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/white.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+ 		<!-- Graphs -->
+        <link rel="stylesheet" href="plugin/mermaid/mermaid.css">  
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+        <div class="reveal">
+            <div class="slides">
+                <!-- Use external markdown resource, separate slides by three newlines; vertical slides by two newlines -->
+                <section data-markdown="content.md" data-separator="^\n---\n$" data-separator-vertical="^\n--\n$"></section>
+            </div>
+        </div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+		<!--<script src="plugin/mermaid/mermaid.min.js"></script>-->
+		<script>
+			/*mermaid.initialize({startOnLoad: false}); 
+			mermaidAPI.initialize({startOnLoad: false});
+
+			var counter = 0;
+
+			Reveal.addEventListener( 'slidechanged', function( event ) {
+                var graphs = event.currentSlide.getElementsByClassName ("mermaid");
+                for (var i = 0, length = graphs.length; i < length; i++) {
+
+                	counter += 1;
+                	var graph = graphs[i];
+					var insertSvg = function(svgCode, bindFunctions){
+						graph.innerHTML = svgCode;
+						graph.classList.remove("mermaid");
+					}
+
+					var id = 'id_' + counter;
+                	mermaidAPI.render(id, graph.innerText, insertSvg);
+				}
+			} );
+			*/
+
+			/*function markedLoaded(){
+                var r = new marked.Renderer();
+                                
+                // mermaid
+                r.code = function (code, language) {
+                    if(code.match(/^\nsequenceDiagram/)||code.match(/^\ngraph/)){
+                    	return '<div class="mermaid">'+code+'</div>';
+                    }
+                    else{
+                        return '<pre><code>'+code+'</code></pre>';
+                    }
+                };
+
+                marked.setOptions({
+                    renderer: r});
+            }*/
+                        
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+	</body>
+</html>
