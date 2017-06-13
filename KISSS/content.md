@@ -241,6 +241,18 @@ INSERT ('p', '00000001')
 - Events and aggregate version hold together
 - Scalable up to the account limits
 
+--
+
+### Patterns - wide rows
+
+Partition Key | Row Key | ...
+--- | ---: | ---
+abcd | part1 |  |
+abcd | part2 |  |
+Bbcd | part1 |  |
+Bbcd | part2 |  |
+Bbcd | part3 |  |
+
 ---
 
 ### Blobs
@@ -428,6 +440,15 @@ struct IndexEntry
 - VisibilityTimeout
 - explicit delete
 - at-least-once, at-most-once
+
+--
+
+### Queues
+
+- PUT Message
+- GET Message
+- GET Messages
+- DELETE Message
 
 ---
 
