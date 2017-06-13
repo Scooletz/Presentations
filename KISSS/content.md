@@ -200,7 +200,7 @@ Partition Key | Row Key | Version | Type | Payload
 --- | ---: | --- | --- | ---
 payment-713b49be | stream | 2 | |
 payment-713b49be | 00000001 | 1 | Issued | 0x24234b23
-payment-713b49be | 00000001 | 2 | Accepted | 0x452334
+payment-713b49be | 00000002 | 2 | Accepted | 0x452334
 
 --
 
@@ -210,7 +210,7 @@ Partition Key | Row Key | Version | Type | Payload
 --- | ---: | --- | --- | ---
 payment-713b49be | stream | 2 | |
 payment-713b49be | 00000001 | 1 | Issued | 0x24234b23
-payment-713b49be | 00000001 | 2 | Accepted | 0x452334
+payment-713b49be | 00000002 | 2 | Accepted | 0x452334
 payment-713b49be | ba890723 | 2 | Idempotent marker | 0x452334
 
 Note: idempotent marker for Accepted
