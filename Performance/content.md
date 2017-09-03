@@ -36,7 +36,7 @@ We already know, that making purrfect guesses does not work and that we need to 
 
 ???
 
-How many of you use managed languages/environments like Java, Scala, C#, F#?
+It does not matter which managed language would you use: is it Java, Scala, C#, or F#. Or event VB.NET
 Unfortunately for the creators, fortunately for developers, the list of optimizations that you should start with, after measuring a performance, will quite often cover the list of language features, which are: allocations, bytes and their copies.
 
 - allocations, reuse of bytes
