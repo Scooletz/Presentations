@@ -1,6 +1,6 @@
 # Performance That Pays Off
 
-## Szymon Kulec
+## Szymon Kulec @Scooletz
 
 ???
 
@@ -106,12 +106,140 @@ public interface ISerializer
 {
   string ToJson(object document);
   string ToCleanJson(object document);
-  
+
   void ToJson(object document, TextWriter writer);
 
   // ...
 }
 ```
+
+???
+The choice was simple. Introduce an overload of a method that accepts a TextWriter, and write a custom TextWriter that can be reused, to skip the allocations. Then, just go through all the places that were using them, and change their behavior. This would have been simpler, if the call sites hadn't been generated with expression trees...
+
+---
+
+## Unallocating Managed World
+### Marten
+
+```c#
+public override Expression CompileUpdateExpression(
+  EnumStorage enumStorage, 
+  ParameterExpression call, 
+  ParameterExpression doc, 
+  ParameterExpression updateBatch,
+  ParameterExpression mapping,
+  ParameterExpression currentVersion,
+  ParameterExpression newVersion, 
+  bool useCharBufferPooling)
+{
+  // you can imagine the body of it :)
+}
+```
+
+???
+
+It took a bit longer to make it.
+
+---
+
+## Unallocating Managed World
+### Marten
+
+| Method | Mean | Allocated |
+| --- | --- | --- | --- |
+| AppendEvents | 43ms | 3.19MB |
+| AppendEvents (after)| 41ms | 1.88MB |
+| InsertDocuments | 44ms | 6.67MB |
+| InsertDocuments (after) | 39ms | 4.62MB |
+| BulkInsertDocuments | 230ms | 27.37MB |
+| BulkInsertDocuments (after) | 168ms | 7.74MB |
+
+???
+
+As you can see, the amount of allocated memory dropped significantly.
+The performance is better, especially for bulk inserts.
+Before coming to a conclusion let's go through another project
+
+---
+
+## Unallocating Managed World
+### Wire/Hyperion
+
+> A high performance polymorphic serializer for the .NET framework.
+
+???
+
+This project could be used to present what a software licence is for. There was a small war over internet when it changed it's license from a permisive one to GNU, but let's keep our focus on the performance aspect.
+It shows how much you can achive when writing a protocol from the beginnig, having a special case in mind. In this case it was a high performance without dropping the way to pass the schema with messages. The initial test cases were showing some potential so took a closer look. By the way, have you ever tried to convert an int to bytes?
+
+---
+
+## Unallocating Managed World
+### Wire/Hyperion
+
+```c#
+public static class BitConverter 
+{
+  public unsafe static byte[] GetBytes(int value)
+  {
+    byte[] bytes = new byte[4];
+    fixed(byte* b = bytes)
+      *((int*)b) = value;
+    return bytes;
+  }
+}
+```
+
+???
+
+Finally some pointers! Admit you've already lost hope! Let's skip the beautiful star in there. This method is responsible for obtaining an array of bytes for an intiger value. It could be useful if you were passing these bytes forward. What about scenario, when we write them immiediately to the wire/stream? Then we could postpone these allocations and think use a shared array, released at the end of writing process. That's what I've done in Wire.
+
+---
+
+## Unallocating Managed World
+### Wire/Hyperion
+
+```c#
+public static class NoAllocBitConverter
+{
+  public static unsafe byte[] GetBytes(short value, 
+      SerializerSession session)
+  {
+    const int length = 2;
+
+    var bytes = session.GetBuffer(length);
+    fixed (byte* b = bytes)
+      *((short*) b) = value;
+          return bytes;
+  }
+}
+```
+
+???
+
+Wire uses the notion of a serializer session. An object context that is passed to every call. With this change, I was able to claim a buffer from a session just to write to it. As the resulting bytes were written down immiediately, the buffer could be reused by another writer in a following call. This small change made a significant improvement.
+Again, as lots of codes were generated dynamically (OpCodes, Reflection), this change required a few more files to be updated, to get it done.
+
+---
+
+## Unallocating Managed World
+### Do's and don'ts
+
+- impact
+- lib/framework
+
+???
+
+Now, after loosing faith in "purrfect purrformance" and knowing that we need to measure our gains, we know a trick or two how to optimize .NET code in some aspects. It' about time to tell when it should be applied. My rule is to do it only for libraries, shared components or frameworks. It's likely that once it's addressed on the lower level it will make it transparent for the user or will make the user to follow the rules of the component they use.
+Don't throw this into every controller you write or every service you create. Choose wisely.
+
+---
+
+## Data format
+
+???
+
+json, proto, xml
 
 ---
 
@@ -136,5 +264,3 @@ Aeron messaging
 ???
 
 NServiceBus
-
-
