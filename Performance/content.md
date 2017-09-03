@@ -4,7 +4,8 @@
 
 ---
 
-## Purrfect Purrformance
+background-image: url(img/purr.jpg)
+background-size: contain
 
 ???
 
