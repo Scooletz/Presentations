@@ -227,8 +227,9 @@ Again, as lots of codes were generated dynamically (OpCodes, Reflection), this c
 ## Unallocating Managed World
 ### Do's and don'ts
 
-- impact
-- lib/framework
+- as always measure first
+- apply for libs/frameworks/shared
+- lower gains in higher levels
 
 ???
 
@@ -237,11 +238,15 @@ Don't throw this into every controller you write or every service you create. Ch
 
 ---
 
+background-image: url(img/formats.jpg)
+background-size: cover
+
 ## Data format
 
 ???
 
-json, proto, xml
+How many serializers do you know? How many data formats are you aware of? Have you ever thought about storing some binary data in a column of Azure Storage just to make it more dense, therefore cheaper. To make it more version tolerant?
+We all know JSON, we all hate XML. Have you learnt what Google Protocol Buffers are? Simple Binary Encoding. There are huge differences between these formats. Even when at the end you provide a simple service providing REST API, maybe it's worth to consider not using JSON inside? Maybe there's something more. I always compare these to a toolbox. You should know what's inside it, but choose wisely.
 
 ---
 
