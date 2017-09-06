@@ -35,7 +35,7 @@ Thread.Sleep(1000);
 
 ???
 
-So you're lying on your couch. It's quite cosy and then an idea pops up. "If I removed this operation in line X" or "let's switch from a list to an array". I'm not talking about thoughts being a result of a long profiling session. I'm talking about these "ideas" that will CHANGE our applications' performance without any measurements.
+So you're lying on your couch. It's quite cosy and then an idea pops up. "If I removed this string concatanetion" or "let's switch from a list to an array and skip linq". I'm not talking about thoughts being a result of a long profiling session. I'm talking about these "ideas" that will CHANGE our applications' performance without any measurements.
 This is a really bad case and probably most of you had it at least one time. When looking long enough in a piece of code, you'll finally notice an operation, that could be optimized. It can be adding to a list, calculating a thing multiple times or simply unrolling a loop by coping same statements multiple times. If that's a hot path, that is used a lot, you can gain something. Quite often, it will be a path that is not executed that frequently, but, hey. You can get back to lying on your couch, as you've introduced MOAR performance, right?
 
 ---
