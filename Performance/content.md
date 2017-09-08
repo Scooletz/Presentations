@@ -245,10 +245,65 @@ background-size: cover
 
 ???
 
-How many serializers do you know? How many data formats are you aware of? Have you ever thought about storing some binary data in a column of Azure Storage just to make it more dense, therefore cheaper. To make it more version tolerant?
-We all know JSON, we all hate XML. Have you learnt what Google Protocol Buffers are? Simple Binary Encoding. There are huge differences between these formats. Even when at the end you provide a simple service providing REST API, maybe it's worth to consider not using JSON inside? Maybe there's something more. I always compare these to a toolbox. You should know what's inside it, but choose wisely.
+After talking a look at our code, it's time to blame the others'. Let's take a look at the way we store our data.
+It's quite common that we just use JSON.NET, the most popular serialization library in .NET. There's nothing wrong with it. Actually, it's quite cool to have a standard, but, when using JSON do we always need to use JSON.NET?
 
 ---
+
+## Data format
+
+```js
+{onlyJSON: true}
+```
+
+- JSON.NET
+- SimpleJSON
+- Jil
+
+???
+
+There are some disadvantages of being a popular library. For instance, when you use two libs that depen on different version of JSON.NET. Yes, you can use il-repack or il-merge, but are there other choices?
+
+SimpleJSON is a quite interesting library. It takes only 2000 lines of code and is filled with compilations flags. You can configure it and make it behaving as you want (probably). And it's a single file.
+
+And there's Jil. My favourite one ;-) This this is crazy fast. For instance, it takes into consideration the layout of fields in a class to make it even faster. Underneath it uses a Sigil, another library for writing fast MSIL.
+
+Ok, so we know that we've got choices when dealing with JSON. Do we always need to?
+
+---
+
+## Data format
+
+```js
+{onlyJSON: false}
+```
+
+- protobuf-net (Google Protocol Buffers)
+- Wire/Hyperion
+- Bond
+
+???
+
+There's lots, and I mean, lots of serializers beside the JSON. Most of them, are binary, some of them include some schema, some of them - not. If you don't know anything beside JSON, it might be a good thing to learn a one or two.
+
+There's protobuf-net, provided by Marc Gravell. A .NET implementation of Google's protocol. It's quite handy when dealing with simple schema changes. Also, it's fast and sometimes allows two versions to work on the same piece of data.
+
+There's mentioned Wire, used by AKKA.NET.
+
+There's Bond, Microsoft's Bond. Another tool.
+
+Having all the choices, you need to what do you want to use the serilizer for?
+
+---
+
+## Data format
+
+### What for?
+
+- internal/external usage?
+- many protocols, content negotiation?
+- 
+
 
 ## Async By Design
 
