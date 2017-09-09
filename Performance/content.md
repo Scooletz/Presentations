@@ -459,7 +459,7 @@ We all love Task.WhenAll, when we can register for the final completion of all t
 
 The last but not least. The await keyword. It's registering a continuation, like it was awaiting on an event marking an operation as completed.
 
-You may say that I'm comparing apples to oranges but for sure you can see the analogy. The world is asynchro
+You may say that I'm comparing apples to oranges but for sure you can see the analogy.
 
 ---
 
@@ -476,8 +476,8 @@ background-size: cover
 - understand the managed world
 - select right dependencies (serializers,...)
 - async-ify
-- push to extremes
-- choose architecture wisely
+- push to extremes when needed
+- choose your architecture wisely
 
 ---
 
