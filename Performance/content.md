@@ -229,7 +229,7 @@ Again, as lots of codes were generated dynamically (OpCodes, Reflection), this c
 ### Do's and don'ts
 
 - as always measure first
-- apply for libs/frameworks/shared
+- apply for libs/frameworks/shared
 - low level gains make a difference for the performance of the whole
 
 ???
@@ -285,7 +285,7 @@ Ok, so we know that we've got choices when dealing with JSON. Do we always need 
 
 ???
 
-There's lots, and I mean, lots of serializers beside the JSON. Most of them, are binary, some of them include some schema, some of them - not. If you don't know anything beside JSON, it might be a good thing to learn a one or two.
+There's lots, and I mean, lots of serializers beside the JSON. Most of them, are binary, some of them include some schema, some of them - not. If you don't know anything beside JSON, it might be a good thing to learn one or two.
 
 There's protobuf-net, provided by Marc Gravell. A .NET implementation of Google's protocol. It's quite handy when dealing with simple schema changes. Also, it's fast and sometimes allows two versions to work on the same piece of data.
 
