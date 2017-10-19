@@ -425,6 +425,60 @@ Volatile.Write (ref data[slot].Barrier, 1);
 
 Some code that you probably don't want to deal with. All the volatiles, interlocks and no locking at all.
 
+---
+
+## Extreme performance
+
+### NServiceBus Monitoring
+
+```c#
+struct Entry
+{
+  public long Ticks;
+  public long Value;
+  public int Tag;
+}
+
+```
+
+--
+
+```c#
+Entry[] // one chunk of memory
+```
+
+---
+
+## Extreme performance
+
+### NServiceBus Monitoring
+
+```c#
+var i = Interlocked.Increment(ref nextTowrite); 
+
+entries[i].Value = value;
+entries[i].Tag = tag;
+
+Volatile.Write(ref entries[i].Ticks, ticks);
+```
+
+--
+
+```c#
+var ticks = Volatile.Read(ref entries[i].Ticks);
+```
+
+---
+
+## Extreme performance
+### NServiceBus Monitoring
+
+- a single measurement takes 20 bytes (including type of the message)
+- reporting is even smaller (compressing dates make it 16)
+- we can measure (almost) everything and use our own infrastructure to report
+
+???
+
 We know that we can quite deep even in a managed language like c-sharp. Could we resurface now? It there anything on the higher level that could be helpful to make your systems more robust?
 
 ---
