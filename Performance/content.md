@@ -454,7 +454,8 @@ Entry[] // one chunk of memory
 ### NServiceBus Monitoring
 
 ```c#
-var i = Interlocked.Increment(ref nextTowrite); 
+var i = Interlocked.Increment(ref nextTowrite) 
+        % entries.Length; 
 
 entries[i].Value = value;
 entries[i].Tag = tag;
