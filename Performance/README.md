@@ -1,0 +1,3 @@
+# Performance That Pays Off
+
+Bits, bytes and speed. These are the factors that should be considered when you design a driver, a serializer or a client library. In these cases performance matters a lot and it pays off. During this presentation I'll drive you through various OSS projects that I contributed to. I want to share with you my journey as well as "design for performance" rules that you can apply on your own. It might be tempting to forget about it when living in a cloud #serverless era, but don't get fooled. With new pricing models, building a well performing part is sometimes more important than before?
