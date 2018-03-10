@@ -24,10 +24,11 @@ background-position: bottom
 ## Menu degustacyjne
 
 - XML
-- JSON.NET & Jil
+- JSON
 - Google Protocol Buffers
 - Wire
 - Simple Binary Encoding
+- custom protocols
 - deser
 
 Ostrość od &#127798; do &#127798;&#127798;&#127798;
@@ -49,16 +50,24 @@ Ostrość od &#127798; do &#127798;&#127798;&#127798;
     </niet>
 </nope>
 ```
+---
+
+## XML - what if
+
+- HTTP: `Accept` multiple
+- Use XML only where needed
+- Multi serialization (accept many)
 
 ---
 
-## XML & WS*
+## XML
 
 | Cecha | Ocena |
 | --- | --- |
 | Enterprise ready | &#127798;&#127798;&#127798; |
 | Nowoczesność | |
 | Czytelność | &#127798;&#127798;&#127798;
+| Schemat | &#127798; &#127798; &#127798; 
 | Wydajność | &#127798; |
 | Ocena ostateczna | &#127798; |
 
@@ -69,16 +78,23 @@ Ostrość od &#127798; do &#127798;&#127798;&#127798;
 
 ---
 
-## JSON.NET & Jil
+## JSON
 
 ```json
 {
-    "id": 1,
-    "name": "A green door",
-    "price": 12.50,
-    "tags": ["home", "green"]
+    id: 1,
+    name: "A green door",
+    price: 12.50,
+    tags: ["home", "green"],
+    details : {
+      description : "some"
+    } 
 }
 ```
+---
+
+## JSON
+
 ---
 
 ## JSON.NET & Jil
@@ -97,6 +113,10 @@ Ostrość od &#127798; do &#127798;&#127798;&#127798;
 
 ---
 
-# Sekretny Sos Serializacji
+## Sekretny Sos Serializacji
+
+.center[![image](img/qr.png)]
+
+.center[[https://blog.scooletz.com](https://blog.scooletz.com)]
 
 ## Szymon Kulec @Scooletz
