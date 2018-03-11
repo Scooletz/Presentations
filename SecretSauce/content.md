@@ -83,7 +83,7 @@ Ostrość od &#127798; do &#127798;&#127798;&#127798;
 ```json
 {
     id: 1,
-    name: "A green door",
+    title: "A green book",
     price: 12.50,
     tags: ["home", "green"],
     details : {
@@ -93,7 +93,52 @@ Ostrość od &#127798; do &#127798;&#127798;&#127798;
 ```
 ---
 
-## JSON
+## JSON.NET
+
+```c#
+[JsonObject(MemberSerialization.OptIn)]
+public class Book
+{
+    [JsonProperty]
+    public string Title { get; set; }
+
+    [JsonProperty]
+    public decimal Price { get; set; }
+
+    [JsonProperty]
+    public string[] Tags { get; set; }
+
+    // not serialized because mode is opt-in
+    public string TempNotes { get; set; }
+}
+```
+
+---
+
+## JSON.NET
+
+```c#
+var computer = new Computer
+{
+    Cpu = "Intel",
+    Memory = 32,
+    Drives = new List<string>
+    {
+        "DVD",
+        "SSD"
+    }
+};
+
+var o = (JObject)JToken.FromObject(computer);
+var a = (JArray)JToken.FromObject(computer.Drives);
+var i = (JValue)JToken.FromObject(computer.Cpu);
+```
+
+---
+
+## JSON.NET vs JIL
+
+
 
 ---
 
