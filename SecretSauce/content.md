@@ -67,7 +67,7 @@ Ostrość od &#127798; do &#127798;&#127798;&#127798;
 | Enterprise ready | &#127798;&#127798;&#127798; |
 | Nowoczesność | |
 | Czytelność | &#127798;&#127798;&#127798;
-| Schemat | &#127798; &#127798; &#127798; 
+| Schemat | &#127798;&#127798;&#127798; 
 | Wydajność | &#127798; |
 | Ocena ostateczna | &#127798; |
 
@@ -138,7 +138,44 @@ var i = (JValue)JToken.FromObject(computer.Cpu);
 
 ## JSON.NET vs JIL
 
+```c#
+// JSON.NET writing Guids
 
+public override void WriteValue(Guid value)
+{
+  InternalWriteValue(JsonToken.String);
+
+  _writer.Write(_quoteChar);
+  _writer.Write(value.ToString("D"));
+  _writer.Write(_quoteChar);
+}
+```
+
+---
+
+## JSON.NET vs JIL
+
+```c#
+static void _WriteGuid(TextWriter writer, Guid guid,
+  char[] buffer)
+{
+  // get all the dashes in place
+  buffer[8] = '-'; buffer[13] = '-';
+  buffer[18] = '-'; buffer[23] = '-';
+
+  var visibleMembers = new GuidStruct(guid);
+
+  // bytes are in different order
+  // bytes[0]
+  var b = visibleMembers.B00 * 2;
+  buffer[6] = WriteGuidLookup[b];
+  buffer[7] = WriteGuidLookup[b + 1];
+  // ...
+  
+  writer.Write(buffer, 0, 36);
+}
+
+```
 
 ---
 
@@ -148,10 +185,205 @@ var i = (JValue)JToken.FromObject(computer.Cpu);
 | --- | --- |
 | Enterprise ready | &#127798;&#127798;&#127798; |-|
 | Nowoczesność | &#127798;&#127798; | &#127798;&#127798;&#127798; |
-| Czytelność | &#127798;&#127798;&#127798; |
-| Wydajność | &#127798; |
-| Ocena ostateczna | &#127798; |
+| Czytelność | &#127798;&#127798;&#127798; | &#127798;&#127798;&#127798;
+| Wydajność | &#127798; | &#127798;&#127798; |
+| Schemat | &#127798; | &#127798;
+| Ocena ostateczna | &#127798; | &#127798;&#127798; |
 
+---
+
+## Google Protocol Buffers
+
+```proto
+message SearchRequest {
+  string query = 1;
+  int32 page_number = 2;
+  int32 result_per_page = 3;
+  bytes payload = 4;
+  oneof test_oneof {
+    string more = 5;
+    string more_more = 6;
+  }
+}
+```
+
+---
+
+## Google Protocol Buffers
+
+```js
+[prefix1][value1]
+[prefix2][value2]
+[prefix3][value3]
+
+[prefix] = (field_number << 3) | wire_type
+
+```
+
+- wire_type:
+  - 0 - Varint
+  - 1 - 64-bit
+  - 2 - Length-delimited
+  - 3 - Start group groups (deprecated)
+  - 4 - End group groups (deprecated)
+  - 5 - 32-bit
+- field_number - varint
+- value - varbinary
+
+---
+
+## Google Protocol Buffers
+
+```c#
+[StructLayout(LayoutKind.Explicit)]
+public struct DiscriminatedUnion64
+{
+  [FieldOffset(0)] readonly int _discriminator; 
+
+  [FieldOffset(8)] public readonly long Int64;
+  [FieldOffset(8)] public readonly ulong UInt64;
+  [FieldOffset(8)] public readonly int Int32;
+  [FieldOffset(8)] public readonly uint UInt32;
+  [FieldOffset(8)] public readonly bool Boolean;
+  [FieldOffset(8)] public readonly float Single;
+  [FieldOffset(8)] public readonly double Double;
+
+  [FieldOffset(16)] public readonly object Object;
+}
+```
+
+---
+
+## Google Protocol Buffers
+
+| Cecha | Ocena |
+| --- | --- |
+| Enterprise ready | &#127798;&#127798; |
+| Nowoczesność | &#127798;&#127798; |
+| Czytelność | &#127798;
+| Schemat | &#127798;&#127798;&#127798; 
+| Wydajność | &#127798;&#127798; |
+| Ocena ostateczna | &#127798;&#127798; |
+
+---
+
+## Custom Protocols
+
+Monitoring NServiceBus requires:
+- metrics:
+  - Critical Time
+  - Processing Time
+  - Retry Occurrence
+- record every time it's measured (with date)
+- record a message type
+
+---
+
+## Custom Protocols - JSON
+
+```json
+{
+    metric: "CriticalTime",
+    value: 1231231,
+    messageType: "Your.Namespace.Your.Type.Very.Long"
+    date: 123128321903
+}
+```
+
+---
+
+## Custom Protocols - Protocol Buffers
+
+```proto
+message Entry {
+  Metric metric  = 1;
+  int32 value = 2;
+  string messageType = 3;
+  int64 date = 4;
+}
+```
+
+---
+
+## Custom Protocols
+
+- stały zbiór metryk (grupowanie per metryka)
+- pomiary blisko siebie w czasie
+- mała liczba typów wiadomości
+
+```c#
+DateTime date;
+int messageType;
+long measurement;
+```
+---
+
+## Custom Protocols
+
+```c#
+long commonDate;
+
+int dateDiff;
+int messageType;
+long measurement;
+```
+---
+
+## Custom Protocols
+
+```c#
+Dictionary<int,string> messageTypes;
+long commonDate;
+
+int dateDiff;
+int messageType;
+long measurement;
+```
+???
+- 16 byte'ów dla jednego wpisu
+- stały narzut na cały raport (słownik i data)
+- wydajne pamięciowo dla raportującego i przetwarzającego
+
+---
+## Custom Protocols
+
+| Cecha | Ocena |
+| --- | --- |
+| Enterprise ready | &#127798; |
+| Nowoczesność | &#127798;&#127798;&#127798; |
+| Czytelność | &#127798;
+| Schemat | &#127798;|
+| Wydajność | &#127798;&#127798;&#127798;|
+| Ocena ostateczna | &#127798;&#127798; |
+
+---
+
+## Inne
+
+- Wire
+- Simple Binary Encoding (zero copy)
+- FlatBuffers / Cap'n'Proto (zero copy)
+
+---
+
+## Co dalej?
+
+```c#
+Span<byte> stackSpan = stackalloc byte[100];
+```
+
+```c#
+pubic void Store(object obj)
+{
+  Span<byte> buffer = stackalloc byte[100];
+  Serialize(obj, buffer);
+
+  // ...
+}
+
+```c#
+System.IO.Pipelines
+```
 ---
 
 ## Wrapping up
