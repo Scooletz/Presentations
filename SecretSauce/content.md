@@ -380,6 +380,7 @@ pubic void Store(object obj)
 
   // ...
 }
+```
 
 ```c#
 System.IO.Pipelines
@@ -387,6 +388,11 @@ System.IO.Pipelines
 ---
 
 ## Wrapping up
+
+- multi kulti
+- tekst kontra byte'y
+- szybsze wersje serializatorów
+- Span
 
 ---
 
