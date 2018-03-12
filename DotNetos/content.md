@@ -21,3 +21,9 @@ background-size: contain
 20:10 - 21:00 - Szymon Kulec - Sekretny sos serializacji i jego pikantne tajemnice
 
 21:00 - 04:35 - performance
+
+---
+
+.center[![image](img/qr.png)]
+
+.center[[http://bit.ly/dotnetos](http://bit.ly/dotnetos)]

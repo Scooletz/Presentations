@@ -26,8 +26,6 @@ background-position: bottom
 - XML
 - JSON
 - Google Protocol Buffers
-- Wire
-- Simple Binary Encoding
 - custom protocols
 - deser
 
