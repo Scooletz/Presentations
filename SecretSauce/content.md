@@ -10,15 +10,23 @@ background-position: bottom
 
 ## Skala Scoville’a (SHU)
 
-| Wartość | Papryka | Uwagi |
-| ---: | --- | --- | --- |
-| 0 | zwyczajna | dla babci i dziadka |
-| 5000 | Jalapeño | dla mamy i taty |
-| 200000 | Habanero | starter do kolacji |
-| 900000 | Dorset Naga | now we're talkin'! |
-| 1500000 | Carolina Reaper | yummy |
-| 5000000 | gaz pieprzowy | dla prawdziwych tygrysów |
+| Wartość | Papryka |
+| ---: | --- |
+| 0 | zwyczajna |
+| 5000 | Jalapeño |
+| 200000 | Habanero |
+| 900000 | Dorset Naga |
+| 1500000 | Carolina Reaper |
+| 5000000 | gaz pieprzowy |
 
+???
+
+- dla babci i dziadka
+- dla mamy i taty
+- starter do kolacji
+- now we're talkin'!
+- yummy 
+- dla prawdziwych tygrysów 
 ---
 
 ## Menu degustacyjne
