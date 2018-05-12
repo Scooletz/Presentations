@@ -88,6 +88,9 @@
         var slides = document.querySelectorAll('.remark-slide-container');
         var currentSlide = slides[s.getSlideIndex()];
 
+        initMermaid(currentSlide);
+        initTables(currentSlide);
+
         var content = currentSlide.querySelectorAll("div.remark-slide-content")[0];
         var hasImage = content.style.getPropertyValue("background-image");
         
@@ -103,9 +106,6 @@
 
           content.appendChild (wrap);
         }
-
-        initMermaid(currentSlide);
-        initTables(currentSlide);
       });
     </script>
   </body>
