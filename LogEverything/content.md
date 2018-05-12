@@ -175,11 +175,9 @@ background-size: cover
 - czas pojedynczej operacji (_service time_)
 
 --
-
-Nie dla:
-- wysyłania pojedynczych wpisów
-- czekania na wysłanie wszystkiego
-- serializacji przy wysyłce
+- ~~wysyłania pojedynczych wpisów~~
+- ~~czekania na wysłanie wszystkiego~~
+- ~~serializacji przy wysyłce~~
 
 ---
 
@@ -213,10 +211,68 @@ background-size: cover
 ## Klient - audyt
 
 ```c#
-log.Info("just a log");
+await CallImportantBusinessMethod();
 
 await log.Audit("Money sent {amount}", amount);
+
+await CallOtherBusinessMethod();
 ```
+
+---
+
+background-image: url(img/check.jpg)
+background-size: cover   
+
+## Klient - audyt
+
+### Pozycja w logu
+
+```
+00.....08.....16.....24.....
+[wpis0][wpis1][wpis2][wpis3]
+      ^
+      |
+──────┘
+
+```
+
+???
+
+- zapis -> pozycja w buforze
+- oczekiwanie, aż pozycja wysłana
+
+---
+
+background-image: url(img/check.jpg)
+background-size: cover   
+
+## Klient - audyt
+
+### Pozycja w logu
+
+```
+00.....08.....16.....24.....
+[wpis0][wpis1][wpis2][wpis3]
+             ^
+             |
+─────────────┘
+
+```
+
+---
+
+background-image: url(img/wall.jpg)
+background-size: cover
+
+## Kategorie ~~problemów~~ wyzwań
+
+- [x] klient
+  - [x] wielkość wpisu
+  - [x] przepustowość
+  - [x] audyt
+- [ ] przetwarzanie danych
+  - [ ] chmura (co wybrać)
+  - [ ] input output (prędkość)
 
 ---
 
