@@ -1,4 +1,4 @@
-background-image: url(img/scales.jpg)
+background-image: url(img/fields.jpg)
 background-size: cover
 
 # Zalogować wszystko
@@ -83,6 +83,140 @@ background-size: cover
 
 ## ~~Szybsze konie~~ Tesla
 
+---
+
+background-image: url(img/writing.jpg)
+background-size: cover
+
+## API - semantyczne logowanie
+
+```c#
+log.Info(
+  "Sent {count} from {sender} to {receiver}", 
+  total, you, me);
+```
+
+???
+
+- format, szablon, template
+- wartości przekazane jako parametry
+- może być różnie wydrukowany, zależnie od systemu z tyłu
+
+---
+
+background-image: url(img/wall.jpg)
+background-size: cover
+
+## Kategorie ~~problemów~~ wyzwań
+
+- klient
+  - wielkość wpisu
+  - przepustowość
+  - audyt
+- przetwarzanie danych
+  - chmura (co wybrać)
+  - input output (prędkość)
+
+---
+
+background-image: url(img/size.jpg)
+background-size: cover
+
+## Klient - wielkość wpisu
+
+```c#
+log.Info(
+  "Sent {count} from {sender} to {receiver}",
+  total, you, me);
+```
+
+--
+
+```js
+{
+ "template" : "Sent ...",
+ "total" : 4098,
+ "sender" : "Amber Gold",
+ "receiver" : "Kajmany"
+}
+```
+
+???
+
+JSON FTW!!! - WRONG!
+
+---
+
+background-image: url(img/size.jpg)
+background-size: cover
+
+## Klient - wielkość wpisu
+
+```c#
+var templateId = Sha1("Sent ...");
+var bytes = Serialize(total, sender, receiver);
+
+Send(templateId, bytes);
+```
+
+???
+
+- Sha1 generowane raz i wysyłane na początku
+- dane serializowane binarnie (bez nazw)
+
+---
+
+background-image: url(img/pipe.jpg)
+background-size: cover
+
+## Klient - przepustowość
+
+- liczba wpisów na sekundę (_throughput_)
+- czas pojedynczej operacji (_service time_)
+
+--
+
+Nie dla:
+- wysyłania pojedynczych wpisów
+- czekania na wysłanie wszystkiego
+- serializacji przy wysyłce
+
+---
+
+background-image: url(img/pipe.jpg)
+background-size: cover
+
+## Klient - przepustowość
+
+### Smart batching
+
+- akumulacja wpisów do:
+  - upłynięcia _k_ ms
+  - zbudowania paczki o rozmiarze _m_ kb
+
+--
+- wysłanie paczek:
+  - równoległe
+  - sensownie limitowane
+
+--
+- struktura danych:
+   - _circular buffer_
+   - współbieżny (_0 locków_)
+   - wielu producentów
+
+---
+
+background-image: url(img/check.jpg)
+background-size: cover   
+
+## Klient - audyt
+
+```c#
+log.Info("just a log");
+
+await log.Audit("Money sent {amount}", amount);
+```
 
 ---
 
