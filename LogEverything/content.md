@@ -261,6 +261,32 @@ background-size: cover
 
 ---
 
+background-image: url(img/musk-smile.jpg)
+background-size: cover
+
+## Bla, bla, pokaż liczby!
+
+- 10 mln zdarzeń
+- wiele wątków (narzut)
+- symulacja z serializacją (narzut)
+- czas netto, bez transportu
+
+--
+
+|Biblioteka | Czas
+| ---: |---:|
+| Serilog | 00:00:08.3470107
+| X |  00:00:02.1679472
+
+???
+
+- 10 mln zdarzeń
+- każde zserializowane do formy do przesłania
+- żadne nie przesłane
+- narzut asynchronicznego wywołania dodany sztucznie
+
+---
+
 background-image: url(img/wall.jpg)
 background-size: cover
 
