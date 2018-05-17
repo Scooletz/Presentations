@@ -199,9 +199,34 @@ background-size: cover
 
 --
 - struktura danych:
-   - _circular buffer_
+   - cykliczny bufor
    - współbieżny (_0 locków_)
    - wielu producentów
+
+---
+
+background-image: url(img/pipe.jpg)
+background-size: cover
+
+## Klient - przepustowość
+
+### Cykliczny bufor
+
+```
+00.....08.....16.....24.....
+[wpis0][wpis1][wpis2]
+                     ^
+                     |
+─────────────────────┘
+```
+--
+```
+00.....08.....16.....24.....
+[wpis4][wpis5]
+              ^
+              |
+──────────────┘
+```
 
 ---
 
