@@ -327,6 +327,117 @@ background-size: cover
 
 ---
 
+background-image: url(img/cloud.jpg)
+background-size: cover
+
+## Przetwarzanie danych - chmura
+
+- skala
+- cena
+- usługi
+- SLA
+- wysycenie
+
+---
+
+background-image: url(img/azure.jpg)
+background-size: cover
+
+## Przetwarzanie danych - chmura
+
+### Azure
+
+- Azure Functions (serverless)
+- Azure Storage
+- Co$$$$$mos DB
+
+---
+
+background-image: url(img/azure.jpg)
+background-size: cover
+
+## Przetwarzanie danych - chmura
+
+### Azure Functions
+
+- serverless
+- AppPlan i użycie tylko modelu wdrożenia
+
+---
+
+background-image: url(img/azure.jpg)
+background-size: cover
+
+## Przetwarzanie danych - chmura
+
+### Azure Storage
+
+- Azure Storage Queues
+- Blobs
+
+---
+
+background-image: url(img/azure.jpg)
+background-size: cover
+
+## Przetwarzanie danych - chmura
+
+### Input Output
+
+- prędkość
+- koszty
+
+???
+
+- zapis/odczyt kosztuje
+- pojedyncza operacja niezależna od rozmiaru danych
+- amortyzacja kosztu
+
+---
+
+background-image: url(img/azure.jpg)
+background-size: cover
+
+## Przetwarzanie danych - chmura
+
+### Input Output
+
+- 1 wiadomość => 128 wiadomości
+- 128 zapisów do bloba => 1 zapis do bloba
+
+---
+
+background-image: url(img/wall.jpg)
+background-size: cover
+
+## Kategorie ~~problemów~~ wyzwań
+
+- [x] klient
+  - [x] wielkość wpisu
+  - [x] przepustowość
+  - [x] audyt
+- [x] przetwarzanie danych
+  - [x] chmura (co wybrać)
+  - [x] input output (prędkość)
+
+---
+
+background-image: url(img/azure.jpg)
+background-size: cover
+
+## Czy istnieje kraina, gdzie można zalogować wszystko?
+
+--
+### Niestety
+
+--
+### TAK!
+
+---
+
+background-image: url(img/fields.jpg)
+background-size: cover
+
 # Zalogować wszystko
 
 ## Szymon Kulec @Scooletz
