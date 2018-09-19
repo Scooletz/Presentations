@@ -185,6 +185,14 @@ background-size: cover
 
 ---
 
+# Thruster - co to jest pula?
+
+- pula obiektów
+
+- pula buforów
+
+---
+
 # Thruster - 63 elementy
 
 ```c#
@@ -446,17 +454,21 @@ public bool TryEnqueue(T item)
 - Kestrel jest szybki
 
 --
+
 - .NET Core jest szybki
 
 --
+
 - specyficzny szybszy od generycznego
 
 --
+
 - benchmarkowanie jest dobre
 --
-,choć wolne ;)
+, choć wolne ;)
 
 --
+
 - lock-free, jest szybkie
 
 ---
