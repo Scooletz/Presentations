@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Thruster, or There and Back Again - Szymon Kulec</title>
+    <meta name="description" content="Thruster, or There and Back Again">
+    <meta name="author" content="Szymon Kulec">
+
+    <link rel="stylesheet" href="css/mermaid.min.css">
+    <link rel="stylesheet" href="css/pure-min.css">
+    <link rel="stylesheet" href="css/additional.css">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+       @font-face{
+        font-family: 'Droid Serif';
+        src: url('fonts/DroidSerif-Regular.ttf');
+      }
+      @font-face{
+        font-family: 'Yanone Kaffeesatz';
+        src: url('fonts/YanoneKaffeesatz-Regular.ttf');
+      }
+      @font-face{
+        font-family: 'Ubuntu Mono';
+        src: url('fonts/UbuntuMono-Regular.ttf');
+      }
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .remark-code-line {font-size: 150%}
+      .remark-slide-content { font-size: 24px; }
+      .remark-notes { font-size: 30px; }
+      body { font-family: sans-serif; }
+    </style>
+  </head>
+  <body>
+    <script src="remark.js" type="text/javascript"></script>
+    <script src="mermaid.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      var slideshow = remark.create({
+      	sourceUrl: 'content.md'
+      });
+
+      // mermaid
+      mermaid.initialize({
+        startOnLoad: false,
+        cloneCssStyles: false,
+        flowchart:{
+          useMaxWidth: true,
+          //width: 800,
+          //height: 600,
+        },
+      });
+
+      function initMermaid(slide) {
+        var diagrams = slide.querySelectorAll('.mermaid');
+
+        var i;
+        for(i=0; i<diagrams.length; i++){
+          var diagram = diagrams[i];
+          var processed = diagram.getAttribute("data-processed");
+
+          if (!processed){
+            diagram.innerHTML = diagram.childNodes[0].innerHTML;
+            setTimeout(function(){ 
+              mermaid.init(undefined, diagram);
+            }, 10);
+          }
+        }
+      }
+
+      function initTables(slide){
+        var tables = slide.querySelectorAll('div.remark-slide-content > table');
+        tables.forEach(function(t){
+          var classes = t.classList;
+          if (!classes.contains('pure-table')){
+            classes.add('pure-table');
+            classes.add('pure-table-bordered');
+            classes.add('pure-table-striped');  
+          }
+        });
+      }
+
+      slideshow.on('beforeShowSlide', function(s){
+        var slides = document.querySelectorAll('.remark-slide-container');
+        var currentSlide = slides[s.getSlideIndex()];
+
+        initMermaid(currentSlide);
+        initTables(currentSlide);
+
+        var content = currentSlide.querySelectorAll("div.remark-slide-content")[0];
+        var hasImage = content.style.getPropertyValue("background-image");
+        
+        if(hasImage && content.querySelectorAll('div.wrap').length == 0){
+          var wrap = document.createElement('div');
+          wrap.className = "wrap";        
+
+          while (content.firstChild) {
+            var child = content.firstChild;
+            content.removeChild(child);
+            wrap.appendChild(child);
+          }
+
+          content.appendChild (wrap);
+        }
+      });
+    </script>
+  </body>
+</html>
