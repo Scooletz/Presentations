@@ -361,7 +361,7 @@ background-size: cover
 ### Azure Functions
 
 - serverless
-- AppPlan i użycie tylko modelu wdrożenia
+- AppPlan vs Consumption Plan
 
 ---
 
@@ -425,13 +425,66 @@ background-size: cover
 background-image: url(img/azure.jpg)
 background-size: cover
 
-## Czy istnieje kraina, gdzie można zalogować wszystko?
+## Co dalej?
 
---
-### Niestety
+- QueueBatch
+- Enzyme
+- dalsze plany
 
---
-### TAK!
+---
+
+background-image: url(img/azure.jpg)
+background-size: cover
+
+## Co dalej?
+
+### Queue Batch
+
+```c#
+public static void MyFunc(
+  [QueueBatchTrigger("myqueue", 
+  ParallelGets = 2, 
+  UseFasterQueues = true)] IMessageBatch batch)
+{
+  // ...
+}
+```
+
+???
+
+- Trigger Azure Functions
+- batchowe odbieranie wiadomości ASQ
+- 20x szybszy klient od tego z SDK
+- nuget
+
+---
+
+background-image: url(img/azure.jpg)
+background-size: cover
+
+## Co dalej?
+
+### Enzyme
+
+- nowy serializator dla .NET
+- Span, Span, Span
+- szybszy od ZeroFormatter
+
+---
+
+background-image: url(img/azure.jpg)
+background-size: cover
+
+## Co dalej?
+
+### dalsze plany
+
+---
+
+background-image: url(img/scooletz.png)
+background-size: cover
+
+# Ciekawe?
 
 ---
 
