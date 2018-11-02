@@ -347,20 +347,189 @@ void Serialize(Write write)
 ???
 
 - Enzyme
-- new .NET serializer
+- new experimental .NET serializer
+- described on blog post
+- will share links
 
 ---
 
-# Benchmark.NET - Lease/Return
+background-image: url(img/zod.jpg)
+background-size: cover
 
-|          Method |      Mean |     Error |    StdDev |
-|---------------- |----------:|----------:|----------:|
-| Rent_1_Thruster |  73.17 ns | 1.4890 ns | 2.9391 ns |
-|   Rent_1_Shared |  89.66 ns | 1.7079 ns | 1.6774 ns |
-|  Rent_1_Kestrel |  54.00 ns | 0.7190 ns | 0.6725 ns |
-| Rent_2_Thruster | 130.78 ns | 1.8649 ns | 1.5573 ns |
-|   Rent_2_Shared | 253.82 ns | 4.1537 ns | 3.6822 ns |
-|  Rent_2_Kestrel | 108.60 ns | 2.2828 ns | 6.7309 ns |
+## Unsafe.As&lt;GeneralZod&gt;()
+
+???
+- a weapon for General Zod
+- written purely in IL
+- it's so much fun
+
+---
+
+background-image: url(img/zod.jpg)
+background-size: cover
+
+## Unsafe.As&lt;GeneralZod&gt;() - casting
+
+--
+
+```c#
+// traditional casting
+MyType my = (MyType) o;
+
+// as
+MyType my = o as MyType;
+```
+--
+```c#
+// unsafe, fast and furious
+MyType my = Unsafe.As<MyType>(o);
+```
+
+---
+
+background-image: url(img/zod.jpg)
+background-size: cover
+
+## Unsafe.As&lt;GeneralZod&gt;() - casting
+
+```asm
+.method public hidebysig static 
+    !!T As<class T>(object o)
+{
+    .maxstack 1
+    ldarg.0
+    ret
+}
+```
+
+---
+
+background-image: url(img/zod.jpg)
+background-size: cover
+
+## Unsafe.As&lt;GeneralZod&gt;() - adding refs
+
+--
+
+```c#
+int[] numbers = { 1, 2, 4 };
+ref i = ref numbers[0];
+
+// later on
+*(i+1);
+```
+
+---
+
+background-image: url(img/zod.jpg)
+background-size: cover
+
+## Unsafe.As&lt;GeneralZod&gt;() - adding refs
+
+```asm
+ .method public hidebysig static 
+    !!T& Add<T>(!!T& source, int32 offset)
+{
+    .maxstack 3
+    ldarg.0
+    ldarg.1
+    sizeof !!T
+    conv.i
+    mul
+    add
+    ret
+}
+```
+
+---
+
+background-image: url(img/source.jpg)
+background-size: cover
+
+## ValueTask&lt;DailyPlanet&gt;
+
+--
+
+```c#
+public readonly struct ValueTask
+{
+    public ValueTask(IValueTaskSource source,
+        short token)
+    {
+        // ...
+    }
+}
+```
+
+---
+
+background-image: url(img/source.jpg)
+background-size: cover
+
+## ValueTask&lt;DailyPlanet&gt;
+
+IValueTaskSource:
+
+--
+
+- Task-like abstraction
+
+--
+
+- can react to being finshed
+
+--
+
+- reusable/poolable
+
+---
+
+background-image: url(img/source.jpg)
+background-size: cover
+
+## ValueTask&lt;DailyPlanet&gt;
+
+```c#
+ValueTask DoSth()
+{
+    var source = pool.GetSource();
+    // ...
+    return new ValueTask(source, token++);
+}
+```
+--
+```c#
+await o.DoSth(); // ValueTask(source, 1);
+await o.DoSth(); // ValueTask(source, 2);
+await o.DoSth(); // ValueTask(source, 3);
+await o.DoSth(); // ValueTask(source, 4);
+```
+
+---
+
+background-image: url(img/source.jpg)
+background-size: cover
+
+## ValueTask&lt;DailyPlanet&gt;
+
+--
+
+- it takes a while to implement `IValueTaskSource`
+
+--
+
+- if pooled properly, can greatly reduce allocations
+
+--
+
+- makes async-await less heavy
+
+---
+
+background-image: url(img/scooletz.png)
+background-size: cover
+
+## Interested? (In Polish)
 
 ---
 
