@@ -41,27 +41,163 @@ background-size: cover
 
 ## Memory&lt;Krypton&gt;
 
+--
+
+- lowering allocation needs
+
+--
+
+- wrapping any kind of memory
+
+--
+
+- splitting in an alloc-free way
+
+--
+
+- pinning
+
+--
+
+- pooling support
+
+---
+
+background-image: url(img/space.jpg)
+background-size: cover
+
+## Memory&lt;Krypton&gt; - before
+
 ```c#
-var memoryOfKrypton = new Memory<Krypton>(...);
+// allocation
+var bytes = new byte[32];
+```
+--
+```c#
+// other kinds of memory
+var memory = new byte[somePtr]; // 💥💥💥
+```
+--
+```c#
+// splitting
+var bytes = new otherBytes[16];
+Array.Copy(...);
 ```
 
 ---
 
+background-image: url(img/space.jpg)
+background-size: cover
+
+## Memory&lt;Krypton&gt; - before
+
 ```c#
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-int GetBucketId()
+// pinning
+fixed(byte* ptr = bytes)
 {
-#if NETCOREAPP2_1
-    return Thread.GetCurrentProcessorId() 
-            % processorCount;
-#else
-    return Environment.CurrentManagedThreadId 
-            % processorCount;
-#endif
 }
 ```
+--
+```c#
+// other pinning
+GCHandle.Alloc(...);
+```
+--
+```c#
+// pooling
+ArrayPool.Shared.Rent(...);
+```
 
 ---
+
+background-image: url(img/space.jpg)
+background-size: cover
+
+## Memory&lt;Krypton&gt; - now
+
+```c#
+// allocation
+var memory = new Memory<byte>(array);
+```
+--
+```c#
+// other kinds of memory - pinned
+var memory = MemoryMarshal
+    .CreateFromPinnedArray(...);
+```
+--
+```c#
+// other kinds of memory - external
+var memory = MemoryManager<T>
+    .CreateMemory(...);
+```
+--
+```c#
+// splitting
+var first4 = memory.Slice(0, 4);
+```
+---
+
+background-image: url(img/space.jpg)
+background-size: cover
+
+## Memory&lt;Krypton&gt; - now
+
+```c#
+// pinning
+using(var pin = memory.Pin())
+{
+    pin.Pointer; // 😍😍😍
+}
+```
+--
+```c#
+// pooling
+using(var owner = pool.Rent(32))
+{    
+    Do(owner.Memory);   
+}
+```
+---
+
+background-image: url(img/space.jpg)
+background-size: cover
+
+## Memory&lt;Krypton&gt; - usage
+
+- Kestrel
+
+--
+
+- IO methods in .NET Core
+
+--
+
+- your app
+
+---
+
+background-image: url(img/space.jpg)
+background-size: cover
+
+## Memory&lt;Krypton&gt; - summary
+
+- no leaking, how it was allocated
+
+--
+
+- splitting in an alloc-free way
+
+--
+
+- efficient pinning
+
+--
+
+- pooling support
+
+---
+
 
 # Benchmark.NET - Lease/Return
 
