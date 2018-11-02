@@ -198,6 +198,158 @@ background-size: cover
 
 ---
 
+background-image: url(img/flying.jpg)
+background-size: cover
+
+## SuperSpan
+
+--
+- synchronous memory accessor
+
+--
+
+- `ref struct`, can leave only on stack
+
+--
+
+- a bit more efficient in .NET Core 
+
+--
+
+- removes `unsafe` for `stackalloc`
+
+---
+
+background-image: url(img/flying.jpg)
+background-size: cover
+
+## SuperSpan - how to get it?
+
+```c#
+// from memory
+Span<byte> span = memory.Span;
+```
+--
+```c#
+// from stack
+Span<byte> span = stackalloc byte[128];
+```
+--
+```c#
+// stack or alloc
+Span<byte> span = size < 128 ?
+         stackalloc byte[size] :
+         new byte[size];
+```
+---
+
+background-image: url(img/flying.jpg)
+background-size: cover
+
+## SuperSpan - what for?
+
+```c#
+// fast encoding
+Base64.EncodeToUtf8(ReadOnlySpan<byte> bytes, 
+                    Span<byte> utf8, ...)
+```
+--
+```c#
+// even better encoding
+Base64.EncodeToUtf8InPlace(
+                Span<byte> buffer, ...)
+```
+--
+```c#
+// and parsing
+long.TryParse(ReadOnlySpan<char> s, 
+    out long result);
+```
+---
+
+background-image: url(img/flying.jpg)
+background-size: cover
+
+## SuperSpan - what for?
+
+```c#
+// copying
+span.CopyTo(another);
+
+// clearing
+span.Clear();
+
+// filling
+span.Fill(value);
+```
+
+---
+
+background-image: url(img/flying.jpg)
+background-size: cover
+
+## SuperSpan - abusing it
+
+```c#
+// what's wrong in here?
+
+Span<byte> Serialize(...)
+{
+    Span<byte> s = stackalloc byte [16];
+    return s;
+}
+```
+???
+
+- span is ref struct
+- cannot be returned
+
+---
+
+background-image: url(img/flying.jpg)
+background-size: cover
+
+## SuperSpan - abusing it
+
+&#11208; our code
+
+&#11208;&#11208; Serialize
+
+&#11208;&#11208;&#11208; our code
+
+???
+
+- stack can be passed down to the method
+- if we could pass it to the lower level
+- we could make it faster
+
+---
+
+background-image: url(img/flying.jpg)
+background-size: cover
+
+## SuperSpan - abusing it
+
+```c#
+delegate void Write(Span<byte> payload);
+```
+--
+```c#
+void Serialize(Write write)
+{
+    Span<byte> s = stackalloc byte [16];
+
+    // serialize
+    write(s);
+}
+```
+
+???
+
+- Enzyme
+- new .NET serializer
+
+---
 
 # Benchmark.NET - Lease/Return
 
