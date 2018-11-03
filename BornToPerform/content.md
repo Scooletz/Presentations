@@ -175,6 +175,10 @@ background-size: cover
 
 - your app
 
+--
+
+- hopefully, one day, cloud SDKs
+
 ---
 
 background-image: url(img/space.jpg)
@@ -523,6 +527,144 @@ background-size: cover
 --
 
 - makes async-await less heavy
+
+---
+
+background-image: url(img/cherry.jpg)
+background-size: cover
+
+## SuperCherry on the top
+
+https://github.com/dotnet/coreclr/pull/18360
+
+<img src="img/pr.jpg" style="width:100%">
+
+---
+
+background-image: url(img/cherry.jpg)
+background-size: cover
+
+## SuperCherry on the top - Overlapped
+
+```c
+BOOL WriteFile(
+  HANDLE       hFile,
+  LPCVOID      lpBuffer,
+  DWORD        nNumberOfBytesToWrite,
+  LPDWORD      lpNumberOfBytesWritten,
+  LPOVERLAPPED lpOverlapped
+);
+```
+
+---
+
+background-image: url(img/cherry.jpg)
+background-size: cover
+
+## SuperCherry on the top - Overlapped
+
+```c
+typedef struct _OVERLAPPED {
+  ULONG_PTR Internal;
+  ULONG_PTR InternalHigh;
+  union {
+    struct {
+      DWORD Offset;
+      DWORD OffsetHigh;
+    } DUMMYSTRUCTNAME;
+    PVOID Pointer;
+  } DUMMYUNIONNAME;
+  HANDLE    hEvent;
+} OVERLAPPED, *LPOVERLAPPED;
+```
+
+---
+
+background-image: url(img/cherry.jpg)
+background-size: cover
+
+## SuperCherry on the top - before .NET Core
+
+```c#
+public class Overlapped
+{
+    OverlappedData m_overlappedData;
+
+    public Overlapped(int offsetLo, 
+        int offsetHi, 
+        IntPtr hEvent, 
+        IAsyncResult ar)
+    {
+        // ...
+    }
+}
+```
+
+???
+
+- class Overlapped
+- packed to data for every call
+- some managed, some unmanaged
+
+---
+
+background-image: url(img/cherry.jpg)
+background-size: cover
+
+## SuperCherry on the top - after PR
+
+```c#
+// Synchronous alloc/free is 1.5x faster:
+for (int i = 0; i < 10000000; i++)
+{
+    var o = new Overlapped();
+    var p = o.UnsafePack(callback, data);
+    Overlapped.Free(p);
+}
+
+// Asynchronous alloc/free is 1.1x faster:
+for (int i = 0; i < 10000000; i++)
+{
+    var o = new Overlapped();
+    var p = o.UnsafePack(callback, data);
+    Task.Run(() => { Overlapped.Free(p); });
+}
+```
+
+---
+
+background-image: url(img/cherry.jpg)
+background-size: cover
+
+## SuperCherry on the top - PR result
+
+<img src="img/pr_result.jpg" style="width:100%">
+
+
+---
+
+background-image: url(img/cherry.jpg)
+background-size: cover
+
+## Summary
+
+- Memory&lt;Krypton&gt;
+
+--
+
+- SuperSpan
+
+--
+
+- Unsafe.As&lt;GeneralZod&gt;()
+
+--
+
+- ValueTask&lt;DailyPlanet&gt;
+
+--
+
+- SuperCherry on the top
 
 ---
 
