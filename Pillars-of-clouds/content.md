@@ -436,6 +436,290 @@ background-size: cover
 
 ---
 
+background-image: url(img/pile.jpg)
+background-size: cover
+
+## Indeksowanie bez schematu: DocumentDB
+
+--
+
+- czy indeksowanie bez schematu jest możliwe?
+
+--
+
+- czy można indeksować wszystko?
+
+--
+
+- czy można zarządzać przy tym budżetem operacji?
+
+???
+
+Okazuje się że tak.
+
+---
+
+background-image: url(img/pile.jpg)
+background-size: cover
+
+## Indeksowanie bez schematu: DocumentDB - kolekcje
+
+--
+
+```js
+{
+    "Id" : 1,
+    "Name" : "Elon",
+    "Tags" : ["CEO", "car", "space", "loops", "nosleep"]
+}
+```
+
+--
+
+```js
+{
+    "Id" : 2,
+    "Name" : "Satya",
+    "Tags" : ["CEO", "cloud", "computers", "empower"]
+}
+```
+
+---
+
+background-image: url(img/pile.jpg)
+background-size: cover
+
+## Indeksowanie bez schematu: DocumentDB - struktura
+
+???
+
+- operuje na kolekjcach
+- kolekcje - podobne do siebie dokumenty
+- dokumenty zapisane jako JSON
+
+--
+
+```js
+{
+    "Id" : 2,
+    "Name" : "Satya",
+    "Tags" : ["CEO", "cloud", "computers", "empower"]
+}
+```
+
+--
+
+| Key  | Value |
+|---|---|
+| $/Name  | "Satya"  |
+| $/Tags/0  | "Ceo"  |
+
+---
+
+background-image: url(img/pile.jpg)
+background-size: cover
+
+## Indeksowanie bez schematu: DocumentDB - ekstrakcja indeksu
+
+| Term  | Value |
+|---|---|
+| $/Name  | 1, 2  |
+| $/Name/Elon  | 1 |
+| $/Name/Satya  | 2 |
+| $/Tags/0  | 1, 2 |
+| $/Tags/0/CEO  | 1, 2 |
+
+???
+
+- dokument JSON podzielony na części
+- możliwe jest zmapowanie (term, docid)
+- zbliżone dokumenty indeksowane w efektywny sposób
+
+---
+
+background-image: url(img/pile.jpg)
+background-size: cover
+
+## Indeksowanie bez schematu: DocumentDB - więcej opcji
+
+```C
+
+$/Tags/0/CEO          // full forward
+CEO/0/Tags/Name/$     // full reverse
+
+Tags/0/CEO            // partial forward
+CEO/0/Tags            // partial reverse
+```
+
+???
+
+- dużo możliwości
+- koszt generowania i przechowywania
+- wyważenie względem zapytań
+
+---
+
+background-image: url(img/pile.jpg)
+background-size: cover
+
+## Indeksowanie bez schematu: DocumentDB - kwerendy
+
+--
+
+#### Kwerenda 1
+
+```sql
+SELECT * FROM People WHERE Tags[0] == "CEO"
+```
+
+--
+
+```C
+CEO/0/Tags  // partial reverse
+```
+
+--
+
+#### Kwerenda 2
+
+```sql
+SELECT * FROM People WHERE Tags.Count >= 5
+```
+
+--
+
+```C
+$/Tags/4 // full forward
+```
+
+???
+
+- mają tag "4" - mają przynajmniej 5
+
+---
+
+background-image: url(img/pile.jpg)
+background-size: cover
+
+## Indeksowanie bez schematu: DocumentDB - konfiguracja indeksów
+
+--
+
+- pola: włączanie/wyłączanie z indeksu
+
+--
+
+- typy: hash, range, spatial, text
+
+--
+
+- tryb: Consistent, Lazy
+
+---
+
+background-image: url(img/pile.jpg)
+background-size: cover
+
+## Indeksowanie bez schematu: DocumentDB - budżet
+
+--
+
+- multi-tenant
+
+--
+
+- budżet IO dla każdej operacji
+
+--
+
+- oczekiwanie, jeśli budżet przekroczony
+
+---
+
+background-image: url(img/pile.jpg)
+background-size: cover
+
+## Indeksowanie bez schematu: DocumentDB - podsumowanie
+
+--
+
+- (prawie)agnostyczne indeksowanie jest możliwe
+
+--
+
+- autokompresja podobnych schematów
+
+--
+
+- budżetowanie operacji
+
+--
+
+- Whitepaper: _Schema-Agnostic Indexing with Azure DocumentDB_
+
+---
+
+background-image: url(img/wine.jpg)
+background-size: cover
+
+## DynamoDB - dojrzały rocznik
+
+- Whitepaper: _Dynamo: Amazon’s Highly Available Key-value Store_
+
+---
+
+background-image: url(img/book.jpg)
+background-size: cover
+
+# Filary chmur - podsumowanie
+
+--
+
+- Azure Storage Services
+
+--
+
+- Google TrueTime & Spanner
+
+--
+
+- Azure DocumentDB
+
+--
+
+- Amazon DynamoDB
+
+---
+
+background-image: url(img/papers.jpg)
+background-size: cover
+
+# Filary chmur - podsumowanie - co dalej
+
+- Whitepapers
+
+--
+
+- Whitepapers
+
+--
+
+- Whitepapers
+
+--
+
+- Whitepapers
+
+--
+
+- Whitepapers
+
+--
+
+- Whitepapers
+
+---
+
 background-image: url(img/athens.jpg)
 background-size: cover
 
