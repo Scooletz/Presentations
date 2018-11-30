@@ -94,6 +94,13 @@ background-size: cover
   - Twierdzenie CAP
   - optimistic concurrency
 
+???
+
+- twierdzenie CAP
+- namespace'y
+- wiele Data Center
+- dawanie tych samych danych dla wielu użytkowników
+
 --
 
 - globalna/skalowalna przestrzeń nazw
@@ -105,13 +112,6 @@ background-size: cover
 --
 
 - multi-tenant
-
-???
-
-- twierdzenie CAP
-- namespace'y
-- wiele Data Center
-- dawanie tych samych danych dla wielu użytkowników
 
 ---
 
@@ -493,7 +493,7 @@ background-size: cover
 
 ???
 
-- operuje na kolekjcach
+- operuje na kolekcjach
 - kolekcje - podobne do siebie dokumenty
 - dokumenty zapisane jako JSON
 
@@ -662,7 +662,108 @@ background-size: cover
 background-image: url(img/wine.jpg)
 background-size: cover
 
-## DynamoDB - dojrzały rocznik
+## DynamoDB - dojrzały, rozproszony rocznik ‎2007
+
+--
+
+Key-value store, który zainspirował wiele baz danych
+
+--
+
+- partycjonowanie (_partitioning_)
+
+- wysoka dostępność dla zapisów (_HA_)
+
+- odtwarzanie (_recovery_)
+
+---
+
+background-image: url(img/wine.jpg)
+background-size: cover
+
+## DynamoDB - partycjonowanie - Consistent Hashing
+
+![img](img/hash.png)
+
+???
+
+- węzły A, B, C, D, E, ... ułożone w koło
+
+- hash dla wartości klucza
+
+- jednorodne rozmieszczenie, łatwe przechwytywanie
+
+---
+
+background-image: url(img/wine.jpg)
+background-size: cover
+
+## DynamoDB - partycjonowanie - wysoka dostępność
+
+--
+
+- zawsze przyjmuj zapis (_Put (key, value)_)
+
+--
+
+- zapisuj wersję z tzw. _vector clock_
+
+--
+
+- jeśli jest konflikt, zaraportuj go przy odczytywaniu
+
+???
+
+- vector clock, nawiąż do Spanner TrueTime
+
+- logika biznesowa przy odczytywaniu
+
+---
+
+background-image: url(img/wine.jpg)
+background-size: cover
+
+## DynamoDB - partycjonowanie - wysoka dostępność (2)
+
+```C
+// writer x
+Put("a", _) // [("x", 1)]
+
+// writer x
+Put("a", _) // [("x", 2)]
+
+// writer y & z
+Put("a", _); // [("x", 2), ("y", 1)]
+Put("a", _); // [("x", 2), ("z", 1)]
+
+// writer x
+Get ("a")   // conflict & resolve
+
+Put ("a", _) // [("x", 3), ("y", 1), ("z", 1)]
+```
+
+???
+
+- vector clock, opisz scenariusz zapisów
+
+- biznesowa logika do roztrzygania sporów
+
+---
+
+background-image: url(img/wine.jpg)
+background-size: cover
+
+## DynamoDB - dojrzały, rozproszony rocznik ‎2007 - podsumowanie
+
+--
+
+- jedna z baz, którą _musisz znać (TM)_
+
+--
+
+- przodek kolejnych pokoleń baz
+
+--
 
 - Whitepaper: _Dynamo: Amazon’s Highly Available Key-value Store_
 
