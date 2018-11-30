@@ -1,4 +1,7 @@
-# Born To Perform
+#Pillars of clouds
 
-It's a bird. It's a plane. No, it's .NET Core!  
-.NET Core is here and it ain't going anywhere. It's strong, it's fast and it wants to help you to get to the world of performance. Join me in a journey of finding the most interesting attributes of this Core of Steel, that you can incorporate in your daily work. No Kryptonite needed! It will be a (<s>un</s>)safe trip.
+Only available in Polish. A talk about pillars standing below the public cloud, like: indexing, storage, time.
+
+#Filary chmur
+
+Zarządzanie infrastrukturą, platformą czy usługami w skali chmury publicznej to nie lada zadanie. Jak zapewnić jej działanie? Jaki podzielić zasoby? Jak zapewnić przechowanie petabyte'ów, exabyte'ów czy zettabyte'ów danych? Jak zapewnić, że chmura jako całość będzie działać? W czasie prelekcji zapoznamy się z fundamentami działania chmury publicznej. Przyjrzymy się zagadnieniom takim jak przechowywanie danych, ich indeksowaniu, federacjom oraz dbaniu o wykonanie zadaę w zadanym budżecie czasowym. Zapnijcie pasy. To będzie niesamowity lot.
