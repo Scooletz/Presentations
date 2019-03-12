@@ -63,12 +63,13 @@ background-size: cover
 
 ---
 
-## Performance w Azure
+background-image: url(img/gbu-3.jpg)
+background-size: cover
 
-- Azure Application Insights - Thrill
+???
 
+- Azure Stream Analytics - Trill
 - Cosmos DB - indeksy i BW-Tree+
-
 - Service Fabric - stan i zarządzanie pamięcią
 
 ---

@@ -96,7 +96,7 @@
         var content = currentSlide.querySelectorAll("div.remark-slide-content")[0];
         var hasImage = content.style.getPropertyValue("background-image");
         
-        if(hasImage && content.querySelectorAll('div.wrap').length == 0){
+        if(hasImage && content.querySelectorAll('div.wrap').length == 0 && content.firstChild.className != "remark-slide-number"){
           var wrap = document.createElement('div');
           wrap.className = "wrap";        
 
