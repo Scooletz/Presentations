@@ -417,6 +417,10 @@ background-size: cover
 
 - zna podział na dane ciepłe i zimne
 
+???
+
+zna podział na dane ciepłe i zimne (albo nie próbuje odgrzewać kotleta)
+
 ---
 
 background-image: url(img/bad.jpg)
@@ -460,6 +464,165 @@ background-size: cover
 ## Sprawny: Cosmos DB - podstawy baz danych - B+
 
 ![binary tree](img/bplustree2.png)
+
+???
+
+- wstawianie rosnących kluczy nie psuje drzewa, dodawanie jest na koniec
+- to dlatego RavenDB nie lubił Guidów jako idków
+
+---
+
+background-image: url(img/bad.jpg)
+background-size: cover
+
+## Sprawny: Cosmos DB - B+ jest złe
+
+--
+
+- indeks: klucz -> id_dokumentu
+
+???
+
+- nie interesuje nas struktura, która wymaga wielu odczytów
+- dodatkowo wiemy, że zapis już zachodzi
+- nie będzie kolizji przy zastępowaniu indeksu (zmiana już zaszła)
+
+- w rozwiązaniu (jak zawsze w IT) pomoże jedna warsta abstrakcji/mapowania
+
+--
+
+- klucze indeksu mają rozkład losowy (używana funkcja hashująca)
+
+--
+
+- klucze indeksu rzadko znajdują się na tych samych stronach
+
+--
+
+- aktualizacja indeksu musi odbyć się w założonym budżecie
+
+--
+
+- idealnie  `write amplification <= 1`
+
+--
+
+- idealnie  `read amplification <= 1`
+
+
+
+---
+
+background-image: url(img/bad.jpg)
+background-size: cover
+
+## Sprawny: Cosmos DB - Bw-Tree jest dobre
+
+### Tabela mapowań
+
+|Page Id | Wskaźnik |
+|:---:|---|
+| 0 | 0x1232  |
+| 1 | 0x3453  |
+| 2 | 0x5353  |
+| 3 | 0x9856  |
+
+???
+
+- tabela mapowań wirtualnych adresów/idków page'y do faktycznego obszaru pamięci
+
+---
+
+background-image: url(img/bad.jpg)
+background-size: cover
+
+## Sprawny: Cosmos DB - Bw-Tree jest dobre
+
+### Tabela mapowań
+
+```csharp
+Interlocked.CompareExchange(ref pages[2], 0xAAAA, 0x5353 );
+```
+
+|Page Id | Wskaźnik |
+|:---:|---|
+| 0 | 0x1232  |
+| 1 | 0x3453  |
+| 2 | 0xAAAA  |
+| 3 | 0x9856  |
+
+???
+
+- atomowa wymiana na nowy wskaźnik
+
+- pozostaje pytanie co kto wymienia i jak
+
+---
+
+background-image: url(img/bad.jpg)
+background-size: cover
+
+## Sprawny: Cosmos DB - Bw-Tree jest dobre
+
+![bw-tree](img/bw-tree1.png)
+
+???
+
+- każda operacja dodaje deltę
+
+- oryginalna strona cały czas w cache'u procesorów
+
+- po przekroczeniu pewnego progu delt następuje konsolidacja (przez 1 wątek)
+
+---
+
+background-image: url(img/bad.jpg)
+background-size: cover
+
+## Sprawny: Cosmos DB - Bw-Tree jest dobre
+
+![bw-tree](img/bw-tree2.png)
+
+???
+
+- konsolidowana strona ostatecznie zamienia oryginalną w mapie
+
+- core'y, które jeszcze nie zaktualizowały, cały czas mogą używać starej wersji
+
+- ok, ok, ale co z zapisem na dysk
+
+---
+
+background-image: url(img/bad.jpg)
+background-size: cover
+
+## Sprawny: Cosmos DB - Zapis na dysk
+
+![bw-tree](img/flush.png)
+
+???
+
+- zmiany są batchowane
+
+- flushowane na dysk co 1000 - 10000 zapisów
+
+- flushowane w sposób przyjazny dla SSD / HDD (dodawanie na końcu, bez aplifikacji)
+
+
+---
+
+background-image: url(img/gbu-3.jpg)
+background-size: cover
+
+???
+
+- CosmosDB, to nie "jakaś nowa baza" ale owoc wielu lat pracy
+
+- ciekawie łączy zagadnienia indeksowania dowolnych dokumentów z aspektem wydajności
+
+- pokazuje, że do różnych zagadnień (aktualizacja dokumentu i indeksacja) można podejść w różny sposób
+
+- używa podejścia zgodnego ze współczesną technologią: cache CPU, SSD i write-amplification
 
 ---
 
