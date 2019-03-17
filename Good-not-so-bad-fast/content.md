@@ -608,7 +608,6 @@ background-size: cover
 
 - flushowane w sposób przyjazny dla SSD / HDD (dodawanie na końcu, bez aplifikacji)
 
-
 ---
 
 background-image: url(img/gbu-3.jpg)
@@ -624,6 +623,8 @@ background-size: cover
 
 - używa podejścia zgodnego ze współczesną technologią: cache CPU, SSD i write-amplification
 
+- czas przejść do el Service'o Fabrico
+
 ---
 
 background-image: url(img/ugly.jpg)
@@ -631,8 +632,198 @@ background-size: cover
 
 ## Szybki: Service Fabric
 
+--
+
+- stateless, who care less
+
+--
+
+- dobre połączenie stanu i kodu
+
+--
+
+- system aktorów, system serwisów stanowych
+
 ---
 
+background-image: url(img/ugly.jpg)
+background-size: cover
+
+## Szybki: Service Fabric - federacja
+
+|Node|
+|---|
+|N1|
+|N2|
+|N3|
+|N4|
+|N5|
+
+???
+
+- zestaw węzłów
+- zapewniona bezpieczna komunikacja
+- możemy mieć usługi/serwisy
+- każdy węzeł używa lokalnego fizycznego dysku
+- dysk przy wyłączeniu node'a ginie
+- pakiety aplikacji przechowywane w SF (SLA niezależne)
+
+---
+
+background-image: url(img/ugly.jpg)
+background-size: cover
+
+## Szybki: Service Fabric - usługi
+
+|Node|A|B|C|
+|---|---|---|---|
+|N1| | | |
+|N2| | | |
+|N3| | | |
+|N4| | | |
+|N5| | | |
+
+???
+
+- usługi mają dane
+
+---
+
+background-image: url(img/ugly.jpg)
+background-size: cover
+
+## Szybki: Service Fabric - partycje
+
+|Node|A-1|A-2|A-3 | B |C-1|C-2|
+|---|---|---|---|---|---|---|
+|N1| | | | | | |
+|N2| | | | | | |
+|N3| | | | | | |
+|N4| | | | | | |
+|N5| | | | | | |
+
+???
+
+- dane w usłudze możemy podzielić na partycje/shardy
+- partycje względem czegokolwiek (zakres liter, hash)
+
+---
+
+background-image: url(img/ugly.jpg)
+background-size: cover
+
+## Szybki: Service Fabric - repliki
+
+|Node|A-1|A-2|A-3 | B |C-1|C-2|
+|---|---|---|---|---|---|---|
+|N1|✔️| | |✔️|✔️|✔️|
+|N2|✔️| |✔️|✔️|✔️| |
+|N3|  |✔️| |✔️| |✔️|
+|N4|✔️|✔️|✔️|✔️| | |
+|N5| |✔️|✔️|✔️| | |
+
+???
+
+- repliki to umieszczenie kopii danych partycji na różnych węzłach
+- serwis A replication factor =3
+- serwis B replication factor =5
+- serwis C replication factor =2
+
+---
+
+background-image: url(img/ugly.jpg)
+background-size: cover
+
+## Szybki: Service Fabric - primary/secondary
+
+|Node|A-1|A-2|A-3 | B |C-1|C-2|
+|---|---|---|---|---|---|---|
+|N1|🌶️| | |✔️|🌶️|✔️|
+|N2|✔️| |✔️|✔️|✔️| |
+|N3|  |🌶️| |✔️| |🌶️|
+|N4|✔️|✔️|✔️|🌶️| | |
+|N5| |✔️|🌶️|✔️| | |
+
+???
+
+- dla każdej partycji będzie jedna replika primary, reszta secondary
+- secondary gonią i replikują dane
+- secondary może odpowiadać, ale dane mogą być zrollbackowane
+
+---
+
+background-image: url(img/ugly.jpg)
+background-size: cover
+
+## Szybki: Service Fabric - reliable collections
+
+```csharp
+// sm - StateManager
+var dict = await sm
+    .GetOrAddAsync<IReliableDictionary<string, int>>("d1");
+var dict2 = await sm
+    .GetOrAddAsync<IReliableDictionary<string, int>>("d2");
+
+using (var tx = sm.CreateTransaction())
+{
+    await dict.AddAsync(tx, key, v1);
+    await dict2.AddAsync(tx, key, v2);
+
+    await tx.CommitAsync();
+}
+```
+
+???
+
+- pobranie słownika ze state managera
+- uruchomienie transakcji (WriteSet)
+- zbieranie danych do WriteSet (key-value-metadata)
+
+- commit transakcji:
+  - dane flushowane na dysk
+  - replikowane do pozozstałych replik
+  - aplikowane na stan w pamięci
+
+---
+
+background-image: url(img/ugly.jpg)
+background-size: cover
+
+## Szybki: Service Fabric - prędkość
+
+- wszystkie operacje zapisu wykonywane są na `PRIMARY`
+
+--
+
+- dane są w pamięci
+
+--
+
+- locki, zarządane lokalnie
+
+--
+
+- dane flushowane na dyski lokalne (`PRIMARY` + `SECONDARIES`)
+
+--
+
+- efektywnie, pytanie o dane do pamięci
+
+---
+
+background-image: url(img/gbu-3.jpg)
+background-size: cover
+
+???
+
+- 3 usługi, Stream Insight, CosmosDB, ServiceFabric
+
+- każda adresuje performance na swój sposób
+  - Stream Insight: kolumnowa serializacja, bit vector, pojedynczy wątek
+  - CosmosDB: zrozumienie podziału danych ciepłe/zimne, drzewo z deltami
+  - ServiceFabric: wykonanie razem z danymi w pamięci
+
+---
 
 background-image: url(img/GoodBadUgly2.jpg)
 background-size: cover
