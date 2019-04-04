@@ -7,7 +7,14 @@ background-size: cover
 
 ???
 
-Nazywam się Szymon Kulec, w sieci posługuję się nickiem Scooletz i muszę się Wam do czegoś przyznać. Stwierdzono u mnie NKDO...
+Nazywam się Szymon Kulec, w sieci posługuję się nickiem Scooletz.
+
+- Microsoft MVP
+- Particular Software - NServiceBus
+- DotNetos - tour po Polsce - konferencja!
+- Fan fajnych domen i performance'u
+
+Na początek, muszę się Wam do czegoś przyznać. Stwierdzono u mnie NKDO...
 
 ---
 
@@ -27,7 +34,7 @@ background-size: cover
 
 NKDO, czyli...
 Zazwyczaj na spotkaniach witamy nowo przybyłego mówiąc "Cześć Szymon". Dziękuję za wsparcie, wiele dla mnie znaczy.
-Chciałbym podzielić się historią mojego ostatniego przypadku Open Source'owego, który miał silne połączenie z .NET Core
+Chciałbym podzielić się historią jednego z moich ostatnich przypadków Open Source'owego, który miał silne połączenie z .NET Core
 
 ---
 
@@ -177,7 +184,7 @@ background-size: cover
 
 - dowolna wielkość
 --
-, tzn. od 1 do 63 elementów :D
+, tzn. od 1 do 63 bloków (4kb) :D
 
 --
 
@@ -227,6 +234,20 @@ for (var i = 0; i < 64 - size; i++)
 }
 return -1;
 ```
+
+---
+
+# Thruster - 63 elementy
+
+```c#
+00000000_00000000_00000000_00000111 // << 0
+00000000_00000000_00000000_00001110 // << 1
+00000000_00000000_00000000_00011100 // << 2
+
+...
+
+```
+
 
 ---
 
@@ -448,6 +469,26 @@ public bool TryEnqueue(T item)
 
 ---
 
+# Kestrel - MemoryPool
+## Head and Tail
+
+```c#
+[StructLayout(LayoutKind.Explicit,
+     Size = 3 * CacheLineSize)]
+internal struct PaddedHeadAndTail
+{
+    const int CacheLineSize = 
+    Internal.PaddingHelpers.CACHE_LINE_SIZE;
+    [FieldOffset(1 * CacheLineSize)]
+    public int Head;
+
+    [FieldOffset(2 * CacheLineSize)]
+    public int Tail;
+}
+```
+
+---
+
 # Thruster - wnioski
 
 --
@@ -483,7 +524,14 @@ background-size: cover
 background-image: url(img/dotnetos.png)
 background-size: contain
 
-# Konferencja !
+# Konferencja!
+
+---
+
+background-image: url(img/moa.png)
+background-size: contain
+
+# Master Of Aggregates !
 
 ---
 
