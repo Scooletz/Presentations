@@ -78,7 +78,8 @@ id: 'index'
 			</div>
 			<div class="row">
 				<div class="col">
-					<a class="btn btn-primary btn-xl text-uppercase" href="/{{ presentation.path }}" class="button" target="_blank">Slides</a>
+					<a class="btn btn-primary btn-lg text-uppercase" href="/{{ presentation.path }}" class="button" target="_blank">Slides</a>
+					{% if presentation.video %}<a class="btn btn-primary btn-lg text-uppercase" href="{{ presentation.video }}" class="button" target="_blank">Video</a>{% endif %}
 				</div>
 			</div>             
 		</div>
