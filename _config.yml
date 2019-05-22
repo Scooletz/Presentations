@@ -1,0 +1,45 @@
+# Site settings
+
+title: "Presentations by Szymon Kulec @Scooletz"
+description: "Presentations by Szymon Kulec @Scooletz"
+
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "https://presentations.scooletz.com" # the base hostname & protocol for your site
+excerpt_separator: <!--more-->
+
+highlighter: rouge
+markdown: kramdown
+exclude: 
+- README.md
+- .gitignore
+- CNAME
+- assets/
+- BornToPerform/
+- Concurrency/
+- DontCallOthers/
+- DotNetos/
+- DotNetos2018/
+- EDA-in-Practice/
+- Good-not-so-bad-fast/
+- HttpCache/
+- IOCompletionPorts/
+- KISSS/
+- Kraken/
+- LogEverything/
+- Magic/
+- OnlyThing/
+- Performance/
+- Pillars-of-clouds/
+- RAFTing/
+- RampUp/
+- SecretSauce/
+- ServiceFabric/
+- Thruster/
+- Transactions/
+- WrocFabric/
+
+encoding: utf-8
+plugins:
+  - jekyll-redirect-from
+
+output: true

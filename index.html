@@ -1,3 +1,7 @@
+---
+id: 'index'
+---
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,6 +60,30 @@
         </div>
       </div>
     </header>
+
+	{% for presentation in site.data.presentations %}
+	<section id="{{ presentation.id }}">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<h2 class="section-heading text-uppercase">{{ presentation.name }}</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<p class="large">
+						{{ presentation.abstract }}
+					</p>
+				</div>
+			</div>
+			<div class="row" style="padding-bottom: 5%; padding-top: 5%">
+				<div class="col">
+					<a class="btn btn-primary btn-xl text-uppercase" href="/{{ presentation.path }}" class="button" target="_blank">Slides</a>
+				</div>
+			</div>             
+		</div>
+	</section>
+	{% endfor %}
 
     <section id="IOCompletionPorts">
       <div class="container">
