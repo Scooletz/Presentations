@@ -13,30 +13,6 @@ exclude:
 - README.md
 - .gitignore
 - CNAME
-- assets/
-- BornToPerform/
-- Concurrency/
-- DontCallOthers/
-- DotNetos/
-- DotNetos2018/
-- EDA-in-Practice/
-- Good-not-so-bad-fast/
-- HttpCache/
-- IOCompletionPorts/
-- KISSS/
-- Kraken/
-- LogEverything/
-- Magic/
-- OnlyThing/
-- Performance/
-- Pillars-of-clouds/
-- RAFTing/
-- RampUp/
-- SecretSauce/
-- ServiceFabric/
-- Thruster/
-- Transactions/
-- WrocFabric/
 
 encoding: utf-8
 plugins:
