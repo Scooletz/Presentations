@@ -645,10 +645,44 @@ background-size: cover
 
 ---
 
+background-image: url(img/question.jpg)
+background-size: cover
+
+## Co dalej?
+
+- computation as commodity
+
+- inercja - ruch na mapie
+
+- rozwiązania:
+
+  - Identity Management w Azure
+
+  - Firebase
+
+???
+
+- INERTIA - przesuwa elementy w prawo
+
+- ruch na mapie - warto zastanowić się gdzie następuje ruch i co robić
+
+- Identity Management w Azure
+  - coraz więcej serwisów, zasady dostępu
+  - uruchamianie wykonania pod credentialami osoby, która kliknęła
+- Firebase
+  - może wszystko :P
+  - pełne połączenie konta + bazy
+
+---
+
 background-image: url(img/views-token.jpg)
 background-size: contain
 
 ???
+
+- CO DALEJ?
+  - commodity
+  - INERTIA - przesuwa elementy w prawo
 
 - brakuje jeszcze wielu elementów
 
