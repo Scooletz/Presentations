@@ -1,3 +1,8 @@
+- id: Monoliths-mservices-funcs
+  name: "Monoliths, microservices, functions and beyond",
+  abstract: "Polish-only. After ancient times of big monolitic fights, after all the splendor of using microservices it's time for another hype: functons and FaaS based solutions. Is it something trustworthy? Should we do another big bang rewrite to this next approach? Does everything need to be a function? During this presentation I'll share my journey related with a service, that functions are called from time to time despite of a lot of data being transported/processed. Be warned, the following hashtags will be present during this presentation: #collaborativeDomain, #OAuth, #accessToken or boring in its stability #AzureStorage."
+  path: "Monoliths-mservices-funcs"
+
 - id: Good-not-so-bad-fast
   name: "Good, not-so-bad & fast"
   abstract: "Polish-only. How three of Azure services: Stream Analytics, CosmosDB and Service Fabric, deliver great performance in the cloud."
