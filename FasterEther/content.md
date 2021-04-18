@@ -192,6 +192,49 @@ public sealed class LargerArrayPool : ArrayPool<byte>
 
 ---
 
+background-image: url(img/math.jpg)
+background-size: cover
+
+## Math with uint256
+
+---
+
+## Math with uint256 - details
+
+- EVM uses **32 bytes** (256 bits) long words
+
+--
+
+- EVM is **Turing complete**, it performs regular arithmetics
+
+--
+
+- EVM provides usual arithmetic operations:
+
+  - `ADD`  _a + b_
+  - `SUB`  _a - b_
+  - `MUL`  _a * b_
+  - `DIV`  _a / b_
+  - `MOD`  _a % b_
+  - `EXP`  _a<sup>b</sup>_
+
+--
+
+- but also binary operations
+  - `AND` _a & b_
+  - `XOR` _a ^ b_
+  - `NOT` _~a_
+
+---
+
+## Math with uint256 - opportunities
+
+- use **BenchmarkDotNet** to provide benchmarks
+
+
+
+---
+
 background-image: url(img/Ethereum.png)
 background-size: cover
 
