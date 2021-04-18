@@ -161,7 +161,7 @@ public class EvmPooledMemory
 
 --
 
-**We have it!**
+**Let's do it!**
 
 ---
 
@@ -229,9 +229,93 @@ background-size: cover
 
 ## Math with uint256 - opportunities
 
+- **pure CPU** computations without allocations
+
+--
+
 - use **BenchmarkDotNet** to provide benchmarks
 
+--
 
+- do low level work in a specific location...
+
+---
+
+## Math with uint256 - struct
+
+```csharp
+public readonly struct UInt256 : IComparable, IComparable<UInt256>
+{
+  public readonly ulong u0, u1, u2, u3;
+  
+  public static bool operator==(in UInt256 a, in UInt256 b)=>a.Equals(b);
+  
+  public bool Equals(UInt256 other)
+  {
+      return u0 == other.u0 && 
+            u1 == other.u1 && 
+            u2 == other.u2 && 
+            u3 == other.u3;
+  }
+  // and many more methods...
+}
+
+```
+
+---
+
+## Math with uint256 - IsZero
+
+```csharp
+public readonly struct UInt256
+{
+  public static readonly UInt256 Zero = new (0UL, 0UL, 0UL, 0UL);
+
+* public bool IsZero => this == Zero;
+}
+```
+
+- used in many checks
+
+--
+
+- includes multiple comparisons
+
+--
+
+- `.IsZero` is true only when **all fields** are 0
+
+--
+
+- if all fields are 0, then their ORed value should be 0 as well...
+
+---
+
+## Math with uint256 - IsZero - optimized
+
+Pull Request: [Optimized IsZero and IsOne #12](https://github.com/NethermindEth/int256/pull/12)
+
+```csharp
+public readonly struct UInt256
+{
+  public bool IsZero => this == Zero; // old
+
+* public bool IsZero => (u0 | u1 | u2 | u3) == 0;
+}
+```
+
+---
+
+## Math with uint256 - IsZero - results
+
+Before & after
+
+| Method |                Value |      Mean |     Error |    StdDev |
+|------- |--------------------- |----------:|----------:|----------:|
+| **IsZero** before |     **0** | **1.3511 ns** | **0.0703 ns** | **0.1074 ns** |
+| **IsZero** after |      **0** | **0.0506 ns** | **0.0322 ns** | **0.0301 ns** |
+| **IsZero** before |     **1** | **0.7594 ns** | **0.0538 ns** | **0.0552 ns** |
+| **IsZero** after |      **1** | **0.0517 ns** | **0.0330 ns** | **0.0308 ns** |
 
 ---
 
