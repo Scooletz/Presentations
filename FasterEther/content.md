@@ -12,21 +12,25 @@ background-size: cover
 background-image: url(img/flight-to-mars.jpg)
 background-size: cover
 
+## Chapter 1: Discovering New Worlds
+
+---
+
 ## Discovering New Worlds
 
-1. You select a new planet...
+1. You select a new planet... 🪐
 
 --
 
-1. You pay for the fuel...
+1. You pay for the fuel... ⛽
 
 --
 
-1. You ship starts...
+1. Your ship starts... 🚀
 
 --
 
-1. Ethereum node suffers a memory leak 💥
+1. An Ethereum node suffers a memory leak 💥
 
 --
 
@@ -36,12 +40,11 @@ This is what happened with **Dark Forest** game, which is
 
 ---
 
-background-image: url(img/flight-to-mars.jpg)
-background-size: cover
-
 ## Discovering New Worlds - more
 
 To solve the mystery, a usual setup was required:
+
+--
 
 1. having a **reproduction scenario**:
 
@@ -57,16 +60,11 @@ To solve the mystery, a usual setup was required:
 
     - a.k.a. WHAT causes it
 
---
-
 ???
 
 We need to go deeper!
 
 ---
-
-background-image: url(img/flight-to-mars.jpg)
-background-size: cover
 
 ## Discovering New Worlds - EVM
 
@@ -95,9 +93,6 @@ background-size: cover
 
 ---
 
-background-image: url(img/flight-to-mars.jpg)
-background-size: cover
-
 ## Discovering New Worlds - more EVM
 
 - stack is cheap
@@ -105,12 +100,95 @@ background-size: cover
 --
 
 - high offsets of memory are pricey
-  - the cost of memory is correlated with `O(n*n)`
-  - where `n` is a number of words allocated
+  - the cost of offset `n` is correlated with `O(n*n)`
 
 --
 
-- apps usually tend to optimize for the memory usage - they're cheaper to run
+- apps' creators tend to optimize for their memory usage
+
+--
+
+- all costs are paid in **gas** which actual price depends on the demand
+
+---
+
+## Discovering New Worlds - discovery
+
+```csharp
+var memory = ArrayPool<byte>.Rent(int minimumLength) // hot line 🔥
+
+// used in the EVM memory
+public class EvmPooledMemory
+{
+    public const int WordSize = 32;
+    static readonly ArrayPool<byte> Pool = ArrayPool<byte>.Shared;
+}
+```
+
+--
+
+- `ArrayPool<T>.Shared` - the default pool for reusable arrays `T[]`
+
+--
+
+- here, `Rent` was responsible for all the CPU + allocations
+
+--
+
+- what's wrong with this default pool anyway?
+
+---
+
+## Discovering New Worlds - reasoning
+
+- there's nothing wrong with `ArrayPool<T>.Shared`
+
+--
+
+- **Dark Forest** app was requesting more than 1MB of memory
+
+--
+
+- EVM memory was requesting more than 1MB `byte[]` from the pool
+
+--
+
+- which is fine for `ArrayPool<T>.Shared`....
+
+--
+
+- but for `size > 1MB` it will allocate an array every single time and won't pool it
+
+--
+
+**We have it!**
+
+---
+
+## Discovering New Worlds - solution
+
+Pull Request: [LargeArrayPool introduced #2493](https://github.com/NethermindEth/nethermind/pull/2493)
+
+```csharp
+public sealed class LargerArrayPool : ArrayPool<byte>
+{
+    static readonly LargerArrayPool s_instance = new LargerArrayPool();
+    public static new ArrayPool<byte> Shared => s_instance;
+    public const int LargeBufferSize = 8 * 1024 * 1024;
+}
+```
+
+--
+
+- pools a large 8MB per one core only
+
+--
+
+- defaults to `ArrayPool<T>.Shared` for smaller ones
+
+--
+
+- aligned with modern cloud `SKU`s
 
 ---
 
