@@ -644,7 +644,37 @@ With SNARKs a malicious proof will be found and discarded.
 
 ---
 
-## STARKs - summary
+## Faster Ether - summary
+
+We saw that optimizations and performance work can be done on multiple levels:
+
+- a failing scenario with a memory leak from `ArrayPool<byte>.Shared`
+
+--
+
+- benchmark based, computing optimizations with **IsZero** and **multiplication**
+
+--
+
+- replacing a custom implementation with BCL component call with **Multiply64**
+
+--
+
+- leveraging the architecture assumptions with **STARKs** and split between computing and verifying
+
+---
+
+## Accounts to follow
+
+- [@dotnetosorg](https://twitter.com/dotnetosorg/) for general .NET awesomeness
+
+--
+
+- [@nethermindeth](twitter.com/nethermindeth) for Ethereum related news with .NET hats on
+
+--
+
+- [@StarkWareLtd](https://twitter.com/StarkWareLtd) for STARKs related news
 
 ---
 
