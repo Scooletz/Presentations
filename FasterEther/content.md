@@ -9,6 +9,11 @@ background-size: cover
 
 ---
 
+background-image: url(img/logos.png)
+background-size: cover
+
+---
+
 background-image: url(img/flight-to-mars.jpg)
 background-size: cover
 
@@ -192,6 +197,16 @@ public sealed class LargerArrayPool : ArrayPool<byte>
 
 ---
 
+## Discovering New Worlds - summary
+
+- **source**: a problematic scenario with CPU + memory overhead
+
+- **tools**: profiling with dotTrace & dotMemory
+
+- **solution**: an implementation of a custom `ArrayPool` for big arrays (more than 1MB)
+
+---
+
 background-image: url(img/math.jpg)
 background-size: cover
 
@@ -319,6 +334,16 @@ Before & after
 
 ---
 
+## Math with uint256 - IsZero - summary
+
+- **source**: noticing potential gains with low work overhead
+
+- **tools**: BenchmarkDotNet
+
+- **solution**: a binary operator based implementation
+
+---
+
 ## Math with uint256 - Multiplication
 
 - not that simple
@@ -359,6 +384,8 @@ public static void Multiply(in UInt256 x, in UInt256 y, out UInt256 res){
 
 ## Math with uint256 - Multiplication - optimized
 
+Pull Request: [UInt256 Multiply speed up #11](https://github.com/NethermindEth/int256/pull/11)
+
 ```csharp
 UmulHop(carry, x[1], y[0], out carry, out res1);
 
@@ -377,6 +404,16 @@ Replaced indexing with direct access to a specific part
 | **Multiply_UInt256** after | **27.05 ns** | **0.399 ns** | **0.373 ns** |  **920 B** |
 
 Twice faster than before!
+
+---
+
+## Math with uint256 - Multiplication - summary
+
+- **source**: noticing indexing logic in a compute heavy component
+
+- **tools**: BenchmarkDotNet
+
+- **solution**: indexer turned into a direct access
 
 ---
 
@@ -404,6 +441,8 @@ internal static (ulong high, ulong low) Multiply64(ulong a, ulong b)
 ---
 
 ## Math with uint256 - Multiply64 - optimized
+
+Pull Request: [Multiply64 optimized with Math.BigMul #15](https://github.com/NethermindEth/int256/pull/15)
 
 ```csharp
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -459,6 +498,16 @@ public static unsafe ulong BigMul(ulong a, ulong b, out ulong low)
 - 2 times faster than before!
 
 - **4 times faster** than the initial multiplication!
+
+---
+
+## Math with uint256 - Multiply64 - summary
+
+- **source**: looking for potential Math counterparts in .NET5
+
+- **tools**: BenchmarkDotNet
+
+- **solution**: replacing a custom implementation with a call to .NET BCL
 
 ---
 
