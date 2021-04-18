@@ -319,6 +319,149 @@ Before & after
 
 ---
 
+## Math with uint256 - Multiplication
+
+- not that simple
+
+--
+
+- requires dealing with carry over
+
+--
+
+- requires multiple `ulong` multiplications
+
+---
+
+## Math with uint256 - Multiplication - impl
+
+```csharp
+public static void Multiply(in UInt256 x, in UInt256 y, out UInt256 res){
+  ulong carry, res1, res2, res3, r0, r1, r2, r3;
+  
+  (carry, r0) = Multiply64(x[0], y[0]);
+  UmulHop(carry, x[1], y[0], out carry, out res1);
+  UmulHop(carry, x[2], y[0], out carry, out res2);
+  res3 = x[3] * y[0] + carry;
+  
+  UmulHop(res1, x[0], y[1], out carry, out r1);
+  UmulStep(res2, x[1], y[1], carry, out carry, out res2);
+  res3 = res3 + x[2] * y[1] + carry;
+  
+  UmulHop(res2, x[0], y[2], out carry, out r2);
+  res3 = res3 + x[1] * y[2] + carry;
+  
+  r3 = res3 + x[0] * y[3]; res = new UInt256(r0, r1, r2, r3);
+}
+```
+
+---
+
+## Math with uint256 - Multiplication - optimized
+
+```csharp
+UmulHop(carry, x[1], y[0], out carry, out res1);
+
+*UmulHop(carry, Unsafe.Add(ref rx, 1), ry, out carry, out res1);
+```
+
+Replaced indexing with direct access to a specific part
+
+---
+
+## Math with uint256 - Multiplication - results
+
+|           Method |      Mean |    Error |   StdDev |   Code Size |
+|----------------- |----------:|---------:|---------:|---------:|---------:|
+| **Multiply_UInt256** before | **62.56 ns** | **1.203 ns** | **3.169 ns** | **1223 B** |
+| **Multiply_UInt256** after | **27.05 ns** | **0.399 ns** | **0.373 ns** |  **920 B** |
+
+Twice faster than before!
+
+---
+
+## Math with uint256 - Multiply64
+
+```csharp
+[MethodImpl(MethodImplOptions.AggressiveInlining)]
+internal static (ulong high, ulong low) Multiply64(ulong a, ulong b)
+{
+  ulong a0 = (uint)a;
+  ulong a1 = a >> 32;
+  ulong b0 = (uint)b;
+  ulong b1 = b >> 32;
+  ulong carry = a0 * b0;
+  uint r0 = (uint)carry;
+  carry = (carry >> 32) + a0 * b1;
+  ulong r2 = carry >> 32;
+  carry = (uint)carry + a1 * b0;
+  var low = carry << 32 | r0;
+  var high = (carry >> 32) + r2 + a1 * b1;
+* return (high, low);           // 128bit ulong returned in 2 parts
+}
+```
+
+---
+
+## Math with uint256 - Multiply64 - optimized
+
+```csharp
+[MethodImpl(MethodImplOptions.AggressiveInlining)]
+internal static (ulong high, ulong low) Multiply64(ulong a, ulong b)
+{
+  // non-pro move: just use a new Math.BigMul method 😂
+* ulong high = Math.BigMul(a, b, out ulong low);
+  return (high, low);
+}
+```
+
+--
+
+Could you discuss the implementation **a bit more**? 🙄
+
+--
+
+Sure. 😜
+
+---
+
+## Math with uint256 - Multiply64 - Math.cs
+
+```csharp
+public static unsafe ulong BigMul(ulong a, ulong b, out ulong low)
+{
+* if (Bmi2.X64.IsSupported)
+  {
+    ulong tmp;
+    ulong high = Bmi2.X64.MultiplyNoFlags(a, b, &tmp);
+    low = tmp;
+    return high;
+  }
+* else if (ArmBase.Arm64.IsSupported)
+  {
+    low = a * b;
+    return ArmBase.Arm64.MultiplyHigh(a, b);
+  }
+* return SoftwareFallback(a, b, out low);
+}
+```
+
+---
+
+## Math with uint256 - Multiply64 - results
+
+
+|           Method |      Mean |    Error |   StdDev |
+|----------------- |----------:|---------:|---------:|
+| **Multiply_UInt256** before| **28.50 ns** | **0.537 ns** | **0.996 ns** |
+| **Multiply_UInt256** after | **19.08 ns** | **0.266 ns** | **0.236 ns** |
+
+- 2 times faster than before!
+
+- **4 times faster** than the initial multiplication!
+
+---
+
 background-image: url(img/Ethereum.png)
 background-size: cover
 
