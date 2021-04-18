@@ -17,7 +17,7 @@ background-size: cover
 background-image: url(img/flight-to-mars.jpg)
 background-size: cover
 
-## Chapter 1: Discovering New Worlds
+## Discovering New Worlds
 
 ---
 
@@ -489,7 +489,6 @@ public static unsafe ulong BigMul(ulong a, ulong b, out ulong low)
 
 ## Math with uint256 - Multiply64 - results
 
-
 |           Method |      Mean |    Error |   StdDev |
 |----------------- |----------:|---------:|---------:|
 | **Multiply_UInt256** before| **28.50 ns** | **0.537 ns** | **0.996 ns** |
@@ -508,6 +507,144 @@ public static unsafe ulong BigMul(ulong a, ulong b, out ulong low)
 - **tools**: BenchmarkDotNet
 
 - **solution**: replacing a custom implementation with a call to .NET BCL
+
+---
+
+background-image: url(img/starks.jpg)
+background-size: cover
+
+## STARKs
+
+---
+
+## STARKs - current state & near future
+
+- Ethereum version 1 works with **Proof of Work** which
+
+  - consumes electricity ⚡
+  - requires generic purpose GPUs for computing 🖥️
+
+--
+
+- It results in people repeatedly sharing information about
+  - high impact on environment (_C0<sub>2</sub>_ argument)
+  - shortage of good GPUs (_I can't play games_ argument)
+
+--
+
+- It will be addressed by **Ethereum 2**
+  - scales up Ethereum by introducing **Shards**
+  - replaces the Proof of Work with **Proof of Stake** (no GPUs)
+  - C0<sub>2</sub> attention will go again to cars, planes, meat
+  - GPUs will be available
+
+---
+
+## STARKs - Ethereum current execution model
+
+- all transactions and contracts are executed on **all nodes**
+
+--
+
+- for _N_ nodes and _T_ execution steps, the total cost of **computation is _N * T_**
+
+--
+
+- are there any global optimizations possible? 🧠
+
+--
+
+- is it possible to **compute more by computing less**? 😐
+
+--
+
+It's not the best question to answer. Let's rephrase.
+
+---
+
+## STARKs - the question
+
+A better question, splitting **computation** from **verification**
+
+> Is it possible to compute something outside of Ethereum and have its execution verified on-chain, inside Ethereum?
+
+and
+
+> Would that be more efficient?
+
+--
+
+**Yes**, using **STARKs**!
+
+---
+
+## STARKs - introduction
+
+Consider two types of entities
+
+- **prover** - running a program and generating a **proof** of computation that can be verified
+
+- **verifier** - verifying the proof and ensuring that computation happened with the specific result
+
+--
+
+Consider _T_ as the number of steps to be executed, it's possible with STARKs to create...
+
+--
+
+- **prover** that runs in _O(T log(T))_
+
+- **verifier** that runs in _O(log<sup>K</sup>(T))_, a.k.a polylog
+
+--
+
+This makes the **verifier exponentially cheaper** than _T_ 🤩
+
+---
+
+## STARKs - the beauty and the math
+
+Given:
+
+- _O(T log(T))_ - the cost of running **a single prover** somewhere, even on your machine
+
+- _O(N * log<sup>K</sup>(T))_ - the cost of **running verification** on _N_ Ethereum nodes
+
+--
+
+We just **saved a lot** of computation, because:
+
+<center><em>O(N * log<sup>K</sup>(T))</em> is less than <em>O(N * T)</em> </center>
+
+---
+
+## STARKs - the beauty and more math
+
+This means that:
+
+- **Ethereum can be used to verify** of the computation
+
+- computation itself can be run on a machine that potentially is malicious
+
+--
+
+With SNARKs a malicious proof will be found and discarded.
+
+**You can't cheat it! 💥**
+
+---
+
+## STARKs - summary
+
+- **source**: looking for huge scalability wins, embracing Ethereum nature
+
+- **tools**: so-called **moon math**
+
+- **solution**: splitting the computation into two different parts: running (proving) and verification
+
+---
+
+## STARKs - summary
 
 ---
 
