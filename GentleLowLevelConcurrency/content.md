@@ -262,6 +262,160 @@ How 🧑‍💼 as an external observer sees the belt?
 
 1. if 2️⃣ is observed, then the 2nd slot is set
 
+If 🧑‍💼 remembers last processed count, 🧑 & 🧑‍💼 can put and process items at the same time!
+
+---
+
+background-image: url(img/queue.jpg)
+background-size: cover
+
+## ConcurrentQueue - high-level view
+
+--
+
+* **unbounded MPMC** - Multi Producer Multi Consumer unbounded
+
+--
+
+* concurrent (it's Multi on both ends, it must be thread-safe)
+
+--
+
+* **FIFO** - first in-first out
+
+--
+
+* built from bounded MPMC **Segments**
+
+--
+
+* operations:
+
+ * `Enqueue` - adds an item
+ * `TryDequeue` - tries to dequeue an item
+ * `TryPeek` - tries to return an item from the beginning of the queue without dequeueing it
+ * `Count` - counts items at the specific moment
+ * `IsEmpty` - a fast check for being empty at the specific moment
+
+---
+
+### ConcurrentQueue - design
+
+.center[![img](img\concurrentqueue.png)]
+
+---
+
+background-image: url(img/queue.jpg)
+background-size: cover
+
+### ConcurrentQueue - design
+
+Is a simple **wrap** for `_head` and `_tail`:
+
+* `_head` - first segment, used to `TryDequeue`
+
+* `_tail` - last segment, used to `Enqueue`
+
+* **single segment** only at the beginning: `_head` == `_tail`
+
+* more segments between `_head` and `_tail` if needed
+
+---
+background-image: url(img/queue.jpg)
+background-size: cover
+
+### ConcurrentQueue - design - segment
+
+Segment:
+
+* is a queue on its own, but it's **bounded**
+* is a node in the list - has a ~~pointer~~ reference to the next segment
+* uses **padded struct** to ensure that head and tail are on separate cache lines
+
+```csharp
+sealed class ConcurrentQueueSegment<T>
+{
+  readonly Slot[] _slots;
+
+  PaddedHeadAndTail _headAndTail; // head & tail of a segment
+
+  ConcurrentQueueSegment<T> _nextSegment; // the link to the next
+
+  // ... more
+}
+```
+
+---
+background-image: url(img/queue.jpg)
+background-size: cover
+
+### ConcurrentQueue - design - slot
+
+A simple structure that contains:
+
+- the `Item`, the actual value stored in a queue
+
+- the `SequenceNumber`, the number used for synchronization
+
+```csharp
+struct Slot
+{
+  public T Item;
+
+  public int SequenceNumber;
+}
+```
+
+---
+background-image: url(img/queue.jpg)
+background-size: cover
+
+### ConcurrentQueue - operations
+
+```csharp
+public bool TryEnqueue(T item) {
+  // ...
+  slots[i].Item = item;
+  Volatile.Write(ref slots[i].SequenceNumber, t + 1);
+  return true;
+  // ...
+}
+```
+
+--
+
+```csharp
+public bool TryDequeue(out T item) {
+  // ...
+  item = slots[i].Item!;
+  slots[i].Item = default;
+  Volatile.Write(ref slots[i].SequenceNumber, head + slots.Length);
+  return true;
+  // ...
+}
+```
+
+---
+
+background-image: url(img/queue.jpg)
+background-size: cover
+
+### ConcurrentQueue - operations
+
+1. Enqueuer 🧑:
+  1. reads sequence #️⃣ from a slot
+  1. if the sequence is multiple size of the segment, ready to dequeue 🔳
+  1. 🥕,➡️#️⃣+1
+
+1. Dequeuer:
+  1. reads sequence #️⃣ from a slot
+  1. if the sequence is equal to the head, ready to dequeue 🥕
+  1. 🔳,➡️#️⃣ head + SIZE
+
+--
+
+**Pure awesomeness:** the sequence is always increasing! This ensures that it's not `true`/`false` which can be read with a stale ordering. If you get a bigger number, you know that the value is set properly or the slot is ready to accept the value!
+
 ---
 
 background-image: url(img/gentle.jpg)
