@@ -437,7 +437,12 @@ background-size: cover
 
 **Answer**: Otherwise `volatile` would not help much, as it only ensures **happened before** semantics. Stale reads are possible, but ordering is preserved!
 
+---
 
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football
 
 ---
 
