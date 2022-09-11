@@ -48,7 +48,7 @@ from [Atomic Danger](https://abseil.io/docs/cpp/atomic_danger) by Dmitry Vyukov 
 background-image: url(img/fire.jpg)
 background-size: cover
 
-## A word of caution, pt. 2
+## A word of caution
 
 1. **Dmitry Vyukov**:
   
@@ -69,6 +69,104 @@ background-size: cover
 --
 
 Right👁️👁️? 
+
+---
+
+background-image: url(img/basket.jpg)
+background-size: cover
+
+## A volatile shopping basket
+
+Let's consider an shopping example with two actors:
+
+1. a person 🧑 who adds items to a shopping basket 🧺
+1. a casher 🧑‍💼 who wants to checkout the basket 🧺
+
+--
+
+The scenario:
+
+1. 🧑: adds 🥕 to 🧺
+1. 🧑: adds 🥔 to 🧺
+1. 🧑: says that 🧺 is ready to checkout 💰
+1. 🧑‍💼: checkout 💸
+
+---
+
+background-image: url(img/basket.jpg)
+background-size: cover
+
+## A volatile shopping basket
+
+What if 🧑 was run on a modern CPU? 
+The sequence of operations could be perceived by an external observer as follows:
+
+1. 🥕, 🥔, 🧺
+1. 🥕, 🧺, 🥔
+1. 🧺, 🥕, 🥔
+1. 🧺, 🥔, 🥕
+1. 🥔, 🧺, 🥕
+1. 🥔, 🥕, 🧺
+
+--
+
+After all, at the end all the properties are matched:
+
+- 🥕 is in
+- 🥔 is in
+- 🧺 is ready
+
+---
+
+background-image: url(img/basket.jpg)
+background-size: cover
+
+## A volatile shopping basket
+
+What if 🧑‍💼 was run as another thread? What are the cases that would make it **work correctly**?
+
+--
+
+Only these, where 🧺 is checked out **after** adding 🥕 and 🥔 in **any order**
+
+--
+
+1. 🥕, 🥔, 🧺
+1. ~~🥕, 🧺, 🥔~~
+1. ~~🧺, 🥕, 🥔~~
+1. ~~🧺, 🥔, 🥕~~
+1. ~~🥔, 🧺, 🥕~~
+1. 🥔, 🥕, 🧺
+
+---
+
+background-image: url(img/basket.jpg)
+background-size: cover
+
+## A volatile shopping basket
+
+🧑 & 🧑‍💼 should work together to make sure that:
+
+- 🧺 is marked as ready but...
+
+- **only after** 🥕 and 🥔 are in it.
+
+---
+
+background-image: url(img/basket.jpg)
+background-size: cover
+
+## A volatile shopping basket
+
+Let's introduce then an additional operation to ensure some ordering ➡️:
+
+🥕, 🥔, ➡️, 🧺
+
+which means that:
+
+- 🧺 not ready - some items **might** be in it
+
+- 🧺 ready - every single item that was put in it **must** be there
 
 ---
 
