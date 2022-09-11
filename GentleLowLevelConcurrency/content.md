@@ -418,6 +418,29 @@ background-size: cover
 
 ---
 
+background-image: url(img/queue.jpg)
+background-size: cover
+
+### ConcurrentQueue - questions
+
+**Question**: Why `ConcurrentQueue` does not use a single `count` for a whole segment?
+
+--
+
+**Answer**: A single count with a volatile access is ok for a single producer. `ConcurrentQueue` is multi producer!
+
+--
+
+**Question**: Why the `sequence` is always increasing for each slot?
+
+--
+
+**Answer**: Otherwise `volatile` would not help much, as it only ensures **happened before** semantics. Stale reads are possible, but ordering is preserved!
+
+
+
+---
+
 background-image: url(img/gentle.jpg)
 background-size: cover
 
