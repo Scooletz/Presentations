@@ -158,15 +158,45 @@ background-size: cover
 
 ## A volatile shopping basket
 
-Let's introduce then an additional operation to ensure some ordering ➡️:
+Let's introduce ➡️ operation to ensure some **ordering for external observers**:
 
 🥕, 🥔, ➡️, 🧺
 
-which means that:
+which means that for an external observer:
 
-- 🧺 not ready - some items **might** be in it
+- 🧺 seen as **not ready** - they **might** observe some items in it
 
-- 🧺 ready - every single item that was put in it **must** be there
+- 🧺 seen as **ready** - they **must** see all the items in it
+
+--
+
+➡️ - this is how `volatile` works.
+
+---
+
+background-image: url(img/basket.jpg)
+background-size: cover
+
+## A volatile shopping basket
+
+A writer 🧑 and a reader 🧑‍💼 can use `volatile` ➡️ to create this coordination point:
+
+- a writer writes using a `volatile field` or using `Volatile.Write`
+
+- a reader reads using a `volatile field` or using `Volatile.Read`
+
+--
+
+This provides an **ordering** that guarantees that 
+
+> once the value written with volatile is observed, the previous writes will be visible as well
+
+---
+
+background-image: url(img/crying-baby.jpg)
+background-size: cover
+
+## This ain't gentle introduction 😭
 
 ---
 
