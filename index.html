@@ -80,6 +80,7 @@ id: 'index'
 				<div class="col">
 					<a class="btn btn-primary btn-lg text-uppercase" href="/{{ presentation.path }}" class="button" target="_blank">Slides</a>
 					{% if presentation.video %}<a class="btn btn-primary btn-lg text-uppercase" href="{{ presentation.video }}" class="button" target="_blank">Video</a>{% endif %}
+          {% if presentation.videoPL %}<a class="btn btn-primary btn-lg text-uppercase" href="{{ presentation.videoPL }}" class="button" target="_blank">Video (Polish only)</a>{% endif %}
 				</div>
 			</div>             
 		</div>
