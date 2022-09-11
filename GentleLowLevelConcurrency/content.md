@@ -158,9 +158,9 @@ background-size: cover
 
 ## A volatile shopping basket
 
-Let's introduce ➡️ operation to ensure some **ordering for external observers**:
+Let's introduce ➡️ operator to ensure some **ordering for external observers**:
 
-🥕, 🥔, ➡️, 🧺
+🥕, 🥔, ➡️🧺
 
 which means that for an external observer:
 
@@ -181,22 +181,86 @@ background-size: cover
 
 A writer 🧑 and a reader 🧑‍💼 can use `volatile` ➡️ to create this coordination point:
 
-- a writer writes using a `volatile field` or using `Volatile.Write`
+- a writer uses a `volatile field` or a `Volatile.Write`
 
-- a reader reads using a `volatile field` or using `Volatile.Read`
+- a reader uses a `volatile field` or a `Volatile.Read`
 
 --
 
-This provides an **ordering** that guarantees that 
 
-> once the value written with volatile is observed, the previous writes will be visible as well
+Effectively, if you see a value written with volatile 👉 you'll see writes that happened before this write
 
 ---
 
 background-image: url(img/crying-baby.jpg)
 background-size: cover
 
-## This ain't gentle introduction 😭
+## This ain't a gentle introduction... 😭
+
+---
+
+background-image: url(img/belt.jpg)
+background-size: cover
+
+## A volatile conveyor belt
+
+Let's revisit the 🧑 & 🧑‍💼 example but modify it a little:
+
+--
+
+1. 🧑 should be able to put an item on the belt
+
+1. 🧑 should make it sure that 🧑‍💼 is informed
+
+1. 🧑‍💼 collect an item once it's there
+
+--
+
+This would allow 🧑 & 🧑‍💼 to work in a **producer-consumer** fashion where items are operated on one by one.
+
+How could this be done?
+
+---
+
+background-image: url(img/belt.jpg)
+background-size: cover
+
+## A volatile conveyor belt
+
+- belt:   🔳🔳
+- count:  0️⃣
+
+--
+
+🧑: 🥕🔳, 1️⃣ - put an item on the belt, then set count to 1
+
+--
+
+It could result in the same error as before!
+
+We know how to make sure that 1️⃣ is visible only after 🥕🔳 happens!
+
+---
+
+background-image: url(img/belt.jpg)
+background-size: cover
+
+## A volatile conveyor belt
+
+1. 🧑: 🥕🔳, ➡️1️⃣
+
+1. 🧑: 🥕🥔, ➡️2️⃣
+
+
+--
+
+How 🧑‍💼 as an external observer sees the belt?
+
+--
+
+1. if 1️⃣ is observed, then the 1st slot is set
+
+1. if 2️⃣ is observed, then the 2nd slot is set
 
 ---
 
