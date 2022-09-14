@@ -423,19 +423,29 @@ background-size: cover
 
 ### ConcurrentQueue - questions
 
-**Question**: Why `ConcurrentQueue` does not use a single `count` for a whole segment?
-
---
-
-**Answer**: A single count with a volatile access is ok for a single producer. `ConcurrentQueue` is multi producer!
-
 --
 
 **Question**: Why the `sequence` is always increasing for each slot?
 
 --
 
-**Answer**: Otherwise `volatile` would not help much, as it only ensures **happened before** semantics. Stale reads are possible, but ordering is preserved!
+**Answer**: Otherwise `volatile` would not help much, as it only ensures **happened before** semantics. Stale reads are possible, but ordering is preserved! If the values used would be non monotonic and you'd observe the same value twice, could you reason which occurrence was it?
+
+--
+
+**Question**: Does it mean that `volatile` ensures that no values are cached on CPU?
+
+--
+
+**Answer**: `volatile` has is about the happened before semantics in the **memory model**. What happens underneath depends on the CPU architecture, the memory model of the runtime, etc. `volatile` just states that **if this a value from this write is seen, all writes before are also visible.**
+
+--
+
+**Question**: If `volatile` does not guarantee that the most fresh, non-cached value is read, does it mean that retries are required to get the recent value?
+
+--
+
+**Answer**: Unfortunately, yes. Usually data structures/algorithms using `volatile` will have a fast check with a single `if` (fast path) that later is followed by a `while` loop
 
 ---
 
