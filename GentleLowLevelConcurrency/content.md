@@ -423,29 +423,39 @@ background-size: cover
 
 ### ConcurrentQueue - questions
 
---
-
 **Question**: Why the `sequence` is always increasing for each slot?
 
 --
 
 **Answer**: Otherwise `volatile` would not help much, as it only ensures **happened before** semantics. Stale reads are possible, but ordering is preserved! If the values used would be non monotonic and you'd observe the same value twice, could you reason which occurrence was it?
 
---
+In a sequence of written values: 1, 2, 3, 2, 4, 5 if `Volatile.Read(...)` returns 2, which 2 is it?
+
+---
+
+background-image: url(img/queue.jpg)
+background-size: cover
+
+### ConcurrentQueue - questions
 
 **Question**: Does it mean that `volatile` ensures that no values are cached on CPU?
 
 --
 
-**Answer**: `volatile` has is about the happened before semantics in the **memory model**. What happens underneath depends on the CPU architecture, the memory model of the runtime, etc. `volatile` just states that **if this a value from this write is seen, all writes before are also visible.**
+**Answer**: `volatile` has is about the happened before semantics in the **memory model**. `volatile` just ensures that **if this a value from this write is seen, all writes before are also visible.**
 
---
+---
+
+background-image: url(img/queue.jpg)
+background-size: cover
+
+### ConcurrentQueue - questions
 
 **Question**: If `volatile` does not guarantee that the most fresh, non-cached value is read, does it mean that retries are required to get the recent value?
 
 --
 
-**Answer**: Unfortunately, yes. Usually data structures/algorithms using `volatile` will have a fast check with a single `if` (fast path) that later is followed by a `while` loop
+**Answer**: Unfortunately, yes. Usually data structures/algorithms using `volatile` will have a fast check with a single `if` (fast path) that later is followed by a `while` loop (slow path)
 
 ---
 
