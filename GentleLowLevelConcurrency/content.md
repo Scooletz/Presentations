@@ -464,6 +464,87 @@ background-size: cover
 
 ## An interlocked football
 
+--
+
+If you haven't ever played an interlocked football, the rules of an interlocked football are:
+
+1. the score can be modified by any arbiter at any time 🧑‍⚖️
+
+--
+
+1. one ⚽ that is in a possession of one of 2 teams
+
+--
+
+1. T-shirt exchanges after the match are instant, but may happen only if a player is wearing their own T-shirt
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - scoring with 🧑‍⚖️
+
+A naive approach to scoring with multiple 🧑‍⚖️ could be following:
+
+1. 🧑‍⚖️ goes to the scoreboard and makes sure they are the only one in charge of it
+
+1. 🧑‍⚖️ reads the value, adds 1 and puts there the amended value
+
+1. 🧑‍⚖️ goes away from the scoreboard, leaving it for others to amend
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - scoring with 🧑‍⚖️
+
+This could be translated to:
+
+1. 🧑‍⚖️: lock (📺) {
+
+1. 📺.value += 1
+
+1. 🧑‍⚖️: }
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - scoring with 🧑‍⚖️
+
+🧑‍⚖️ wants to **atomically** increase the value. 
+
+Is there ➕ operator that applied to a value increases it in one step 📺➕?
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - scoring with 🧑‍⚖️
+
+Yes! It's provided by `Interlocked` class with:
+
+1. `.Add(ref location, value)`, which `location += value` as an atomic operation
+
+1. `.Increment(ref location)`, which does `Interlocked.Add(ref location, 1)`
+
+1. `.Decrement(ref location)`, which does `Interlocked.Add(ref location, -1)`
+
+--
+
+These methods return the updated value, so that 🧑‍⚖️ can know the current score, after modifying it!
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - one ⚽, 2 teams
+
 ---
 
 background-image: url(img/gentle.jpg)
