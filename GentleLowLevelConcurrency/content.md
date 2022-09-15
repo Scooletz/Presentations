@@ -442,7 +442,7 @@ background-size: cover
 
 --
 
-**Answer**: `volatile` has is about the happened before semantics in the **memory model**. `volatile` just ensures that **if this a value from this write is seen, all writes before are also visible.**
+**Answer**: `volatile` has is all the **happened before** semantics in the **memory model**. `volatile` just ensures that **if a value is seen, all writes before are also visible.**
 
 ---
 
@@ -581,7 +581,7 @@ background-size: cover
 
 ## An interlocked football - one ⚽, 2 teams
 
-Teams want to **atomically** increase the value. Is there a way?
+Teams want to **atomically** exchange the ball. Is there a way?
 
 ---
 
@@ -766,19 +766,6 @@ public T Pop ()
   return h._value;
 }
 ```
-
----
-
-background-image: url(img/stack.jpg)
-background-size: cover
-
-## ConcurrentStack - questions
-
-**Question**: Why does `ConcurrentStack` allocate new nodes? Can't it reuse them as in `ConcurrentQueue`?
-
---
-
-**Answer**: It's done to overcome a **ABA problem**. It's either allocation, or using **tagged pointers**, or making this data structure really complex.
 
 ---
 
