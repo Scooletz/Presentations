@@ -811,6 +811,47 @@ background-size: cover
 background-image: url(img/gentle.jpg)
 background-size: cover
 
+## Key takeaways
+
+1. Dmitry Vyukov says to default to using existing structures / locks
+
+--
+
+1. `volatile` and `Volatile.Read/Write` have nothing to do with CPU caches
+
+--
+
+1. `volatile` provides a partial ordering of operations, a.k.a **happened before** semantics
+
+--
+
+1. `Interlocked` provides atomic operations, that are executed as a whole
+
+---
+
+background-image: url(img/gentle.jpg)
+background-size: cover
+
+## Additional materials - books
+
+1. [A Primer on Memory Consistency and Cache Coherence](https://www.goodreads.com/book/show/52819132-a-primer-on-memory-consistency-and-cache-coherence) by Vijay Nagarajan, Daniel J. Sorin, Mark D. Hill
+
+1. [What Every Programmer Should Know About Memory](https://people.freebsd.org/~lstewart/articles/cpumemory.pdf) by Ulrich Drepper
+
+1. [Concurrent Programming on Windows](https://www.goodreads.com/en/book/show/2993353) by Joe Duffy, Herb Sutter
+
+---
+
+background-image: url(img/async_expert.png)
+background-size: cover
+
+---
+
+background-image: url(img/gentle.jpg)
+background-size: cover
+
 # A gentle introduction to low-level concurrency in .NET
 
 ## Szymon Kulec @Scooletz
+
+### Questions and Answers
