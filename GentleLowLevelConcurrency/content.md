@@ -476,7 +476,7 @@ If you haven't ever played an interlocked football, the rules of an interlocked 
 
 --
 
-1. T-shirt exchanges after the match are instant, but may happen only if a player is wearing their own T-shirt
+1. 👕 exchanges after the match are instant, but may happen only if 🧑 is wearing their own 👕
 
 ---
 
@@ -487,11 +487,11 @@ background-size: cover
 
 A naive approach to scoring with multiple 🧑‍⚖️ could be following:
 
-1. 🧑‍⚖️ goes to the scoreboard and makes sure they are the only one in charge of it
+1. 🧑‍⚖️ goes to scoreboard 📺 and makes sure they are the only one in charge of it
 
-1. 🧑‍⚖️ reads the value, adds 1 and puts there the amended value
+1. 🧑‍⚖️ reads the value, adds 1️⃣ and puts there the amended value
 
-1. 🧑‍⚖️ goes away from the scoreboard, leaving it for others to amend
+1. 🧑‍⚖️ goes away from 📺, leaving it for others to amend
 
 ---
 
@@ -515,9 +515,7 @@ background-size: cover
 
 ## An interlocked football - scoring with 🧑‍⚖️
 
-🧑‍⚖️ wants to **atomically** increase the value. 
-
-Is there ➕ operator that applied to a value increases it in one step 📺➕?
+🧑‍⚖️ wants to **atomically** increase the value. Is there a way? 
 
 ---
 
@@ -528,15 +526,83 @@ background-size: cover
 
 Yes! It's provided by `Interlocked` class with:
 
-1. `.Add(ref location, value)`, which `location += value` as an atomic operation
+```csharp
+Interlocked.Add(ref location, value) // atomic location += value 
 
-1. `.Increment(ref location)`, which does `Interlocked.Add(ref location, 1)`
+Interlocked.Increment(ref location) // Add(ref location, 1)
 
-1. `.Decrement(ref location)`, which does `Interlocked.Add(ref location, -1)`
+Interlocked.Decrement(ref location) // Add(ref location, -1)
+```
+
+All methods return the updated value! 🧑‍⚖️ can know the current score, after modifying it!
 
 --
 
-These methods return the updated value, so that 🧑‍⚖️ can know the current score, after modifying it!
+```csharp
+var currentScore = Interlocked.Increment(ref 📺)
+```
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - one ⚽, 2 teams
+
+1. two teams: Bats 🦇 & Rockets 🚀
+
+1. one ⚽ that is owned only by one of them
+
+1. exchanges should be atomic, so that there's no moment in which:
+  
+  1. ⚽ is not owned (sorry, the rules of interlocked football are clear)
+
+  1. ⚽ is owned by two teams 
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - one ⚽, 2 teams
+
+This, for 🦇 team could look like:
+
+1. 🦇: lock (⚽) {
+
+1. ⚽.owner = 🦇
+
+1. 🦇: }
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - one ⚽, 2 teams
+
+Teams want to **atomically** increase the value. Is there a way?
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - one ⚽, 2 teams
+
+Yes!
+
+```csharp
+Interlocked.Exchange(ref location, value)
+```
+
+The method returns the previous value value.
+
+--
+
+```csharp
+var previousOwner = Interlocked.Exchange(ref ⚽, 🦇)
+```
 
 ---
 
