@@ -685,6 +685,129 @@ if (IsOkToSwitch(seen)) {
 
 ---
 
+background-image: url(img/stack.jpg)
+background-size: cover
+
+## ConcurrentStack - high-level view
+
+- a stack with `Push` and `Pop` operations
+
+- lock-free (no locks used)
+
+- can be used concurrently
+
+---
+
+background-image: url(img/concurrentstack.png)
+background-size: cover
+
+---
+
+background-image: url(img/stack.jpg)
+background-size: cover
+
+## ConcurrentStack - Node
+
+```csharp
+public class Node
+{
+  internal Node Next;
+  public T _value;
+}
+```
+
+---
+
+background-image: url(img/stack.jpg)
+background-size: cover
+
+## ConcurrentStack - Push
+
+```csharp
+volatile Node _head; // 1️⃣
+
+public void Push(T item)
+{
+  var n = new Node(item);
+  n._next = _head;  // 2️⃣
+
+  // 3️⃣
+  if (Interlocked.CompareExchange(ref _head, n, n._next) == n._next)
+  {
+    return;
+  }
+
+  // Failed, use the slow path and loop around until ok.
+  PushCore(newNode, newNode); // 4️⃣
+}
+```
+
+---
+
+background-image: url(img/stack.jpg)
+background-size: cover
+
+## ConcurrentStack - Pop
+
+```csharp
+public T Pop ()
+{
+  Node h, next;
+  do
+  {
+    h = _head;     // 1️⃣
+    if (h is null)
+      return null;
+    next = h.Next; // 2️⃣
+
+    // 3️⃣
+  } while (Interlocked.CompareExchange(ref _head, next, h) != h); 
+
+  return h._value;
+}
+```
+
+---
+
+background-image: url(img/stack.jpg)
+background-size: cover
+
+## ConcurrentStack - questions
+
+**Question**: Why does `ConcurrentStack` allocate new nodes? Can't it reuse them as in `ConcurrentQueue`?
+
+--
+
+**Answer**: It's done to overcome a **ABA problem**. It's either allocation, or using **tagged pointers**, or making this data structure really complex.
+
+---
+
+background-image: url(img/stack.jpg)
+background-size: cover
+
+## ConcurrentStack - questions
+
+**Question**: Why does `ConcurrentStack` allocate new nodes? Can't it reuse them as in `ConcurrentQueue`?
+
+--
+
+**Answer**: It's done to overcome a **ABA problem**. It's either allocation, or using **tagged pointers**, or making this data structure really complex.
+
+---
+
+background-image: url(img/stack.jpg)
+background-size: cover
+
+## ConcurrentStack - questions
+
+**Question**: Why does `Buffers.MemoryPool` built for Kestrel, don't use `ConcurrentStack` but rather `ConcurrentQueue` for block management.
+
+--
+
+**Answer**: We don't need no allocations!
+
+---
+
 background-image: url(img/gentle.jpg)
 background-size: cover
 
