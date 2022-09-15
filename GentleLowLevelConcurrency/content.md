@@ -476,7 +476,7 @@ If you haven't ever played an interlocked football, the rules of an interlocked 
 
 --
 
-1. 👕 exchanges after the match are instant, but may happen only if 🧑 is wearing their own 👕
+1. 👕 exchanges after the match are instant, but 🧑 should know what is being exchanged (condition)
 
 ---
 
@@ -500,13 +500,13 @@ background-size: cover
 
 ## An interlocked football - scoring with 🧑‍⚖️
 
-This could be translated to:
+🧑‍⚖️ would do the following:
 
-1. 🧑‍⚖️: lock (📺) {
-
-1. 📺.value += 1
-
-1. 🧑‍⚖️: }
+```csharp
+lock (📺) {
+  📺.value += 1
+}
+```
 
 ---
 
@@ -566,13 +566,13 @@ background-size: cover
 
 ## An interlocked football - one ⚽, 2 teams
 
-This, for 🦇 team could look like:
+🦇 would do the following
 
-1. 🦇: lock (⚽) {
-
-1. ⚽.owner = 🦇
-
-1. 🦇: }
+```csharp
+lock (⚽) {
+ ⚽.owner = 🦇
+}
+```
 
 ---
 
@@ -609,7 +609,79 @@ var previousOwner = Interlocked.Exchange(ref ⚽, 🦇)
 background-image: url(img/football.jpg)
 background-size: cover
 
-## An interlocked football - one ⚽, 2 teams
+## An interlocked football - 👕 exchanges
+
+1. a player 🧑 wants to exchange 👕
+
+1. they exchange a 👕 conditionally, only if they know what the 🧑 is wearing 
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - 👕 exchanges
+
+🧑 would try to do the following
+
+```csharp
+lock (👕) {
+  lock another T-shirt? What to do?
+  if?
+}
+```
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - 👕 exchanges
+
+🧑 wants to **atomically** and **conditionally** perform an exchange. Is there a way?
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - 👕 exchanges
+
+Yes!
+
+```csharp
+Interlocked.CompareExchange(ref location, value, valueToCompareWith)
+```
+
+- if the `location == valueToCompareWith`, switch happened
+
+- if the `location != valueToCompareWith`, switch did not happen
+
+- the method returns the previous value value in any case
+
+---
+
+background-image: url(img/football.jpg)
+background-size: cover
+
+## An interlocked football - 👕 exchanges
+
+🧑 would do the following to give another player their 👕
+
+```csharp
+var seen = Volatile.Read(ref other) // notice the other player 👕
+
+if (IsOkToSwitch(seen)) {
+  
+  var prev = Interlocked.CompareExchange(ref other, 👕, seen)
+  
+  if (prev == seen) {
+    return 🎉
+  } else {
+    return 😭 // or 🔁
+  }
+}
+```
 
 ---
 
