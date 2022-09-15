@@ -795,6 +795,107 @@ background-size: cover
 
 ---
 
+background-image: url(img/handle.png)
+background-size: cover
+
+## SafeHandle - not so gentle
+
+`SafeHandle` is:
+
+1. a way of wrapping **unmanaged resources**
+
+1. a source of nightmares for _handle recycling security attacks_ (but addressed)
+
+1. an interesting study of cooperation of `Volatile` & `Interlocked`
+
+---
+
+background-image: url(img/handle.png)
+background-size: cover
+
+## SafeHandle - not so gentle
+
+```csharp
+public abstract partial class SafeHandle : 
+  CriticalFinalizerObject, IDisposable
+  
+  // actual handle
+  IntPtr handle;
+  
+  // combined ref count and closed/disposed flags (atomic)
+  volatile int _state;
+
+  // whether we can release this handle.
+  readonly bool _ownsHandle;
+
+  // whether constructor completed
+  volatile bool _fullyInitialized;
+```
+
+---
+
+background-image: url(img/handle.png)
+background-size: cover
+
+## SafeHandle - not so gentle
+
+Bitmask to encode the `_state ` field.
+
+```csharp
+ 31                                                        2  1   0
++-----------------------------------------------------------+---+---+
+|                           Ref count                       | D | C |
++-----------------------------------------------------------+---+---+
+```
+
+where:
+
+- D = 1 means a Dispose has been performed
+
+- C = 1 means the underlying handle has been (or will be shortly) released
+
+---
+
+background-image: url(img/handle.png)
+background-size: cover
+
+## SafeHandle - not so gentle
+
+```csharp
+public void DangerousAddRef(ref bool success)
+{
+  int old, @new;
+  do
+  {
+    old = _state; // 1️⃣
+    if ((old & StateBits.Closed) != 0)
+    {
+      throw new ObjectDisposedException(); // 2️⃣
+    }
+
+    @new = old + StateBits.RefCountOne;// 3️⃣
+    // 4️⃣
+  } while (Interlocked.CompareExchange(ref _state, @new, old) != old);
+
+  success = true;
+}
+```
+
+---
+
+background-image: url(img/handle.png)
+background-size: cover
+
+## SafeHandle - not so gentle
+
+- `volatile filed` used to try to read value with the recent value (happened before)
+
+- `Interlocked.CompareExchange` to try to swap if nothing change
+
+- retry in a tight loop on failure
+
+---
+
 background-image: url(img/gentle.jpg)
 background-size: cover
 
