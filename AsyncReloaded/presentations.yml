@@ -1,0 +1,105 @@
+- id: AsyncReloaded
+  name: "Async Reloaded"
+  abstract: "Pass the State, Red, Blue, and Purple, and what .NET 10 brings with its experiments"
+  path: "AsyncReloaded"
+  
+- id: GentleLowLevelConcurrency
+  name: "A gentle introduction to low-level concurrency in .NET"
+  abstract: "A gentle introduction to low-level concurrency in .NET"
+  path: "GentleLowLevelConcurrency"
+  video: "https://www.youtube.com/watch?v=dtUrG--oMLo"
+
+- id: FasterEther
+  name: "Faster Ether"
+  abstract: "War Stories from optimizing Ethereum"
+  path: "FasterEther"
+  videoPL: "https://www.youtube.com/watch?v=aI8Tr6dFLyY"
+
+- id: Monoliths-mservices-funcs
+  name: "Monoliths, microservices, functions and beyond"
+  abstract: "Polish-only. After ancient times of big monolitic fights, after all the splendor of using microservices it's time for another hype: functons and FaaS based solutions. Is it something trustworthy? Should we do another big bang rewrite to this next approach? Does everything need to be a function? During this presentation I'll share my journey related with a service, that functions are called from time to time despite of a lot of data being transported/processed. Be warned, the following hashtags will be present during this presentation: #collaborativeDomain, #OAuth, #accessToken or boring in its stability #AzureStorage."
+  path: "Monoliths-mservices-funcs"
+
+- id: Good-not-so-bad-fast
+  name: "Good, not-so-bad & fast"
+  abstract: "Polish-only. How three of Azure services: Stream Analytics, CosmosDB and Service Fabric, deliver great performance in the cloud."
+  path: "Good-not-so-bad-fast"
+
+- id: Pillars-of-clouds
+  name: "Pillars of clouds"
+  abstract: "Polish-only. What are foundations of different cloud services? Why running your db with an atomic clock could be a good idea? Let's take a look at three aspects of processing data: indexing, storage, time."
+  path: "Pillars-of-clouds"
+
+- id: BornToPerform
+  name: "Born To Perform"
+  abstract: "It's a bird. It's a plane. No, it's .NET Core! .NET Core is here and it ain't going anywhere. It's strong, it's fast and it wants to help you to get to the world of performance. Join me in a journey of finding the most interesting attributes of this Core of Steel, that you can incorporate in your daily work."
+  path: "BornToPerform"
+
+- id: Thruster
+  name: "Thruster, or There and Back Again"
+  abstract: "A much better memory management is one of the key foundations of .NET Core applications. Join me in a journey of trying to beat competitors, like Kestrel server, in a custom memory management."
+  path: "Thruster"
+
+- id: LogEverything
+  name: "Log Everything"
+  abstract: "How to log everything, or a story of a logging service processing billion entries per day."
+  path: "LogEverything"
+
+- id: Performance
+  name: "Performance That Pays Off"
+  abstract: "Bits, bytes and speed. These are the factors that should be considered when you design a driver, a serializer or a client library. In these cases performance matters a lot and it pays off. During this presentation I'll drive you through various OSS projects that I contributed to. I want to share with you my journey as well as _design for performance_ rules that you can apply on your own. It might be tempting to forget about it when living in a cloud, serverless era, but don't get fooled. With new pricing models, building a well performing part is sometimes more important than before?"
+  path: "Performance"
+  video: "https://www.youtube.com/watch?v=fumtM6pXAm4"
+
+- id: OnlyThing
+  name: "The Only Thing That Matters"
+  abstract: "You don't want your database to drop data, do you? How databases and queues ensure that, in case of a failure, you still can access your data?"
+  path: "OnlyThing"
+  video: "https://www.youtube.com/watch?v=Ed7ZSK5XcSI"
+
+- id: KISSS
+  name: "Keep Its Storage Simple Stupid"
+  abstract: "Windows Azure Storage is a solid foundation provided by Azure from the very beginning of Azure existence. How does it work? What does it offer and what is prohibited?"
+  path: "KISSS"
+
+- id: Concurrency
+  name: "Understand concurrency"
+  abstract: "Polish-only. In .NET world, supported by async/await, understanding of the concurrent programming becomes vital. During this presentation, we'll immerse into low level concurrent APIs provided in the .NET platform. These are the same APIs used to create ConcurrentStack or ConcurrentQueue. You  will understand how modern CPUs are constructed and how this whole volatile thing works."
+  path: "Concurrency"
+  video: "https://www.youtube.com/watch?v=Z1PxYAszW6U"
+
+- id: DontCallOthers
+  name: "Don't call the others"
+  abstract: "When working with services, in majority of cases we're focused on the technology aspect of it. During this presentation I'll show scenarios, where a deep understanding of business and a better modelling of a specific service, leads not only to solving current problems, but helps in creating maintainable long lasting services."
+  path: "DontCallOthers"
+
+- id: RampUp
+  name: "My Journey to the Land of Extreme Concurrent Performance in .NET"
+  abstract: "Considering modern hardware, the concurrent programming isn't an option any longer. It's a must have. C# language and .NET platform aligns to this direction to help a developer create well performing applications with ease. Is it possible that we can do it (much) better using a different paradigm than Tasks and async/await? During the presentation we'll aim high to get the best possible performance out of the moder hardware dropping many assuptions made before. This journey will guide you through from the very foundations of the mechanical sympathy to high level abstractions one can build upon it. It's a journey so fasten your seat belt tight. We'll visit places you've never considered before."
+  path: "RampUp"
+  
+- id: Transactions
+  name: "Transactions - yesterday and today"
+  abstract: "Polish-only. The aim of the presentation is to build foundations needed for modelling complex systems built with SQL databases, NoSQL, NewSQL and messaging systems. In one hour we'll go through different models, starting with _standard_ transactions in relational databases, going through distributed ones and end with new approaches. Additionally, a few patterns will be introduced, which provide a solid approach for designing systems based on services, queues and databases."
+  path: "Transactions"
+  video: "https://www.youtube.com/watch?v=-2JPfHzyig4"
+
+- id: EDA-in-Practice
+  name: "Event Driven Architecture in practice"
+  abstract: "In the world of developers and aspiring architects, abbreviations like CQRS, DDD, ES, EDA, SOA are getting more and more popular. Unfortunately, their application is frequently limited to pet projects or just labeling applications with fancy words. We'd like to share with you a case study of a project showing a real usage of these approaches. The common denominator for both, the client side and the server side is the event driven approach."
+  path: "EDA-in-Practice"
+
+- id: HttpCache
+  name: "Almost Everything You Always Wanted to Know About Http Cache"
+  abstract: "Http cache is frequently an uknown aspect of the web programming. The mechanism is used to miminize the transfer of static resources of our applications. During the presentation, I'll show how to addtionally optimize applications' data flow using the http cache. The playground is based on the ASP.NET WebAPI 2 project, providing a foundation for applying these patterns in your application."
+  path: "HttpCache/presentation"
+
+- id: IOCompletionPorts
+  name: "IO Completion Ports"
+  abstract: "Have you ever heard about the power of Windows IO Completion Ports? It's the foundation for extremely performant IO and is the basis for .NET async operations as well. After this talk you'll be familiar with the native API of this feature and will be able to wrap it properly if needed for .NET calls."
+  path: "IOCompletionPorts"
+
+- id: Blueprint
+  name: "Reveal.js Blueprint"
+  abstract: "A reusable Reveal.js markdown blueprint highlighting installation, markdown-driven slides, and theme customization tips."
+  path: "Blueprint"
