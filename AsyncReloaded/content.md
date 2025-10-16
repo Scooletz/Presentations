@@ -318,7 +318,7 @@ Task<int> Red()
 
 ### Red, Blue, and Purple
 
-Is there a **purple** options possible?
+Is there a **purple** option possible?
 
 --
 
@@ -344,7 +344,7 @@ public ValueTask(IValueTaskSource<TResult> source, short token);
 
 ### Red, Blue, and Purple
 
-Is there a **purple** options possible?
+Is there a **purple** option possible?
 
 --
 
