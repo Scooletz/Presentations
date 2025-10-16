@@ -252,7 +252,7 @@ Task continuation = task.ContinueWith(
 
 [Prefer CancellationToken.Register with state over closure allocating](https://github.com/ravendb/ravendb/pull/21205)
 
-<img src="/AsyncReloaded/assets/PassTheState1.png" style="max-width: 80%">
+<img src="/AsyncReloaded/assets/PassTheState1.png">
 
 --
 
@@ -260,7 +260,7 @@ Task continuation = task.ContinueWith(
 
 [Prefer CancellationToken.Register with state over closure allocating](https://github.com/ravendb/ravendb/pull/21205)
 
-<img src="/AsyncReloaded/assets/PassTheState2.png" style="max-width: 80%">
+<img src="/AsyncReloaded/assets/PassTheState2.png">
 
 --
 
@@ -268,8 +268,9 @@ Task continuation = task.ContinueWith(
 
 [Use Task.ContinueWith with the state where possible](https://github.com/ravendb/ravendb/pull/21234)
 
-<img src="/AsyncReloaded/assets/PassTheState3.png" style="max-width: 80%">
+<img src="/AsyncReloaded/assets/PassTheState3.png">
 
+--
 
 ### Pass the State - summary
 
