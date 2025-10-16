@@ -93,3 +93,8 @@
   name: "IO Completion Ports"
   abstract: "Have you ever heard about the power of Windows IO Completion Ports? It's the foundation for extremely performant IO and is the basis for .NET async operations as well. After this talk you'll be familiar with the native API of this feature and will be able to wrap it properly if needed for .NET calls."
   path: "IOCompletionPorts"
+
+- id: Blueprint
+  name: "Reveal.js Blueprint"
+  abstract: "A reusable Reveal.js markdown blueprint highlighting installation, markdown-driven slides, and theme customization tips."
+  path: "Blueprint"
