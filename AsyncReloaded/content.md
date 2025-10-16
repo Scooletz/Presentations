@@ -1,6 +1,7 @@
 # Async Reloaded
 
 Szymon Kulec @Scooletz
+
 Lead Developer Advocate @ [RavenDB](https://ravendb.net)
 
 ---
@@ -25,6 +26,55 @@ Lead Developer Advocate @ [RavenDB](https://ravendb.net)
 ---
 
 ## Pass the State
+
+-- 
+
+### Pass the State - ConcurrentDictionary
+
+```csharp
+Dictionary<string, int> dict;
+
+// Get
+lock(_obj)
+{
+    return dict[key];
+}
+
+// Set
+lock(_obj)
+{
+    dict[key] = value;
+}
+```
+
+
+### Pass the State - ConcurrentDictionary
+
+```csharp
+Dictionary<string, int> dict;
+
+// Get
+rwl.EnterReadLock();
+try
+{
+    return dict[key];
+}
+finally
+{
+    rwl.ExitReadLock();
+}
+
+// Set
+rwl.EnterWriteLock();
+try
+{
+    dict[key] = value;
+}
+finally
+{
+    rwl.ExitWriteLock();
+}
+```
 
 --
 
