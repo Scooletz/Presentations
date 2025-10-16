@@ -152,8 +152,7 @@ Let's use one.
 
 --
 
-### Hands on
-#### Bench1ConcurrentDictionary
+### Hands on: Bench1 + Bench2
 
 --
 
@@ -168,7 +167,42 @@ Maybe others do as well?
 
 --
 
-### Pass the State
+### Pass the State - Cancellation
+
+--
+
+### Cancellation
+
+1. `CancellationTokenSource` 
+   1. allows cancelling
+   1. provides `.Token`
+1. `CancellationToken`
+   1. `.CanBeCancelled`
+   1. `.IsCancellationRequested`
+   1. `.Register(...)` 👀
+
+--
+
+### CancellationToken.Register
+
+```csharp
+CancellationTokenRegistration registration = token.Register(Action callback);
+
+registration.Dispose();
+```
+
+--
+
+### CancellationToken.Register - state
+
+```csharp
+CancellationTokenRegistration registration = token.Register(Action<object> callback, object state);
+registration.Dispose();
+```
+
+--
+
+### Hands on: Bench3
 
 ---
 
