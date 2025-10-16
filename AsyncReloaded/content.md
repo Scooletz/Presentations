@@ -161,7 +161,7 @@ Let's use one.
 `ConcurrentDictionary` supports:
 
 1. mutli-operations like `AddOrUpdate`
-1. methods with an additional external state
+1. methods with an additional state
 
 Maybe others do as well?
 
@@ -196,13 +196,59 @@ registration.Dispose();
 ### CancellationToken.Register - state
 
 ```csharp
-CancellationTokenRegistration registration = token.Register(Action<object> callback, object state);
+CancellationTokenRegistration registration = token.Register(static s => callback(s), state);
 registration.Dispose();
 ```
 
 --
 
 ### Hands on: Bench3
+
+--
+
+### Hands on - summary
+
+`CancellationToken` supports a method with an **external state**
+
+Maybe others do as well?
+
+--
+
+### Task.ContinueWith
+
+```csharp
+Task task;
+Task continuation = task.ContinueWith(static t => callback(t));
+```
+
+--
+
+### Task.ContinueWith - state
+
+```csharp
+Task task;
+Task continuation = task.ContinueWith(static (t, s) => callback(t, s), state);
+```
+
+--
+
+### Hands on: Bench4
+
+--
+
+### Hands on - summary
+
+1. `Task` supports a method with an **external state**
+1. It can be used to pass some state machine
+1. It can be used by you to pass any state (when writing low level code)
+
+--
+
+### Pass the State - summary
+
+1. Async friends allow passing the **external state**
+1. The external state is an `object`
+1. Designing to use just one `object` is sometimes hard.
 
 ---
 
