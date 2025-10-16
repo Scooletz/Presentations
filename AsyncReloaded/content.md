@@ -268,8 +268,8 @@ Task continuation = task.ContinueWith(static (t, s) => callback(t, s), state);
 
 ---
 
-## Feedback
+## Feedback & QA
 
 https://forms.gle/uovE8xZeEzLUP4ox8
 
-![QR](/AsyncReloaded/assets/feedback.png){ max-width: 50% }
+<img src="/AsyncReloaded/assets/feedback.png" alt="https://forms.gle/uovE8xZeEzLUP4ox8" style="max-width: 50%">
