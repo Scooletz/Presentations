@@ -146,9 +146,9 @@ counters.AddOrUpdate("counters",
 
 ### Counters - easy-peasy
 
-It was easy really easy - no externa state dependency.
-
-Let's use one.
+1. It was easy really easy.
+1. No external state dependency.
+1. Let's introduce one.
 
 --
 
@@ -272,4 +272,4 @@ Task continuation = task.ContinueWith(static (t, s) => callback(t, s), state);
 
 https://forms.gle/uovE8xZeEzLUP4ox8
 
-![QR](/assets/feedback.png)
+![QR](/AsyncReloaded/assets/feedback.png){ max-width: 50% }
