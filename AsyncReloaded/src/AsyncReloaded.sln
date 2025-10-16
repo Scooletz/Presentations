@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncReloaded", "AsyncReloaded\AsyncReloaded.csproj", "{04CAF33D-A6E9-4852-B6FD-206AE2FCCA9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewAsync", "NewAsync\NewAsync.csproj", "{ECBD03F7-1C39-4E94-B788-BE528D9A27ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04CAF33D-A6E9-4852-B6FD-206AE2FCCA9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04CAF33D-A6E9-4852-B6FD-206AE2FCCA9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04CAF33D-A6E9-4852-B6FD-206AE2FCCA9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04CAF33D-A6E9-4852-B6FD-206AE2FCCA9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECBD03F7-1C39-4E94-B788-BE528D9A27ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECBD03F7-1C39-4E94-B788-BE528D9A27ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECBD03F7-1C39-4E94-B788-BE528D9A27ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECBD03F7-1C39-4E94-B788-BE528D9A27ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
