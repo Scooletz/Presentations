@@ -27,6 +27,8 @@ Lead Developer Advocate @ [RavenDB](https://ravendb.net)
 
 ## Pass the State
 
+<img src="/AsyncReloaded/assets/pass-the-state.webp" style="max-width: 80%">
+
 --
 
 ### ConcurrentDictionary - lock
@@ -281,6 +283,8 @@ Task continuation = task.ContinueWith(
 ---
 
 ## Red, Blue, and Purple
+
+<img src="/AsyncReloaded/assets/red-blue-purple.webp" style="max-width: 80%">
 
 --
 
