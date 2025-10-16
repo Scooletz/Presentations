@@ -8,8 +8,8 @@ Lead Developer Advocate @ [RavenDB](https://ravendb.net)
 
 ## Intro
 
-1. async/await
-1. scope: hot paths
+1. `async` + `await` + `Task` = ❤️
+1. scope: hot paths 🔥
 1. hot paths:
    1. a database: 99%
    1. a library: 99%
@@ -89,7 +89,9 @@ finally
 
 --
 
-### ConcurrentDictionary - RWL
+### ConcurrentDictionary
+
+It just works!
 
 ```csharp
 ConcurrentDictionary<string, int> dict;
@@ -99,6 +101,47 @@ return dict[key];
 
 // Set
 dict[key] = value;
+```
+
+--
+
+### ConcurrentDictionary - counters
+
+Let's build a counter! (A terrible example)
+
+1. Isn't set - assign 1
+1. Is set - assign value + 1
+
+--
+
+### ConcurrentDictionary - counters
+
+The wrong way 💣
+
+```csharp
+ConcurrentDictionary<string, int> counters;
+
+if (!counters.TryGetValue("counters", out var value))
+{
+    value = 0
+}
+
+counters["counter"] = value + 1;
+```
+
+--
+
+### ConcurrentDictionary - counters
+
+The right way 🎉
+
+```csharp
+ConcurrentDictionary<string, int> counters;
+
+counters.AddOrUpdate("counters",
+  (key) => 1, // add factory
+  (key, prev) => prev + 1 // update factory
+);
 ```
 
 --
