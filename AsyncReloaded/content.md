@@ -157,6 +157,17 @@ Let's use one.
 
 --
 
+### Hands on - summary
+
+`ConcurrentDictionary` supports:
+
+1. mutli-operations like `AddOrUpdate`
+1. methods with an additional external state
+
+Maybe others do as well?
+
+--
+
 ### Pass the State
 
 ---
