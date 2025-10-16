@@ -186,7 +186,8 @@ Maybe others do as well?
 ### CancellationToken.Register
 
 ```csharp
-CancellationTokenRegistration registration = token.Register(Action callback);
+CancellationTokenRegistration registration = token.Register(
+    Action callback);
 
 registration.Dispose();
 ```
@@ -196,7 +197,8 @@ registration.Dispose();
 ### CancellationToken.Register - state
 
 ```csharp
-CancellationTokenRegistration registration = token.Register(static s => callback(s), state);
+CancellationTokenRegistration registration = token.Register(
+    static s => callback(s), state);
 registration.Dispose();
 ```
 
@@ -218,7 +220,8 @@ Maybe others do as well?
 
 ```csharp
 Task task;
-Task continuation = task.ContinueWith(static t => callback(t));
+Task continuation = task.ContinueWith(
+    static t => callback(t));
 ```
 
 --
@@ -227,7 +230,8 @@ Task continuation = task.ContinueWith(static t => callback(t));
 
 ```csharp
 Task task;
-Task continuation = task.ContinueWith(static (t, s) => callback(t, s), state);
+Task continuation = task.ContinueWith(
+    static (t, s) => callback(t, s), state);
 ```
 
 --
@@ -257,6 +261,14 @@ Task continuation = task.ContinueWith(static (t, s) => callback(t, s), state);
 [Prefer CancellationToken.Register with state over closure allocating](https://github.com/ravendb/ravendb/pull/21205)
 
 <img src="/AsyncReloaded/assets/PassTheState2.png" style="max-width: 80%">
+
+--
+
+### Pass the State - examples
+
+[Use Task.ContinueWith with the state where possible](https://github.com/ravendb/ravendb/pull/21234)
+
+<img src="/AsyncReloaded/assets/PassTheState3.png" style="max-width: 80%">
 
 
 ### Pass the State - summary
