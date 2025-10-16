@@ -105,7 +105,7 @@ dict[key] = value;
 
 --
 
-### ConcurrentDictionary - counters
+### Counters
 
 Let's build a counter! (A terrible example)
 
@@ -114,13 +114,13 @@ Let's build a counter! (A terrible example)
 
 --
 
-### ConcurrentDictionary - counters
-
-The wrong way 💣
+### Counters
 
 ```csharp
 ConcurrentDictionary<string, int> counters;
 
+
+// The wrong way 💣
 if (!counters.TryGetValue("counters", out var value))
 {
     value = 0
@@ -131,15 +131,15 @@ counters["counter"] = value + 1;
 
 --
 
-### ConcurrentDictionary - counters
+### Counters
 
-The right way 🎉
 
 ```csharp
 ConcurrentDictionary<string, int> counters;
 
+// The right way 🎉
 counters.AddOrUpdate("counters",
-  (key) => 1, // add factory
+  (key) => 1,             // add factory
   (key, prev) => prev + 1 // update factory
 );
 ```
