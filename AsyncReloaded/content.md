@@ -383,3 +383,9 @@ Non-Sharded (🔵) + Sharded (🔴) paths
 https://forms.gle/uovE8xZeEzLUP4ox8
 
 <img src="/AsyncReloaded/assets/feedback.png" alt="https://forms.gle/uovE8xZeEzLUP4ox8" style="max-width: 50%">
+
+---
+
+## Hugin
+
+WiFi SSID: Hugin
