@@ -372,9 +372,49 @@ Non-Sharded (🔵) + Sharded (🔴) paths
 
 ## Async in .NET 10
 
+<img src="/AsyncReloaded/assets/async10.webp" style="max-width: 80%">
+
 --
 
 ### Async in .NET 10
+
+Related:
+
+- project `Loom` for Java
+- [Green Thread Experiment Results](https://github.com/dotnet/runtimelab/issues/2398) for .NET
+
+--
+
+### Async in .NET 10
+
+```csharp
+public static AsyncHelpers
+{
+    //Q: What does it do?
+    public static T Await<T>(ValueTask<T> task);
+}
+
+--
+
+### Async in .NET 10
+
+- allows moving implementation of `Async State Machines` to JIT
+- Roslyn, translates `async` to `AsyncHelpers`
+- other languages profit
+
+--
+
+### Async in .NET 10
+
+Requirements as in [.NET Runtime-Async Feature](https://github.com/dotnet/runtime/issues/109632)
+
+1. The project must target net10.0 (note: running on net10.0 is not sufficient, it must compile against net10.0 to see the value)
+1. `<EnablePreviewFeatures>true</EnablePreviewFeatures>` must be set in the project file
+1. `<Features>$(Features);runtime-async=on</Features>` must be set in the project file
+1. When running, the environment variable `DOTNET_RuntimeAsync=1` must be set`
+
+
+```
 
 ---
 

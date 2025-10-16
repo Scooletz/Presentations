@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+<!--        <EnablePreviewFeatures>true</EnablePreviewFeatures>-->
+<!--        <Features>$(Features);runtime-async=on</Features>-->
+<!--        <NoWarn>1701;1702;SYSLIB5007</NoWarn>-->
+    </PropertyGroup>
+</Project>
