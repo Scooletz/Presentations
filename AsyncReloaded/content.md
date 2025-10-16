@@ -29,7 +29,7 @@ Lead Developer Advocate @ [RavenDB](https://ravendb.net)
 
 --
 
-### ConcurrentDictionary
+### ConcurrentDictionary - lock
 
 ```csharp
 Dictionary<string, int> dict;
@@ -49,10 +49,11 @@ lock(_obj)
 
 --
 
-### ConcurrentDictionary
+### ConcurrentDictionary - RWL
 
 ```csharp
 Dictionary<string, int> dict;
+ReaderWriterLockSlim rwl;
 
 // Get
 rwl.EnterReadLock();
@@ -64,6 +65,15 @@ finally
 {
     rwl.ExitReadLock();
 }
+```
+
+--
+
+### ConcurrentDictionary - RWL
+
+```csharp
+Dictionary<string, int> dict;
+ReaderWriterLockSlim rwl;
 
 // Set
 rwl.EnterWriteLock();
@@ -75,6 +85,20 @@ finally
 {
     rwl.ExitWriteLock();
 }
+```
+
+--
+
+### ConcurrentDictionary - RWL
+
+```csharp
+ConcurrentDictionary<string, int> dict;
+
+// Get
+return dict[key];
+
+// Set
+dict[key] = value;
 ```
 
 --
