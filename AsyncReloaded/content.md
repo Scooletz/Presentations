@@ -27,9 +27,9 @@ Lead Developer Advocate @ [RavenDB](https://ravendb.net)
 
 ## Pass the State
 
--- 
+--
 
-### Pass the State - ConcurrentDictionary
+### ConcurrentDictionary
 
 ```csharp
 Dictionary<string, int> dict;
@@ -47,8 +47,9 @@ lock(_obj)
 }
 ```
 
+--
 
-### Pass the State - ConcurrentDictionary
+### ConcurrentDictionary
 
 ```csharp
 Dictionary<string, int> dict;
