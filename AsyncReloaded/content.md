@@ -244,6 +244,21 @@ Task continuation = task.ContinueWith(static (t, s) => callback(t, s), state);
 
 --
 
+### Pass the State - examples
+
+[Prefer CancellationToken.Register with state over closure allocating](https://github.com/ravendb/ravendb/pull/21205)
+
+<img src="/AsyncReloaded/assets/PassTheState1.png" style="max-width: 80%">
+
+--
+
+### Pass the State - examples
+
+[Prefer CancellationToken.Register with state over closure allocating](https://github.com/ravendb/ravendb/pull/21205)
+
+<img src="/AsyncReloaded/assets/PassTheState2.png" style="max-width: 80%">
+
+
 ### Pass the State - summary
 
 1. Async friends allow passing the **external state**
