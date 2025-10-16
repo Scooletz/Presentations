@@ -3,6 +3,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace AsyncReloaded;
 
+[Config(typeof(MyConfig))]
 public class Bench5ValueTaskPurple
 {
     private const int Diff = 1;

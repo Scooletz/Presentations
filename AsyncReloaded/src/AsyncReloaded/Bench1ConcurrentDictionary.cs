@@ -4,6 +4,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace AsyncReloaded;
 
+[Config(typeof(MyConfig))]
 public class Bench1ConcurrentDictionary
 {
     private readonly ConcurrentDictionary<int, int> _dict = new();

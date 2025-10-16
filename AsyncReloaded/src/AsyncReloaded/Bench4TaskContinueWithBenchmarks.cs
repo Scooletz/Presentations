@@ -3,6 +3,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace AsyncReloaded;
 
+[Config(typeof(MyConfig))]
 public class Bench4TaskContinueWithBenchmarks
 {
     private int _counter = 0;

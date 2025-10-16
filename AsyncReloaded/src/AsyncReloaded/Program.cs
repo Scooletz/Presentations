@@ -1,4 +1,4 @@
 ﻿using AsyncReloaded;
 using BenchmarkDotNet.Running;
 
-BenchmarkSwitcher.FromAssembly(typeof(Bench1ConcurrentDictionary).Assembly).Run(args, config: new MyConfig());
+BenchmarkSwitcher.FromAssembly(typeof(Bench1ConcurrentDictionary).Assembly).Run(args);

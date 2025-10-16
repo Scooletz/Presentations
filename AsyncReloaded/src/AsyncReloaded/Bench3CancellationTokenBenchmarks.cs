@@ -3,6 +3,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace AsyncReloaded;
 
+[Config(typeof(MyConfig))]
 public class Bench3CancellationTokenBenchmarks
 {
     private readonly CancellationTokenSource _cts = new();
