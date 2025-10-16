@@ -413,10 +413,27 @@ Requirements as in [.NET Runtime-Async Feature](https://github.com/dotnet/runtim
 1. `<Features>$(Features);runtime-async=on</Features>` must be set in the project file
 1. When running, the environment variable `DOTNET_RuntimeAsync=1` must be set`
 
+--
 
-```
+### Hands on: NewAsync
 
----
+--
+
+### Async in .NET 10
+
+- no more visible state machine
+- it is somewhere out there
+- JIT does the work
+
+--
+
+## Summary
+
+1. Pass the State
+1. Red, Blue, and Purple
+1. Async in .NET 10 (experimental)
+
+--
 
 ## Feedback & QA
 
