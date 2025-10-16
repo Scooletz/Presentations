@@ -119,7 +119,6 @@ Let's build a counter! (A terrible example)
 ```csharp
 ConcurrentDictionary<string, int> counters;
 
-
 // The wrong way 💣
 if (!counters.TryGetValue("counters", out var value))
 {
@@ -133,7 +132,6 @@ counters["counter"] = value + 1;
 
 ### Counters
 
-
 ```csharp
 ConcurrentDictionary<string, int> counters;
 
@@ -143,6 +141,19 @@ counters.AddOrUpdate("counters",
   (key, prev) => prev + 1 // update factory
 );
 ```
+
+--
+
+### Counters - easy-peasy
+
+It was easy really easy - no externa state dependency.
+
+Let's use one.
+
+--
+
+### Hands on
+#### Bench1ConcurrentDictionary
 
 --
 
