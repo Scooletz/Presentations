@@ -307,13 +307,12 @@ Task<int> Red()
 
 ### Red, Blue, and Purple
 
-blue = sync
-red = async
+🔵 = sync; 🔴 = async
 
-- blue calls blue ✅
-- red calls blue ✅
-- red calls red ✅
-- blue calls red ❌
+- 🔵 calls 🔵 = ✅
+- 🔴 calls 🔵 = ✅
+- 🔴 calls 🔵 = ✅
+- 🔵 calls 🔴 = ❌
 
 --
 
@@ -337,7 +336,8 @@ public ValueTask(TResult result);
 // A special, high-performance source
 public ValueTask(IValueTaskSource<TResult> source, short token);
 
-// IVTS: implement with a struct called ManualResetValueTaskSourceCore<TResult>
+// IVTS: implement with a struct  ManualResetValueTaskSourceCore<TResult>
+// WHY?
 ```
 
 --
