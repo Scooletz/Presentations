@@ -290,6 +290,84 @@ Task continuation = task.ContinueWith(
 
 ### Red, Blue, and Purple
 
+``` csharp
+int Blue()
+{
+    int result = Process();
+    return result + _previous;
+}
+
+Task<int> Red()
+{
+    int result = await SomeSlowAzureFunc();
+    return result + _previous;
+}
+
+--
+
+### Red, Blue, and Purple
+
+blue = sync
+red = async
+
+- blue calls blue ✅
+- red calls blue ✅
+- red calls red ✅
+- blue calls red ❌
+
+--
+
+### Red, Blue, and Purple
+
+Is there a **purple** options possible?
+
+--
+
+### ValueTask of T
+
+The new common denominator for a **potentially** asynchronous execution.
+
+```charp
+// Task
+public ValueTask(Task<TResult> task);
+
+// Result
+public ValueTask(TResult result);
+
+// A special, high-performance source
+public ValueTask(IValueTaskSource<TResult> source, short token);
+
+// IVTS: implement with a struct called ManualResetValueTaskSourceCore<TResult>
+```
+
+--
+
+### Red, Blue, and Purple
+
+Is there a **purple** options possible?
+
+--
+
+### Hands on: Bench5
+
+--
+
+### Red, Blue, and Purple - examples
+
+[Optimize DocumentHandler](https://github.com/ravendb/ravendb/pull/21365)
+
+Non-Sharded (🔵) + Sharded (🔴) paths
+
+<img src="/AsyncReloaded/assets/RedBluePurple1.png">
+
+--
+
+### Red, Blue, and Purple - summary
+
+🔵 + 🔴 = 🟣
+
+`sync` + `async` = `ValueTask.IsCompletedSuccessfully`
+
 ---
 
 ## Async in .NET 10
