@@ -2,6 +2,7 @@
   name: "Async Reloaded"
   abstract: "Pass the State, Red, Blue, and Purple, and what .NET 10 brings with its experiments"
   path: "AsyncReloaded"
+  src: "https://github.com/Scooletz/Presentations/tree/main/AsyncReloaded/src"
   
 - id: GentleLowLevelConcurrency
   name: "A gentle introduction to low-level concurrency in .NET"
