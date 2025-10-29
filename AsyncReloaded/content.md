@@ -154,6 +154,21 @@ counters.AddOrUpdate("counters",
 
 --
 
+### Before we dive into it
+
+```csharp
+void DoSomething (Action action);
+
+// This allocates a closure
+DoSomething (() => this.PerformAction());
+
+// From C# 9.0, this will result in an error
+// No closure allowed!
+DoSomething (static () => this.PerformAction() ❌);
+```
+
+--
+
 ### Hands on: Bench1 + Bench2
 
 --
@@ -297,11 +312,12 @@ int Blue()
     return result + _previous;
 }
 
-Task<int> Red()
+async Task<int> Red()
 {
     int result = await SomeSlowAzureFunc();
     return result + _previous;
 }
+```
 
 --
 
