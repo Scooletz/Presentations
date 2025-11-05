@@ -453,9 +453,9 @@ Requirements as in [.NET Runtime-Async Feature](https://github.com/dotnet/runtim
 
 ## Feedback & QA
 
-https://forms.gle/uovE8xZeEzLUP4ox8
+https://forms.gle/ZBsyxT8jeKghaYAV7
 
-<img src="/AsyncReloaded/assets/feedback.png" alt="https://forms.gle/uovE8xZeEzLUP4ox8" style="max-width: 50%">
+<img src="/AsyncReloaded/assets/feedback.png" alt="https://forms.gle/ZBsyxT8jeKghaYAV7" style="max-width: 50%">
 
 ---
 
